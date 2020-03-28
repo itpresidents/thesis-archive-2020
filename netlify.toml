@@ -1,3 +1,10 @@
+[build]
+  publish = "build/"
+
+  # Default build command.
+  command = "yarn build"
+
+
 [[redirects]]
   from = "/*"
   to = "/"
