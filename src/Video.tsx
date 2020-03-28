@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { IStudentSummary, IStudentDetails } from "./types";
-import { getStudentIdFromSlug, getVideoIdFromUrl } from "./util/queries";
-import { isNumber } from "./util/queries";
-import { redirectTo, RouteComponentProps } from "@reach/router";
+import { IStudentDetails } from "./types";
+import { getVideoIdFromUrl } from "./util/queries";
 import * as api from "./util/api";
 import VimeoEmbed from "./VimeoEmbed";
 
