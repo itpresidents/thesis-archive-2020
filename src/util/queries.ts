@@ -37,3 +37,9 @@ export const getVideoIdFromUrl = (url: string) => {
 };
 
 export const isNumber = (stringValue: string): boolean => !isNaN(+stringValue);
+
+export function selectRandom<T>(elements: T[]): T {
+  const randomIndex = Math.floor(Math.random() * elements.length);
+
+  return elements[randomIndex];
+}

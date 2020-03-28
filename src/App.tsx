@@ -9,7 +9,6 @@ import * as queries from "./util/queries";
 import { IStudentSummary } from "./types";
 import Header from "./Header";
 import Videos from "./Videos";
-import Video from "./Video";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -24,9 +23,8 @@ const App = ({ students }: IAppProps) => {
         <Home path="/" students={students} topics={topics} />
         <Student path="students/:studentIdOrSlug" students={students} />
         <Topic path="topics/:topicSlug" students={students} topics={topics} />
-        <Videos path="videos">
-          <Video path=":studentIdOrSlug" students={students} />
-        </Videos>
+        <Videos path="videos" students={students} />
+        <Videos path="videos/:studentSlug" students={students} />
       </Router>
     </div>
   );

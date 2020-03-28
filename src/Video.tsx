@@ -15,11 +15,12 @@ const VideoDetail = ({ student }: { student: IStudentDetails }) => (
   </div>
 );
 
-const Video = ({ studentId }: { studentId: string }) => {
+const Video = ({ studentId }: { studentId?: string }) => {
   const [student, setStudent] = useState<IStudentDetails>();
 
   useEffect(() => {
     async function fetchStudent() {
+      if (!studentId) return;
       const student = await api.getStudent(studentId);
       setStudent(student);
     }
@@ -31,30 +32,4 @@ const Video = ({ studentId }: { studentId: string }) => {
   return <VideoDetail student={student} />;
 };
 
-interface IVideoContainerProps extends RouteComponentProps {
-  studentIdOrSlug?: string;
-  students: IStudentSummary[] | undefined;
-}
-
-const VideoContainer = ({
-  studentIdOrSlug,
-  students,
-}: IVideoContainerProps) => {
-  console.log("student id or slug", studentIdOrSlug);
-  if (!studentIdOrSlug) return <div />;
-
-  if (isNumber(studentIdOrSlug)) {
-    return <Video studentId={studentIdOrSlug} />;
-  }
-
-  if (!students) return null;
-
-  const studentId = getStudentIdFromSlug(students, studentIdOrSlug);
-
-  console.log("redirecting");
-  redirectTo(`/videos/${studentId}`);
-
-  return null;
-};
-
-export default VideoContainer;
+export default Video;
