@@ -15,7 +15,6 @@ const Home = ({ students, topics }: IHomeProps) => {
   return (
     <div>
       <div className="row">
-        <h2>Students:</h2>
         <Students students={students} />
       </div>
       <div className="row">

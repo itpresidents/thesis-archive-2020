@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import * as api from "./util/api";
-import { IStudentDetails } from "./types";
-import { Link, RouteComponentProps } from "@reach/router";
+import { IStudentDetails, IStudentSummary } from "./types";
+import { Link, RouteComponentProps, redirectTo } from "@reach/router";
+import { getStudentIdFromSlug } from "./util/queries";
 
 const createMarkup = (html: string) => ({ __html: html });
 
@@ -59,16 +60,16 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
 };
 
 interface IStudentProps extends RouteComponentProps {
-  studentId?: string;
+  studentId: string;
 }
+
+const isNumber = (stringValue: string): boolean => !isNaN(+stringValue);
 
 const Student = ({ studentId }: IStudentProps) => {
   const [student, setProject] = useState<IStudentDetails>();
 
   useEffect(() => {
     async function fetchStudent() {
-      if (!studentId) return;
-
       const student = await api.getStudent(studentId);
       setProject(student);
     }
@@ -80,4 +81,30 @@ const Student = ({ studentId }: IStudentProps) => {
   return <StudentDetails student={student} />;
 };
 
-export default Student;
+interface IStudentByIdOrSlugProps extends RouteComponentProps {
+  studentIdOrSlug?: string;
+  students: IStudentSummary[] | undefined;
+}
+
+const StudentByIdOrSlug = ({
+  studentIdOrSlug,
+  students,
+}: IStudentByIdOrSlugProps) => {
+  if (!studentIdOrSlug) return null;
+
+  console.log("is a number", isNumber(studentIdOrSlug));
+
+  if (isNumber(studentIdOrSlug)) {
+    return <Student studentId={studentIdOrSlug} />;
+  }
+
+  if (!students) return null;
+
+  const studentId = getStudentIdFromSlug(students, studentIdOrSlug);
+
+  redirectTo(`/students/${studentId}`);
+
+  return null;
+};
+
+export default StudentByIdOrSlug;

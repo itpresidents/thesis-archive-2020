@@ -11,7 +11,7 @@ const Topics = ({ topics }: ITopicsProps) => {
   return (
     <ul>
       {Object.entries(topics).map(([topicSlug, topicName]) => (
-        <li>
+        <li key={topicSlug}>
           <Link to={`/topics/${topicSlug}`}>{topicName}</Link>
         </li>
       ))}

@@ -7,6 +7,7 @@ import Topic from "./Topic";
 import { Router } from "@reach/router";
 import * as queries from "./util/queries";
 import { IStudentSummary } from "./types";
+import Header from "./Header";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -16,10 +17,10 @@ const App = ({ students }: IAppProps) => {
   const topics = students ? queries.getTopics(students) : {};
   return (
     <div className="container">
-      <h1>Thesis Archive 2020</h1>
+      <Header />
       <Router>
         <Home path="/" students={students} topics={topics} />
-        <Student path="/students/:studentId" />
+        <Student path="/students/:studentIdOrSlug" students={students} />
         <Topic path="/topics/:topicSlug" students={students} topics={topics} />
       </Router>
     </div>
