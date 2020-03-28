@@ -1,8 +1,8 @@
 // {"name":"Performance","slug":"performance"},{"name":"Society","slug":"society"}]
-import { IStudentSummary, StringDict } from "../types";
+import { IStudentSummary, TopicDict } from "../types";
 
-export const getTopics = (students: IStudentSummary[]): StringDict => {
-  const result: StringDict = {};
+export const getTopics = (students: IStudentSummary[]): TopicDict => {
+  const result: TopicDict = {};
 
   for (let { topics } of students) {
     for (let topic of topics) {

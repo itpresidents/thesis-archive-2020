@@ -1,11 +1,11 @@
 import React from "react";
 import Students from "./Students";
 import { RouteComponentProps } from "@reach/router";
-import { IStudentSummary, StringDict } from "./types";
+import { IStudentSummary, TopicDict } from "./types";
 
 interface ITopicProps extends RouteComponentProps {
   students: IStudentSummary[] | undefined;
-  topics: StringDict;
+  topics: TopicDict;
   topicSlug?: string;
 }
 
