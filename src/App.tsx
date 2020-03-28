@@ -1,26 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import * as api from "./util/api";
+import "./App.css";
+import Home from "./Home";
+import Student from "./Student";
+import Topic from "./Topic";
+import { Router } from "@reach/router";
+import * as queries from "./util/queries";
+import { IStudentSummary } from "./types";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface IAppProps {
+  students: IStudentSummary[] | undefined;
 }
 
-export default App;
+const App = ({ students }: IAppProps) => {
+  const topics = students ? queries.getTopics(students) : {};
+  return (
+    <div className="container">
+      <h1>Thesis Archive 2020</h1>
+      <Router>
+        <Home path="/" students={students} topics={topics} />
+        <Student path="/students/:studentId" />
+        <Topic path="/topics/:topicSlug" students={students} topics={topics} />
+      </Router>
+    </div>
+  );
+};
+
+const AppContainer = () => {
+  const [students, setStudents] = useState<IStudentSummary[]>();
+
+  useEffect(() => {
+    async function fetchAllStudents() {
+      const students = await api.getAllStudents();
+      setStudents(students);
+    }
+    fetchAllStudents();
+  });
+
+  return <App students={students} />;
+};
+
+export default AppContainer;
