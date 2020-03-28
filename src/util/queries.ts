@@ -29,3 +29,9 @@ export const getStudentIdFromSlug = (
 
   return studentWithSlug[0].student_id;
 };
+
+export const getVideoIdFromUrl = (url: string) => {
+  const urlParts = url.split("/");
+
+  return urlParts[urlParts.length - 1];
+};

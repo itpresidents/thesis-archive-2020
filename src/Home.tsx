@@ -1,5 +1,5 @@
 import React from "react";
-import Students from "./Students";
+import StudentCards from "./StudentCards";
 import Topics from "./Topics";
 import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, TopicDict } from "./types";
@@ -15,7 +15,7 @@ const Home = ({ students, topics }: IHomeProps) => {
   return (
     <div>
       <div className="row">
-        <Students students={students} />
+        <StudentCards students={students} />
       </div>
       <div className="row">
         <Topics topics={topics} />

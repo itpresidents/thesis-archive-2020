@@ -1,5 +1,5 @@
 import React from "react";
-import Students from "./Students";
+import StudentCards from "./StudentCards";
 import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, TopicDict } from "./types";
 
@@ -23,7 +23,7 @@ const Topic = ({ students, topicSlug, topics }: ITopicProps) => {
   return (
     <div>
       <h2>Projects with Topic {topicName}:</h2>
-      <Students students={studentsWithTopic} />
+      <StudentCards students={studentsWithTopic} />
     </div>
   );
 };

@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import * as api from "./util/api";
 import { IStudentDetails, IStudentSummary } from "./types";
 import { Link, RouteComponentProps, redirectTo } from "@reach/router";
-import { getStudentIdFromSlug } from "./util/queries";
+import { getStudentIdFromSlug, getVideoIdFromUrl } from "./util/queries";
+import VimeoEmbed from "./VimeoEmbed";
 
 const createMarkup = (html: string) => ({ __html: html });
 
@@ -42,6 +43,9 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
           </ul>
         </li>
       </ul>
+      <VimeoEmbed
+        vimeoVideoId={getVideoIdFromUrl(student.video_presentation_url)}
+      />
       <h3>Slide show:</h3>
       <ul>
         {student.slide_show.map((slide) => (
