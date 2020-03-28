@@ -42,3 +42,17 @@ export interface IStudentApi {
   getAllStudents: () => Promise<IStudentSummary[]>;
   getStudent: (studentId: string) => Promise<IStudentDetails>;
 }
+
+/* Video Schedule Types */
+export interface VideoScheduleStudent {
+  name: string;
+  slug: string;
+}
+
+export interface VideoScheduleRowContents {
+  time: string;
+  tuesday?: VideoScheduleStudent;
+  wednesday?: VideoScheduleStudent;
+  thursday?: VideoScheduleStudent;
+  friday?: VideoScheduleStudent;
+}

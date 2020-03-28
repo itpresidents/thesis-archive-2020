@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import * as api from "./util/api";
 import { IStudentDetails, IStudentSummary } from "./types";
 import { Link, RouteComponentProps, redirectTo } from "@reach/router";
-import { getStudentIdFromSlug, getVideoIdFromUrl } from "./util/queries";
+import {
+  getStudentIdFromSlug,
+  getVideoIdFromUrl,
+  isNumber,
+} from "./util/queries";
 import VimeoEmbed from "./VimeoEmbed";
 
 const createMarkup = (html: string) => ({ __html: html });
@@ -36,7 +40,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
           Topics:
           <ul>
             {student.topics.map((topic) => (
-              <li>
+              <li key={topic.slug}>
                 <Link to={`/topics/${topic.slug}`}>{topic.name}</Link>
               </li>
             ))}
@@ -49,7 +53,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
       <h3>Slide show:</h3>
       <ul>
         {student.slide_show.map((slide) => (
-          <figure>
+          <figure key={slide.src}>
             <img src={slide.src} alt={slide.alt} title={slide.title}></img>
             <figcaption>{slide.caption}</figcaption>
           </figure>
@@ -66,8 +70,6 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
 interface IStudentProps extends RouteComponentProps {
   studentId: string;
 }
-
-const isNumber = (stringValue: string): boolean => !isNaN(+stringValue);
 
 const Student = ({ studentId }: IStudentProps) => {
   const [student, setProject] = useState<IStudentDetails>();
@@ -95,8 +97,6 @@ const StudentByIdOrSlug = ({
   students,
 }: IStudentByIdOrSlugProps) => {
   if (!studentIdOrSlug) return null;
-
-  console.log("is a number", isNumber(studentIdOrSlug));
 
   if (isNumber(studentIdOrSlug)) {
     return <Student studentId={studentIdOrSlug} />;

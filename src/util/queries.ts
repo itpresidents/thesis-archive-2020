@@ -35,3 +35,5 @@ export const getVideoIdFromUrl = (url: string) => {
 
   return urlParts[urlParts.length - 1];
 };
+
+export const isNumber = (stringValue: string): boolean => !isNaN(+stringValue);

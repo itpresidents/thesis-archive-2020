@@ -2,19 +2,7 @@ import puppeteer from "puppeteer";
 import { join, resolve} from 'path';
 import { promisify} from 'util';
 import * as fs from 'fs';
-
-interface Student {
-  name: string;
-  slug: string;
-};
-
-interface RowContents {
-  time: string,
-  tuesday?: Student,
-  wednesday?: Student,
-  thursday?: Student,
-  friday?: Student
-}
+import {VideoScheduleRowContents, VideoScheduleStudent } from '../src/types';
 
 const writeFile = promisify(fs.writeFile);
 
@@ -26,8 +14,8 @@ const scrapeSchedule = async (url: string, destinationFileName: string) => {
 
   console.log('scraping schedule from ', url);
 
-  const evalResults: RowContents[] | null = await page.evaluate(() => {
-    const parseStudentColumn = (column: HTMLTableCellElement): Student | undefined => {
+  const evalResults: VideoScheduleRowContents[] | null = await page.evaluate(() => {
+    const parseStudentColumn = (column: HTMLTableCellElement): VideoScheduleStudent | undefined => {
       const link = column.querySelector('a');
 
       if (!link) return;
@@ -41,7 +29,7 @@ const scrapeSchedule = async (url: string, destinationFileName: string) => {
       }
     };
 
-    const parseContents = (rowElement: Element): RowContents => {
+    const parseContents = (rowElement: Element): VideoScheduleRowContents => {
       const columns = rowElement.querySelectorAll('td');
 
 
@@ -62,7 +50,7 @@ const scrapeSchedule = async (url: string, destinationFileName: string) => {
 
     const rows = dailyScheduleTable.querySelectorAll('tbody tr');
 
-    const rowContents: RowContents[] = [];
+    const rowContents: VideoScheduleRowContents[] = [];
 
     for(let i = 0; i < rows.length; i++) {
       rowContents.push(parseContents(rows[i]));
