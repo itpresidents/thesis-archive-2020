@@ -43,3 +43,25 @@ export function selectRandom<T>(elements: T[]): T {
 
   return elements[randomIndex];
 }
+
+export function shuffle<T>(toShuffle: T[]): T[] {
+  // clone
+  const arrayClone = toShuffle.slice();
+  let currentIndex = arrayClone.length,
+    temporaryValue,
+    randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = arrayClone[currentIndex];
+    arrayClone[currentIndex] = arrayClone[randomIndex];
+    arrayClone[randomIndex] = temporaryValue;
+  }
+
+  return arrayClone;
+}
