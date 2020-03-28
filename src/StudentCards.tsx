@@ -25,7 +25,7 @@ const StudentCard = ({ student }: { student: IStudentSummary }) => (
   </Card>
 );
 
-const Students = ({ students }: IStudentsProps) => (
+const StudentCards = ({ students }: IStudentsProps) => (
   <CardColumns>
     {students.map((student) => (
       <StudentCard key={student.student_slug} student={student} />
@@ -33,4 +33,4 @@ const Students = ({ students }: IStudentsProps) => (
   </CardColumns>
 );
 
-export default Students;
+export default StudentCards;
