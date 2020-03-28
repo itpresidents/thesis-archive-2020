@@ -24,7 +24,7 @@ const VideoCell = ({
       <Link
         to={`/videos/${student.slug}`}
         className={cx("badge", {
-          ["badge-primary"]: activeSlug === student.slug,
+          "badge-primary": activeSlug === student.slug,
         })}
       >
         {student.name}
