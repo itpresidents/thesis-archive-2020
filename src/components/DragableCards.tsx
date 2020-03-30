@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, RouteComponentProps } from "@reach/router";
 import { IStudentSummary } from "../types";
 import { useSpring, animated, to, config } from "react-spring";
 import { useDrag } from "react-use-gesture";
-import { addVector, scaleVector } from "../util/vector";
+import { addVector, scaleVector, clampVector } from "../util/vector";
 import Student from "../Student";
 
 interface IStudentsProps extends RouteComponentProps {
@@ -11,29 +11,36 @@ interface IStudentsProps extends RouteComponentProps {
 }
 
 const DragableCards = ({ students }: IStudentsProps) => {
-  const canvasSize = 3000;
-  const [{ pos }, set] = useSpring(() => ({ pos: [0, 0] }));
+  const [{ canvasHeight }, setState] = useState({ canvasHeight: 3000 });
+  const canvasWidth = 3000;
+  const [{ pos }, set] = useSpring(() => ({ pos: [-canvasWidth / 3, 0] }));
   const bind = useDrag(
     ({ down, movement: xy, velocity, direction }) => {
-      if (down) {
-        set({
-          pos: xy,
-          config: { velocity: scaleVector(direction, velocity), decay: false },
-        });
-      } else {
-        console.log(xy);
-        const to = addVector(xy, scaleVector(direction, velocity * 50));
-        console.log(to);
-        set({
-          pos: to,
-          config: { velocity: scaleVector(direction, velocity), decay: false },
-        });
-      }
+      console.log(xy);
+      set({
+        pos: addVector(xy, scaleVector(direction, velocity * 100)),
+        config: {
+          velocity: scaleVector(direction, velocity * 10000),
+          decay: false,
+        },
+      });
     },
     {
       initial: () => pos.getValue() as any,
+      bounds: {
+        left: -canvasWidth + window.innerWidth * 0.8,
+        right: 200,
+        top: -canvasHeight + window.innerHeight * 0.8,
+        bottom: 200,
+      },
+      rubberband: true,
     }
   );
+  useEffect(() => {
+    const canvasH = document.getElementById("projects-canvas")!.clientHeight;
+    setState({ canvasHeight: canvasH });
+  }, []);
+
   return (
     <>
       <div id="canvas-invisible-height" />

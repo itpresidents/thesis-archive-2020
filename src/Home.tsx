@@ -19,9 +19,10 @@ const Home = ({ students, topics }: IHomeProps) => {
         {/* <StudentCards students={students} /> */}
         <DragableCards students={students} />
       </div>
-      <div className="row">
+      {/* let's find another place for topics */}
+      {/* <div className="row">
         <Topics topics={topics} />
-      </div>
+      </div> */}
     </div>
   );
 };
