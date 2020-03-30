@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, RouteComponentProps } from "@reach/router";
-import { IStudentSummary } from "./types";
+import { IStudentSummary } from "../types";
 import { Card, CardColumns } from "react-bootstrap";
-import { shuffle } from "./util/queries";
+import { shuffle } from "../util/queries";
 
 interface IStudentsProps extends RouteComponentProps {
   students?: IStudentSummary[];

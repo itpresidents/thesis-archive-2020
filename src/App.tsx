@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import * as api from "./util/api";
+import "popper.js/dist/umd/popper.js";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/js/bootstrap.js";
+import "./scss/styles.scss";
 import "./App.css";
+import "normalize.css";
 import Home from "./Home";
 import Student from "./Student";
 import Topic from "./Topic";
 import { Router } from "@reach/router";
 import * as queries from "./util/queries";
 import { IStudentSummary } from "./types";
-import Header from "./Header";
+import Header from "./components/Header";
 import Videos from "./Videos";
 
 interface IAppProps {
@@ -17,16 +22,18 @@ interface IAppProps {
 const App = ({ students }: IAppProps) => {
   const topics = students ? queries.getTopics(students) : {};
   return (
-    <div className="container">
+    <>
       <Header />
-      <Router>
-        <Home path="/" students={students} topics={topics} />
-        <Student path="students/:studentIdOrSlug" students={students} />
-        <Topic path="topics/:topicSlug" students={students} topics={topics} />
-        <Videos path="videos" students={students} />
-        <Videos path="videos/:studentSlug" students={students} />
-      </Router>
-    </div>
+      <div className="container">
+        <Router>
+          <Home path="/" students={students} topics={topics} />
+          <Student path="students/:studentIdOrSlug" students={students} />
+          <Topic path="topics/:topicSlug" students={students} topics={topics} />
+          <Videos path="videos" students={students} />
+          <Videos path="videos/:studentSlug" students={students} />
+        </Router>
+      </div>
+    </>
   );
 };
 

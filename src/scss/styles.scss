@@ -1,0 +1,75 @@
+@import "./variables.scss";
+@import "./keyframes.scss";
+@import "./mix-ins.scss";
+
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+body {
+  height: 100%;
+  padding: 0;
+  overflow: auto;
+  margin: 0;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+#header2020-bg {
+  position: relative;
+  z-index: 10;
+  width: 100vw;
+  background-color: white;
+}
+
+#header2020-bg-animation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  z-index: 9999;
+  width: 100vw;
+  background: url("../images/20.svg") repeat-x;
+  background-size: $width2020;
+  animation: move_background $scrollSpeed infinite linear;
+}
+
+#header-invisible-height {
+  visibility: hidden;
+  width: $width2020 + 1vh;
+}
+
+#canvas-invisible-height {
+  z-index: 10;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+#canvas-container {
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0vh;
+  left: 0vw;
+}
+
+#projects-canvas {
+  width: $canvasSize;
+  cursor: -webkit-grab;
+}
+
+.project-card {
+  margin: 10px;
+  width: 160px;
+  height: 240px;
+  display: inline-block;
+  box-shadow: gray;
+}
