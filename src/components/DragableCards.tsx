@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link, RouteComponentProps } from "@reach/router";
 import { IStudentSummary } from "../types";
-import { Card, CardColumns } from "react-bootstrap";
-import { shuffle } from "../util/queries";
 import { useSpring, animated, to, config } from "react-spring";
 import { useDrag } from "react-use-gesture";
 import { addVector, scaleVector } from "../util/vector";
