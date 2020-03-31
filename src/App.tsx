@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as api from "./util/api";
-import "popper.js/dist/umd/popper.js";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap/dist/js/bootstrap.js";
 import "./scss/styles.scss";
-import "./App.css";
-import "normalize.css";
 import Home from "./Home";
 import Student from "./Student";
 import Topic from "./Topic";

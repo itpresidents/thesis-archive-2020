@@ -1,6 +1,12 @@
 @import "./variables.scss";
 @import "./keyframes.scss";
 @import "./mix-ins.scss";
+@import "~bootstrap/scss/bootstrap.scss";
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
 
 html {
   height: 100%;

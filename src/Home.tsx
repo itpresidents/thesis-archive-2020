@@ -1,6 +1,6 @@
 import React from "react";
-import StudentCards from "./components/StudentCards";
-import Topics from "./Topics";
+// import StudentCards from "./components/StudentCards";
+// import Topics from "./Topics";
 import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, TopicDict } from "./types";
 import DragableCards from "./components/DragableCards";
