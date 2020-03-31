@@ -63,17 +63,10 @@ const DragableCards = ({ students }: IStudentsProps) => {
 };
 
 const StudentCard = ({ student }: { student: IStudentSummary }) => (
-  // <Link to={`/students/${student.student_id}`}>
   <div
     className="project-card shadow"
     style={{ backgroundImage: `url(${student.portfolio_icon.src})` }}
-  >
-    {/* <Card.ImgOverlay>
-                    <Card.Title>{student.student_name}</Card.Title>
-                    <Card.Text>{student.project_title}</Card.Text>
-                </Card.ImgOverlay> */}
-  </div>
-  // </Link >
+  ></div>
 );
 
 export default DragableCards;
