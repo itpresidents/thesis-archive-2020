@@ -16,6 +16,7 @@ interface IAppProps {
 
 const App = ({ students }: IAppProps) => {
   const topics = students ? queries.getTopics(students) : {};
+
   return (
     <>
       <Header />
@@ -34,14 +35,13 @@ const App = ({ students }: IAppProps) => {
 
 const AppContainer = () => {
   const [students, setStudents] = useState<IStudentSummary[]>();
-
   useEffect(() => {
     async function fetchAllStudents() {
       const students = await api.getAllStudents();
       setStudents(students);
     }
     fetchAllStudents();
-  });
+  }, []);
 
   return <App students={students} />;
 };
