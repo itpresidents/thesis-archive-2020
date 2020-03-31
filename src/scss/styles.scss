@@ -68,14 +68,15 @@ body {
 }
 
 #projects-canvas {
-  width: $canvasSize;
+  width: 100vw;
   cursor: -webkit-grab;
 }
 
-.project-card {
+.student-card {
+  position: absolute;
   margin: 10px;
-  width: 160px;
-  height: 240px;
+  width: 200px;
+  height: 300px;
   display: inline-block;
   box-shadow: gray;
 }
