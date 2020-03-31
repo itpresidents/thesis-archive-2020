@@ -1,5 +1,5 @@
 import React from "react";
-import StudentCards from "./StudentCards";
+import StudentCards from "./components/StudentCards";
 import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, TopicDict } from "./types";
 

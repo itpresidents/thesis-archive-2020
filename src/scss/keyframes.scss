@@ -1,0 +1,11 @@
+@import "./variables.scss";
+
+@keyframes move_background {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -$width2020 0;
+  }
+}
