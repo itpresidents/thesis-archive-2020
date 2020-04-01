@@ -20,7 +20,7 @@ const App = ({ students }: IAppProps) => {
   return (
     <>
       <Header />
-      <div className="container">
+      <div className="container-fluid">
         <Router>
           <Home path="/" students={students} topics={topics} />
           <Student path="students/:studentIdOrSlug" students={students} />

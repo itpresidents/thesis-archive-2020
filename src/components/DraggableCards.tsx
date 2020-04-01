@@ -196,7 +196,7 @@ const DraggableCards = ({ students }: IStudentsProps) => {
       setMatrixCenterXy(toPositionInMatrix(xy as [number, number]));
     },
     {
-      initial: () => [startX, startY],
+      initial: () => [position.x.getValue(), position.y.getValue()],
     }
   );
 
@@ -204,22 +204,31 @@ const DraggableCards = ({ students }: IStudentsProps) => {
 
   return (
     <>
-      <animated.div
-        {...bind()}
+      <div
         style={{
           position: "relative",
-          width: windowSize[0],
-          height: windowSize[1],
-          ...position,
+          width: "100vw",
+          height: "100vh",
+          overflow: "hidden",
         }}
       >
-        {/* Since Cards are wrapped in React.memo - they will only be re-rendered when matrixXy values change */}
-        <Cards
-          matrixX={matrixXy[0]}
-          matrixY={matrixXy[1]}
-          students={students}
-        />
-      </animated.div>
+        <animated.div
+          {...bind()}
+          style={{
+            position: "absolute",
+            width: windowSize[0],
+            height: windowSize[1],
+            ...position,
+          }}
+        >
+          {/* Since Cards are wrapped in React.memo - they will only be re-rendered when matrixXy values change */}
+          <Cards
+            matrixX={matrixXy[0]}
+            matrixY={matrixXy[1]}
+            students={students}
+          />
+        </animated.div>
+      </div>
     </>
   );
 };
