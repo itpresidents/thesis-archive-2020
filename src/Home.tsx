@@ -1,9 +1,9 @@
 import React from "react";
-// import StudentCards from "./components/StudentCards";
-// import Topics from "./Topics";
+import StudentCards from "./components/StudentCards";
+import Topics from "./Topics";
 import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, TopicDict } from "./types";
-import DragableCards from "./components/DragableCards";
+import DraggableCards from "./components/DraggableCards";
 
 interface IHomeProps extends RouteComponentProps {
   students: IStudentSummary[] | undefined;
@@ -17,7 +17,7 @@ const Home = ({ students, topics }: IHomeProps) => {
     <div>
       <div className="row">
         {/* <StudentCards students={students} /> */}
-        <DragableCards students={students} />
+        <DraggableCards students={students} />
       </div>
       {/* let's find another place for topics */}
       {/* <div className="row">
