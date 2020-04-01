@@ -158,6 +158,7 @@ const DraggableCards = ({ students }: IStudentsProps) => {
   return (
     <>
       <div
+        {...bind()}
         style={{
           position: "relative",
           width: "100vw",
@@ -166,7 +167,6 @@ const DraggableCards = ({ students }: IStudentsProps) => {
         }}
       >
         <animated.div
-          {...bind()}
           style={{
             position: "absolute",
             width: windowSize[0],
