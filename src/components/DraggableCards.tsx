@@ -3,12 +3,8 @@ import { Link, RouteComponentProps } from "@reach/router";
 import { IStudentSummary } from "../types";
 import { useSpring, animated, to, config, SpringValue } from "react-spring";
 import { useDrag } from "react-use-gesture";
-import {
-  addVector,
-  scaleVector,
-  clampVector,
-  multiplyElementWise,
-} from "../util/vector";
+import { addVector, scaleVector, multiplyElementWise } from "../util/vector";
+import { CoolDown } from "../util/tools";
 import Student from "../Student";
 import VisibilitySensor from "react-visibility-sensor";
 
@@ -30,18 +26,6 @@ interface IDragableCardsState {
   inViewPort: number[][];
   studentsMatrix: number[][];
 }
-
-const searchForArray = (haystack: Array<any>, needle: Array<any>): number => {
-  var i, j, current;
-  for (i = 0; i < haystack.length; ++i) {
-    if (needle.length === haystack[i].length) {
-      current = haystack[i];
-      for (j = 0; j < needle.length && needle[j] === current[j]; ++j);
-      if (j === needle.length) return i;
-    }
-  }
-  return -1;
-};
 
 const getUnvisitedNeighbors = (
   visited: number[][],
@@ -92,6 +76,8 @@ const DraggableCards = ({ students }: IStudentsProps) => {
   const shape: number[] = [400, 400];
   const start: number[] = scaleVector(shape, 0.5);
 
+  const coolDown = new CoolDown(200);
+
   const initializeMatrix = () => {
     let r = [];
     if (students) {
@@ -131,56 +117,65 @@ const DraggableCards = ({ students }: IStudentsProps) => {
   useEffect(() => {}, []);
 
   const onChange = (isVisible: boolean, id: string, xy: number[]) => {
-    // console.log('Element is now %s', isVisible ? 'visible' : 'hidden');
-    // console.log(id);
-    let prevInViewPort = inViewPort.slice();
+    if (coolDown.queue.length === 0) coolDown.queue = inViewPort.slice();
     if (isVisible) {
-      const neighbors = getUnvisitedNeighbors(inViewPort, xy, shape);
-      prevInViewPort = prevInViewPort.concat(neighbors);
+      const neighbors = getUnvisitedNeighbors(coolDown.queue, xy, shape);
+      coolDown.queue = coolDown.queue.concat(neighbors);
     }
-
-    for (let i = prevInViewPort.length - 1; i >= 0; i--) {
-      const element = prevInViewPort[i];
+    for (let i = coolDown.queue.length - 1; i >= 0; i--) {
+      const element = coolDown.queue[i];
       if (
         !isInViewPort(getOffset(element, cardSize), pos.getValue(), cardSize, [
           500,
           500,
         ])
       ) {
-        // const i = searchForArray(prevInViewPort, xy);
-        prevInViewPort.splice(i, 1);
-        // document.getElementById(getProjectId(el))?.remove();
+        coolDown.queue.splice(i, 1);
       }
     }
-
-    // console.log(prevInViewPort);
-    console.log(document.querySelectorAll(`.student-card`)?.length);
-    setState((prevState) => ({
-      inViewPort: prevInViewPort,
-      studentsMatrix: prevState.studentsMatrix,
-    }));
+    // console.log(document.querySelectorAll(`.student-card`)?.length);
+    console.log(inViewPort.length, coolDown.queue.length);
+    coolDown.excuteSetState = () => {
+      console.log("callling");
+      if (!coolDown.ready()) {
+        if (!coolDown.timerIsOn) {
+          clearTimeout(coolDown.timeOut);
+          coolDown.timeOut = setTimeout(() => {
+            coolDown.excuteSetState();
+          }, 200);
+          coolDown.timerIsOn = true;
+        }
+      } else {
+        clearTimeout(coolDown.timeOut);
+        setState((prevState) => ({
+          inViewPort: coolDown.queue,
+          studentsMatrix: prevState.studentsMatrix,
+        }));
+        coolDown.setNow();
+        coolDown.timerIsOn = false;
+      }
+    };
+    coolDown.excuteSetState();
   };
 
   return (
     <>
       <div id="canvas-invisible-height" />
-      <div id="canvas-container">
-        <div {...bind()} id="projects-canvas" style={{}}>
-          {inViewPort.map((xy: number[], index: number) => {
-            return (
-              <StudentCard
-                id={getProjectId(xy, shape)}
-                key={index}
-                student={students![studentsMatrix[xy[0]][xy[1]]]}
-                springValue={pos}
-                xy={xy}
-                wh={cardSize}
-                offsets={getOffset(xy, cardSize)}
-                onChange={onChange}
-              />
-            );
-          })}
-        </div>
+      <div {...bind()} id="projects-canvas" style={{}}>
+        {inViewPort.map((xy: number[], index: number) => {
+          return (
+            <StudentCard
+              id={getProjectId(xy, shape)}
+              key={index}
+              student={students![studentsMatrix[xy[0]][xy[1]]]}
+              springValue={pos}
+              xy={xy}
+              wh={cardSize}
+              offsets={getOffset(xy, cardSize)}
+              onChange={onChange}
+            />
+          );
+        })}
       </div>
     </>
   );
@@ -197,13 +192,7 @@ const StudentCard = ({
 }: IStudentCardProps) => {
   let count = 0;
   const localOnChange = (visibility: boolean) => {
-    //ignore 1st unvisible call
     onChange(visibility, id, xy);
-    // console.log(count)
-    // if (visibility || (!visibility && count > 0))
-    // else {
-    //   count += 1
-    // }
   };
   return (
     <div id={id}>
