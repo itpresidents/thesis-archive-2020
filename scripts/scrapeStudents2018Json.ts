@@ -1,7 +1,7 @@
-const axios = require('axios');
-const fs = require('fs');
-const {promisify} = require('util');
-const {join} = require('path');
+import axios from 'axios';
+import * as fs from 'fs';
+import {promisify} from 'util';
+import { join } from 'path';
 
 const writeFile = promisify(fs.writeFile);
 
@@ -12,7 +12,7 @@ const main =
            'https://itp.nyu.edu/thesis2018/wp-content/themes/itpthesis/api.php?student_id=-1'))
           .data;
 
-  const studentIds = allStudentsJson.map(({student_id}) => student_id);
+  const studentIds = allStudentsJson.map(({student_id}: {student_id: string}) => student_id);
 
   for (let i = 0; i < studentIds.length; i++) {
     const studentId = studentIds[i];

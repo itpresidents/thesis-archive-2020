@@ -11,16 +11,16 @@ interface IStudentsProps extends RouteComponentProps {
 const StudentCard = ({ student }: { student: IStudentSummary }) => (
   <Card>
     <Link to={`/students/${student.student_id}`}>
-      {student.portfolio_icon && (
+      {student.thumbnail_image && (
         <Card.Img
           variant="top"
-          src={student.portfolio_icon.src}
-          alt={student.portfolio_icon.alt}
+          src={student.thumbnail_image.src}
+          alt={student.thumbnail_image.alt}
         ></Card.Img>
       )}
       <Card.ImgOverlay>
         <Card.Title>{student.student_name}</Card.Title>
-        <Card.Text>{student.project_title}</Card.Text>
+        <Card.Text>{student.title}</Card.Text>
       </Card.ImgOverlay>
     </Link>
   </Card>

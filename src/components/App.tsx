@@ -15,20 +15,18 @@ interface IAppProps {
 }
 
 const App = ({ students }: IAppProps) => {
-  const topics = students ? queries.getTopics(students) : {};
+  const topics = students ? queries.getTags(students) : {};
 
   return (
     <>
       <Header />
-      <div className="container-fluid">
-        <Router>
-          <Home path="/" students={students} topics={topics} />
-          <Student path="students/:studentIdOrSlug" students={students} />
-          <Topic path="topics/:topicSlug" students={students} topics={topics} />
-          <Videos path="videos" students={students} />
-          <Videos path="videos/:studentSlug" students={students} />
-        </Router>
-      </div>
+      <Router>
+        <Home path="/" students={students} topics={topics} />
+        <Student path="students/:studentIdOrSlug" students={students} />
+        <Topic path="topics/:topicSlug" students={students} topics={topics} />
+        <Videos path="videos" students={students} />
+        <Videos path="videos/:studentSlug" students={students} />
+      </Router>
     </>
   );
 };

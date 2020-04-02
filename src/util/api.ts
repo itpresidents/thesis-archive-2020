@@ -26,9 +26,9 @@ const realApi: IStudentApi = {
 
 const fake2018Api: IStudentApi = {
   getAllStudents: async () =>
-    (await axios.get("/2018/all.json")).data as IStudentSummary[],
+    (await axios.get("/2019/all.json")).data as IStudentSummary[],
   getStudent: async (studentId) =>
-    (await axios.get(`/2018/${studentId}.json`)).data as IStudentDetails,
+    (await axios.get(`/2019/${studentId}.json`)).data as IStudentDetails,
 };
 
 // sample json for students:

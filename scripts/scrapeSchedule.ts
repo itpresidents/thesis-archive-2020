@@ -69,4 +69,4 @@ const scrapeSchedule = async (url: string, destinationFileName: string) => {
 
 };
 
-scrapeSchedule("https://itp.nyu.edu/shows/thesis2018/", "schedule-2018.json");
+scrapeSchedule("https://itp.nyu.edu/shows/thesis2019/", "schedule-2019.json");

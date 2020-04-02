@@ -1,11 +1,11 @@
 // {"name":"Performance","slug":"performance"},{"name":"Society","slug":"society"}]
 import { IStudentSummary, TopicDict } from "types";
 
-export const getTopics = (students: IStudentSummary[]): TopicDict => {
+export const getTags = (students: IStudentSummary[]): TopicDict => {
   const result: TopicDict = {};
 
-  for (let { topics } of students) {
-    for (let topic of topics) {
+  for (let { tags } of students) {
+    for (let topic of tags) {
       const { slug, name } = topic;
       if (!result[slug]) {
         result[slug] = name;

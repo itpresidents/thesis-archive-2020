@@ -39,10 +39,10 @@ const centerText = "text-center";
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
     <Container>
-      <FeaturedImage image={student.featured_image[0]} />
+      <FeaturedImage image={student.thumbnail_image} />
       <Row className={cx(justify, centerText)}>
         <Col md={MAIN_COLS_MD}>
-          <h1>{student.project_title}</h1>
+          <h1>{student.title}</h1>
           <h1>by {student.student_name}</h1>
         </Col>
       </Row>
@@ -50,7 +50,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         <Col md={MAIN_COLS_MD}>
           <p
             className="lead"
-            dangerouslySetInnerHTML={createMarkup(student.short_description)}
+            dangerouslySetInnerHTML={createMarkup(student.thesis_statement)}
           />
         </Col>
       </Row>
@@ -59,15 +59,12 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         <Col md="auto"></Col>
       </Row>
 
-      <div
-        dangerouslySetInnerHTML={createMarkup(student.project_question)}
-      ></div>
       <ul>
         <li>Advisor: {student.advisor_name}</li>
         <li>
           Topics:
           <ul>
-            {student.topics.map((topic) => (
+            {student.tags.map((topic) => (
               <li key={topic.slug}>
                 <Link to={`/topics/${topic.slug}`}>{topic.name}</Link>
               </li>

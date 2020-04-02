@@ -21,6 +21,7 @@
     "baseUrl": "src"
   },
   "include": [
-    "src"
+    "src",
+    "scripts"
   ]
 }

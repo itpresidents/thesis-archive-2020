@@ -217,7 +217,7 @@ const StudentCard = React.memo(
           height: `${cardSize[1] - 20}px`,
           left: `${offsets[0]}px`,
           top: `${offsets[1]}px`,
-          backgroundImage: `url(${student.portfolio_icon.src})`,
+          backgroundImage: `url(${student.thumbnail_image.src})`,
         }}
       >
         <VisibilitySensor partialVisibility={true} delayedCall={true}>
