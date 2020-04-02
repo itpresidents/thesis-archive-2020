@@ -28,6 +28,11 @@ body {
   }
 }
 
+h1,
+h2 {
+  text-transform: uppercase;
+}
+
 #header2020-bg {
   position: relative;
   z-index: 10;
@@ -81,4 +86,11 @@ body {
   height: 300px;
   display: inline-block;
   box-shadow: gray;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: $primary-color;
+  border-radius: 2px;
 }

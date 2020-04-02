@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-import * as api from "../util/api";
-import { IStudentDetails, IStudentSummary } from "../types";
+import { Container, Row, Col } from "react-bootstrap";
+
+import * as api from "util/api";
+import { IStudentDetails, IStudentSummary, IFeaturedImage } from "../types";
 import { Link, RouteComponentProps, redirectTo } from "@reach/router";
 import {
   getStudentIdFromSlug,
   getVideoIdFromUrl,
   isNumber,
-} from "../util/queries";
+} from "util/queries";
 import VimeoEmbed from "./VimeoEmbed";
+import cx from "classnames";
 
 const createMarkup = (html: string) => ({ __html: html });
 
@@ -16,20 +19,45 @@ interface IStudentDetailsProps {
   student: IStudentDetails;
 }
 
+const MAIN_COLS_MD = 8;
+
+const FeaturedImage = ({ image }: { image: IFeaturedImage | undefined }) => {
+  if (!image) return null;
+  return (
+    <img
+      key={image.src}
+      src={image.src}
+      alt={image.alt}
+      title={image.title}
+    ></img>
+  );
+};
+
+const justify = "justify-content-md-center";
+const centerText = "text-center";
+
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
-    <div>
-      <h2>
-        {student.student_name} - {student.project_title}
-      </h2>
-      {student.featured_image.map((image) => (
-        <img
-          key={image.src}
-          src={image.src}
-          alt={image.alt}
-          title={image.title}
-        ></img>
-      ))}
+    <Container>
+      <FeaturedImage image={student.featured_image[0]} />
+      <Row className={cx(justify, centerText)}>
+        <Col md={MAIN_COLS_MD}>
+          <h1>{student.project_title}</h1>
+          <h1>by {student.student_name}</h1>
+        </Col>
+      </Row>
+      <Row className={cx(justify, centerText)}>
+        <Col md={MAIN_COLS_MD}>
+          <p
+            className="lead"
+            dangerouslySetInnerHTML={createMarkup(student.short_description)}
+          />
+        </Col>
+      </Row>
+      <hr />
+      <Row>
+        <Col md="auto"></Col>
+      </Row>
 
       <div
         dangerouslySetInnerHTML={createMarkup(student.project_question)}
@@ -63,7 +91,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
       <div
         dangerouslySetInnerHTML={createMarkup(student.further_reading)}
       ></div>
-    </div>
+    </Container>
   );
 };
 
