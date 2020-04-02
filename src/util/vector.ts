@@ -52,3 +52,23 @@ export const searchForArray = (
   }
   return -1;
 };
+
+export class SmoothVector {
+  inputs: number[][];
+  constructor() {
+    this.inputs = [];
+  }
+
+  smooth(lastInput: number[], lookBack: number): number[] {
+    this.inputs.push(lastInput);
+    this.inputs = this.inputs.slice(
+      this.inputs.length - lookBack >= 0 ? this.inputs.length - lookBack : 0,
+      this.inputs.length
+    );
+    let r = this.inputs[0];
+    for (let i = 1; i < this.inputs.length; i++) {
+      r = scaleVector(addVector(r, this.inputs[i]), 0.5);
+    }
+    return r;
+  }
+}
