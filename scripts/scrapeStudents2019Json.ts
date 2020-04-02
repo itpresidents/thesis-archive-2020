@@ -12,6 +12,9 @@ const main =
            'https://itp.nyu.edu/thesis2019/data/data.json'))
           .data;
 
+
+   await writeFile(join(process.cwd(), 'public/2019', `all.json`), JSON.stringify(allStudentsJson));
+
   const studentIds = allStudentsJson.map(({student_id}: {student_id: string}) => student_id);
 
   for (let i = 0; i < studentIds.length; i++) {

@@ -14,9 +14,9 @@ export interface IStudentSummary {
   thesis_statement: string;
   abstract: string;
   context_research: string;
-  thumbnail_image: Image;
-  headshot_image: Image;
-  slide_show: Image[];
+  thumbnail_image: IImage;
+  headshot_image: IImage;
+  slide_show: IImage[];
   tags: ITag[];
   video_presentation_url: string;
   video_documentation_url: string;
@@ -28,7 +28,7 @@ export interface IFeaturedImage {
   title: string;
 }
 
-export interface Image {
+export interface IImage {
   src: string;
   alt: string;
   title: string;

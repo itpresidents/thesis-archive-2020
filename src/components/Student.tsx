@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, FunctionComponent } from "react";
 
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Figure } from "react-bootstrap";
 
 import * as api from "util/api";
-import { IStudentDetails, IStudentSummary, IFeaturedImage } from "../types";
+import {
+  IStudentDetails,
+  IStudentSummary,
+  IFeaturedImage,
+  IImage,
+} from "../types";
 import { Link, RouteComponentProps, redirectTo } from "@reach/router";
 import {
   getStudentIdFromSlug,
@@ -35,6 +40,25 @@ const FeaturedImage = ({ image }: { image: IFeaturedImage | undefined }) => {
 
 const justify = "justify-content-md-center";
 const centerText = "text-center";
+const justifyText = "text-justify";
+
+const ImageWithCaption = ({ image }: { image: IImage | undefined }) => {
+  if (!image) return null;
+  return (
+    <Figure>
+      <Figure.Image width={"100%"} alt={image.alt} src={image.src} />
+      <Figure.Caption>{image.caption}</Figure.Caption>
+    </Figure>
+  );
+};
+
+type EmptyProps = {};
+
+const TextSection = ({ children }: { children: React.ReactNode }) => (
+  <Row className={cx(justify, justifyText)}>
+    <Col md={MAIN_COLS_MD}>{children}</Col>
+  </Row>
+);
 
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
@@ -55,14 +79,64 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         </Col>
       </Row>
       <hr />
-      <Row>
-        <Col md="auto"></Col>
+      <Row className={centerText}>
+        <Col>
+          <h3>Student</h3> {student.student_name}
+        </Col>
+        <Col>
+          <h3>Portfolio</h3> <a href="//www.example.com">www.example.com</a>
+        </Col>
+        <Col>
+          <h3>Advisor</h3>
+          <a href="//www.example.com">{student.advisor_name}</a>
+        </Col>
+        <Col>
+          <h3>Watch</h3>
+          <Link to={`/videos/${student.student_slug}`}>Watch</Link>
+        </Col>
       </Row>
+      <TextSection>
+        <h2>Abstract</h2>
+        <div dangerouslySetInnerHTML={createMarkup(student.abstract)} />
+      </TextSection>
+      <ImageWithCaption image={student.slide_show[0]} />
+
+      <TextSection>
+        <h2>Research</h2>
+        <div dangerouslySetInnerHTML={createMarkup(student.context_research)} />
+        <h2>Technical Details</h2>
+        <div
+          dangerouslySetInnerHTML={createMarkup(student.technical_details)}
+        />
+      </TextSection>
+
+      {student.slide_show
+        .slice(1, student.slide_show.length - 2)
+        .map((image) => (
+          <ImageWithCaption key={image.src} image={image} />
+        ))}
+
+      <TextSection>
+        <h2>Research</h2>
+        <div dangerouslySetInnerHTML={createMarkup(student.context_research)} />
+        <h2>Technical Details</h2>
+        <div
+          dangerouslySetInnerHTML={createMarkup(student.technical_details)}
+        />
+      </TextSection>
+
+      <VimeoEmbed
+        vimeoVideoId={getVideoIdFromUrl(student.video_presentation_url)}
+      />
+
+      <TextSection>
+        <h2>Further Reading</h2>
+        <div dangerouslySetInnerHTML={createMarkup(student.further_reading)} />
+      </TextSection>
 
       <ul>
-        <li>Advisor: {student.advisor_name}</li>
         <li>
-          Topics:
+          Tags:
           <ul>
             {student.tags.map((topic) => (
               <li key={topic.slug}>
@@ -72,22 +146,6 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
           </ul>
         </li>
       </ul>
-      <VimeoEmbed
-        vimeoVideoId={getVideoIdFromUrl(student.video_presentation_url)}
-      />
-      <h3>Slide show:</h3>
-      <ul>
-        {student.slide_show.map((slide) => (
-          <figure key={slide.src}>
-            <img src={slide.src} alt={slide.alt} title={slide.title}></img>
-            <figcaption>{slide.caption}</figcaption>
-          </figure>
-        ))}
-      </ul>
-      <h3>Further Reading:</h3>
-      <div
-        dangerouslySetInnerHTML={createMarkup(student.further_reading)}
-      ></div>
     </Container>
   );
 };
