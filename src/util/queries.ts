@@ -1,5 +1,5 @@
 // {"name":"Performance","slug":"performance"},{"name":"Society","slug":"society"}]
-import { IStudentSummary, TopicDict } from "../types";
+import { IStudentSummary, TopicDict } from "types";
 
 export const getTopics = (students: IStudentSummary[]): TopicDict => {
   const result: TopicDict = {};

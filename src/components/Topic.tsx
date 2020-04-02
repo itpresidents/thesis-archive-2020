@@ -1,7 +1,7 @@
 import React from "react";
-import StudentCards from "./components/StudentCards";
+import StudentCards from "./StudentCards";
 import { RouteComponentProps } from "@reach/router";
-import { IStudentSummary, TopicDict } from "./types";
+import { IStudentSummary, TopicDict } from "types";
 
 interface ITopicProps extends RouteComponentProps {
   students: IStudentSummary[] | undefined;

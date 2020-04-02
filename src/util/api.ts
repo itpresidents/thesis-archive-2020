@@ -1,6 +1,6 @@
 import axios from "axios";
-import * as config from "../config";
-import { IStudentApi, IStudentDetails, IStudentSummary } from "../types";
+import * as config from "config";
+import { IStudentApi, IStudentDetails, IStudentSummary } from "types";
 
 export const getAllStudents = () => getApi().getAllStudents();
 export const getStudent = (studentId: string) => getApi().getStudent(studentId);

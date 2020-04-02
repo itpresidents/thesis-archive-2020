@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { IStudentDetails } from "./types";
-import { getVideoIdFromUrl } from "./util/queries";
-import * as api from "./util/api";
+import { IStudentDetails } from "types";
+import { getVideoIdFromUrl } from "util/queries";
+import * as api from "util/api";
 import VimeoEmbed from "./VimeoEmbed";
 
 const VideoDetail = ({ student }: { student: IStudentDetails }) => (

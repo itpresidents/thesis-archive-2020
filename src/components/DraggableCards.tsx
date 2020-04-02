@@ -8,8 +8,8 @@ import {
   SmoothVector,
   scaleVector,
   multiplyElementWise,
-} from "../util/vector";
-import Student from "../Student";
+} from "util/vector";
+import Student from "./Student";
 import VisibilitySensor from "react-visibility-sensor";
 
 interface IStudentsProps extends RouteComponentProps {

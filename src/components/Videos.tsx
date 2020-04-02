@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "@reach/router";
 import { Row, Col } from "react-bootstrap";
 
-import { schedule } from "./scrapedSchedules/schedule-2018.json";
+import { schedule } from "scrapedSchedules/schedule-2018.json";
 import {
   VideoScheduleRowContents,
   VideoScheduleStudent,
   IStudentSummary,
-} from "./types";
-import { getStudentIdFromSlug, selectRandom } from "./util/queries";
+} from "types";
+import { getStudentIdFromSlug, selectRandom } from "util/queries";
 import Video from "./Video";
 import cx from "classnames";
 

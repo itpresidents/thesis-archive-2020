@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, RouteComponentProps } from "@reach/router";
-import { TopicDict } from "./types";
+import { TopicDict } from "types";
 
 interface ITopicsProps extends RouteComponentProps {
   topics: TopicDict;

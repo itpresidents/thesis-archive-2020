@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import * as api from "./util/api";
-import "./scss/styles.scss";
+import * as api from "util/api";
+import "scss/styles.scss";
 import Home from "./Home";
 import Student from "./Student";
 import Topic from "./Topic";
 import { Router } from "@reach/router";
-import * as queries from "./util/queries";
-import { IStudentSummary } from "./types";
-import Header from "./components/Header";
+import * as queries from "util/queries";
+import { IStudentSummary } from "types";
+import Header from "./Header";
 import Videos from "./Videos";
 
 interface IAppProps {

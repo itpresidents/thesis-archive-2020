@@ -1,9 +1,9 @@
 import React from "react";
-import StudentCards from "./components/StudentCards";
+import StudentCards from "./StudentCards";
 import Topics from "./Topics";
 import { RouteComponentProps } from "@reach/router";
-import { IStudentSummary, TopicDict } from "./types";
-import DraggableCards from "./components/DraggableCards";
+import { IStudentSummary, TopicDict } from "types";
+import DraggableCards from "./DraggableCards";
 
 interface IHomeProps extends RouteComponentProps {
   students: IStudentSummary[] | undefined;
