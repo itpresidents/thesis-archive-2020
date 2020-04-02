@@ -3,7 +3,12 @@ import { Link, RouteComponentProps } from "@reach/router";
 import { IStudentSummary } from "../types";
 import { useSpring, animated, to, config, SpringValue } from "react-spring";
 import { useDrag } from "react-use-gesture";
-import { addVector, scaleVector, multiplyElementWise } from "../util/vector";
+import {
+  addVector,
+  SmoothVector,
+  scaleVector,
+  multiplyElementWise,
+} from "../util/vector";
 import Student from "../Student";
 import VisibilitySensor from "react-visibility-sensor";
 
@@ -14,6 +19,7 @@ interface IStudentsProps extends RouteComponentProps {
 const matrixShape: number[] = [800, 800];
 const cardSize: number[] = [240, 360];
 const windowSizeInCards = [14, 6];
+const smoother = new SmoothVector();
 
 const initializeMatrix = (
   students: IStudentSummary[] | undefined
@@ -137,6 +143,10 @@ const DraggableCards = ({ students }: IStudentsProps) => {
 
   const bind = useDrag(
     ({ down, movement: xy, velocity, direction }) => {
+      //smooth the direction
+      direction = smoother.smooth(direction, 8) as typeof direction;
+      // if mouse is up, use the momentum and direction of last several frame to send the destination further away.
+      xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
       set({
         x: xy[0],
         y: xy[1],
