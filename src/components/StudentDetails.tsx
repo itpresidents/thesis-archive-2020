@@ -8,7 +8,7 @@ import {
   IStudentSummary,
   IFeaturedImage,
   IImage,
-} from "../types";
+} from "types";
 import { Link, RouteComponentProps } from "@reach/router";
 import { getStudentIdFromSlug, isNumber } from "util/queries";
 import cx from "classnames";
