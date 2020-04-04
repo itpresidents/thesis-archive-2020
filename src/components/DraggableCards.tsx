@@ -12,36 +12,35 @@ import {
 import shuffle from "lodash.shuffle";
 import { cardSize } from "../config";
 import StudentCard from "./StudentCard";
+import { usePrevious } from "../util/usePrevious";
 
-interface IStudentsProps extends RouteComponentProps {
+interface IDraggableCardsProps extends RouteComponentProps {
   students?: IStudentSummary[];
+  width: number;
+  height: number;
 }
 
 const matrixShape: number[] = [800, 800];
-
-// responsive matrix
-const windowSizeInCards = [
-  (Math.ceil(window.innerWidth / (cardSize[0] * 2)) + 4) * 2,
-  (Math.ceil(window.innerHeight / (cardSize[1] * 2)) + 1) * 2,
-];
-console.log(windowSizeInCards);
 const smoother = new SmoothVector();
-
-const halfWindowSizeInCards = scaleVector(windowSizeInCards, 0.5) as [
-  number,
-  number
-];
 
 const getCardsInMatrixToShow = (
   matrixX: number,
   matrixY: number,
   prevCards: CardToShow[],
-  students: IStudentSummary[]
+  students: IStudentSummary[],
+  width: number,
+  height: number
 ): CardToShow[] => {
-  const startX = matrixX - halfWindowSizeInCards[0];
-  const endX = matrixX + halfWindowSizeInCards[0];
-  const startY = matrixY - halfWindowSizeInCards[1];
-  const endY = matrixY + halfWindowSizeInCards[1];
+  // responsive matrix
+  const windowSizeInCards = [
+    (Math.ceil(width / (cardSize[0] * 2)) + 2) * 2,
+    Math.ceil(height / (cardSize[1] * 2)) * 2,
+  ];
+  console.log(windowSizeInCards);
+  const startX = matrixX - windowSizeInCards[0];
+  const endX = matrixX + 2;
+  const startY = matrixY - windowSizeInCards[1];
+  const endY = matrixY + 2;
   const studentsInPrevView: Record<
     number,
     Record<number, IStudentSummary>
@@ -107,31 +106,50 @@ const getCardsInMatrixToShow = (
   return result;
 };
 
-const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
-  number,
-  number
-] => {
-  const [cardWidth, cardHeight] = cardSize;
-  return [Math.floor(centerX / cardWidth), Math.floor(centerY / cardHeight)];
-};
-
 interface Position {
   x: number;
   y: number;
 }
 
-const DraggableCards = ({ students }: IStudentsProps) => {
+const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
+  number,
+  number
+] => {
+  const [cardWidth, cardHeight] = cardSize;
+  return [Math.ceil(centerX / cardWidth), Math.ceil(centerY / cardHeight)];
+};
+
+const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
   const windowSize = multiplyElementWise(matrixShape, cardSize) as [
     number,
     number
   ];
   const [startX, startY] = scaleVector(windowSize, 0.5);
-
-  const [position, set] = useSpring<Position>(() => ({ x: startX, y: startY }));
+  const [position, setSpring] = useSpring<Position>(() => ({
+    x: startX,
+    y: startY,
+  }));
 
   const [matrixXy, setMatrixCenterXy] = useState<[number, number]>(
     toPositionInMatrix([startX, startY])
   );
+
+  const prevWidth = usePrevious(width);
+  const prevHeight = usePrevious(height);
+
+  useEffect(() => {
+    const xy = [
+      position.x.getValue() + (width - prevWidth!) / 2,
+      position.y.getValue() + (height - prevHeight!) / 2,
+    ];
+    setSpring({
+      x: xy[0],
+      y: xy[1],
+      onFrame: (xy) => {
+        setMatrixCenterXy(toPositionInMatrix([xy.x, xy.y]));
+      },
+    });
+  }, [width, height]);
 
   const bind = useDrag(
     ({ down, movement: xy, velocity, direction }) => {
@@ -139,16 +157,18 @@ const DraggableCards = ({ students }: IStudentsProps) => {
       direction = smoother.smooth(direction, 8) as typeof direction;
       // if mouse is up, use the momentum and direction of last several frame to send the destination further away.
       xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
-      set({
+      setSpring({
         x: xy[0],
         y: xy[1],
+        immediate: down,
         config: {
           velocity: scaleVector(direction, velocity * 1000),
           decay: false,
         },
+        onFrame: (xy) => {
+          setMatrixCenterXy(toPositionInMatrix([xy.x, xy.y]));
+        },
       });
-
-      setMatrixCenterXy(toPositionInMatrix(xy as [number, number]));
     },
     {
       initial: () => [position.x.getValue(), position.y.getValue()],
@@ -169,6 +189,8 @@ const DraggableCards = ({ students }: IStudentsProps) => {
             matrixX={matrixXy[0]}
             matrixY={matrixXy[1]}
             students={students}
+            width={width}
+            height={height}
           />
         </animated.div>
       </div>
@@ -180,34 +202,45 @@ interface ICardsProps {
   students: IStudentSummary[];
   matrixX: number;
   matrixY: number;
+  width: IDraggableCardsProps["width"];
+  height: IDraggableCardsProps["height"];
 }
 
-const Cards = React.memo(({ students, matrixX, matrixY }: ICardsProps) => {
-  const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
-  useEffect(() => {
-    if (!students) return;
-    setInViewportList((prevState) =>
-      getCardsInMatrixToShow(matrixX, matrixY, prevState, students)
+const Cards = React.memo(
+  ({ students, matrixX, matrixY, width, height }: ICardsProps) => {
+    const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
+    useEffect(() => {
+      if (!students) return;
+      setInViewportList((prevState) =>
+        getCardsInMatrixToShow(
+          matrixX,
+          matrixY,
+          prevState,
+          students,
+          width,
+          height
+        )
+      );
+    }, [matrixX, matrixY, students, width, height]);
+
+    if (!students) return null;
+
+    return (
+      <>
+        {inViewPortList.map(({ student, matrixX: x, matrixY: y }) => {
+          /* Since Each Student Card is wrapped in React.memo - it will only be re-rendered when matrixXy values change */
+          return (
+            <StudentCard
+              key={`${student.student_id}_${x}_${y}`}
+              student={student}
+              matrixX={x}
+              matrixY={y}
+            />
+          );
+        })}
+      </>
     );
-  }, [matrixX, matrixY, students]);
-
-  if (!students) return null;
-
-  return (
-    <>
-      {inViewPortList.map(({ student, matrixX: x, matrixY: y }) => {
-        /* Since Each Student Card is wrapped in React.memo - it will only be re-rendered when matrixXy values change */
-        return (
-          <StudentCard
-            key={`${student.student_id}_${x}_${y}`}
-            student={student}
-            matrixX={x}
-            matrixY={y}
-          />
-        );
-      })}
-    </>
-  );
-});
+  }
+);
 
 export default DraggableCards;

@@ -34,7 +34,10 @@ const StudentCard = React.memo(
             style={{
               height: height,
             }}
-          ></div>
+          >
+            {/* <h1>{x}</h1>
+            <h1>{y}</h1> */}
+          </div>
           <div className="card-info mt-2">
             <h3>{student.project_title}</h3>
             <h5>{student.student_name}</h5>
