@@ -1,7 +1,31 @@
+@import "./typography.scss";
 @import "./variables.scss";
 @import "./keyframes.scss";
 @import "./mix-ins.scss";
 @import "~bootstrap/scss/bootstrap.scss";
+
+:root {
+  font-size: $font-size-root;
+}
+
+h1,
+h2,
+h3 {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 3.5em;
+}
+
+h2 {
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1em;
+}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -26,12 +50,6 @@ body {
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-h1,
-h2,
-h3 {
-  text-transform: uppercase;
 }
 
 #header2020-bg {
