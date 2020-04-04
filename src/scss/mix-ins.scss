@@ -28,11 +28,11 @@ $cursor-activated-hi: "../images/cursors/cursor-activated@2x.png";
 }
 
 @mixin custom-cursor-activated {
-  cursor: url($cursor-activated-lo) 22.5 22.5, pointer;
+  cursor: url($cursor-activated-lo) 14.5 14.5, pointer;
   cursor: -webkit-image-set(
         url($cursor-activated-lo) 1x,
         url($cursor-activated-hi) 2x
       )
-      22.5 22.5,
+      14.5 14.5,
     pointer;
 }
