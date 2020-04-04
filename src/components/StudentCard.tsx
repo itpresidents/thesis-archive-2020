@@ -26,7 +26,9 @@ const StudentCard = React.memo(
           height: height,
           left: `${offsets[0]}px`,
           top: `${offsets[1]}px`,
-          backgroundImage: `url(${student.portfolio_icon.src})`,
+          backgroundImage: `url(${
+            student.thumbnail_image && student.thumbnail_image.src
+          })`,
         }}
       >
         <Link to={`/students/${student.student_id}`}>
@@ -39,13 +41,13 @@ const StudentCard = React.memo(
             <h1>{y}</h1> */}
           </div>
           <div className="card-info mt-2">
-            <h3>{student.project_title}</h3>
+            <h3>{student.title}</h3>
             <h5>{student.student_name}</h5>
             <p>
-              {student.topics.map((topic, index) =>
-                index === student.topics.length - 1
-                  ? topic.name.toUpperCase()
-                  : topic.name.toUpperCase() + ", "
+              {student.tags.map((tag, index) =>
+                index === student.tags.length - 1
+                  ? tag.name.toUpperCase()
+                  : tag.name.toUpperCase() + ", "
               )}
             </p>
           </div>

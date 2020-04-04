@@ -10,9 +10,9 @@ import {
   multiplyElementWise,
 } from "util/vector";
 import shuffle from "lodash.shuffle";
-import { cardSize } from "../config";
+import { cardSize } from "config";
 import StudentCard from "./StudentCard";
-import { usePrevious } from "../util/usePrevious";
+import { usePrevious } from "util/usePrevious";
 
 interface IDraggableCardsProps extends RouteComponentProps {
   students?: IStudentSummary[];

@@ -34,7 +34,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "scrapeSchedule": "ts-node  -O '{\"module\": \"commonjs\"}' ./scripts/scrapeSchedule"
+    "scrapeSchedule": "ts-node  -O '{\"module\": \"commonjs\"}' ./scripts/scrapeSchedule",
+    "scrapeStudentsJson": "ts-node  -O '{\"module\": \"commonjs\"}' ./scripts/scrapeStudents2019Json"
   },
   "eslintConfig": {
     "extends": "react-app"

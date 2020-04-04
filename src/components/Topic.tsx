@@ -14,8 +14,8 @@ const Topic = ({ students, topicSlug, topics }: ITopicProps) => {
     return <div>Loading...</div>;
   }
 
-  const studentsWithTopic = students.filter(({ topics }) =>
-    topics.some(({ slug }) => slug === topicSlug)
+  const studentsWithTopic = students.filter(({ tags }) =>
+    tags.some(({ slug }) => slug === topicSlug)
   );
 
   const topicName = topics[topicSlug];

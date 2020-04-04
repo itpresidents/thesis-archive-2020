@@ -1,4 +1,4 @@
-export interface ITopic {
+export interface ITag {
   slug: string;
   name: string;
 }
@@ -9,11 +9,17 @@ export interface IStudentSummary {
   student_id: string;
   student_name: string;
   student_slug: string;
-  advisor_slug: string;
-  topics: ITopic[];
-  project_title: string;
-  project_question: string;
-  portfolio_icon: Image;
+  advisor_name: string;
+  title: string;
+  thesis_statement: string;
+  abstract: string;
+  context_research: string;
+  thumbnail_image: IImage;
+  headshot_image: IImage;
+  slide_show: IImage[];
+  tags: ITag[];
+  video_presentation_url: string;
+  video_documentation_url: string;
 }
 
 export interface IFeaturedImage {
@@ -22,7 +28,7 @@ export interface IFeaturedImage {
   title: string;
 }
 
-export interface Image {
+export interface IImage {
   src: string;
   alt: string;
   title: string;
@@ -30,12 +36,9 @@ export interface Image {
 }
 
 export interface IStudentDetails extends IStudentSummary {
-  featured_image: IFeaturedImage[];
-  advisor_name: string;
-  slide_show: Image[];
-  short_description: string;
+  technical_details: string;
   further_reading: string;
-  video_presentation_url: string;
+  project_url: string;
 }
 
 export interface IStudentApi {
