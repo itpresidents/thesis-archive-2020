@@ -16,13 +16,12 @@ const getOffset = (xy: number[], cardSize: number[]): number[] =>
 const StudentCard = React.memo(
   ({ student, matrixX: x, matrixY: y }: IStudentCardProps) => {
     const offsets = getOffset([x, y], cardSize);
-    const width = `${cardSize[0] - 20}px`;
+    const width = `${cardSize[0] - 24}px`;
     const height = `${cardSize[1] - 120}px`;
     return (
       <div
-        className="student-card shadow"
+        className="student-card position-absolute"
         style={{
-          position: "absolute",
           width: width,
           height: height,
           left: `${offsets[0]}px`,
@@ -32,45 +31,18 @@ const StudentCard = React.memo(
       >
         <Link to={`/students/${student.student_id}`}>
           <div
+            className="card-info mt-2 position-relative"
             style={{
-              height: height,
-            }}
-          ></div>
-          <div
-            className="mt-2"
-            style={{
-              height: `${100}px`,
+              top: height,
             }}
           >
-            <h3
-              style={{
-                fontSize: "16px",
-                color: "black",
-                fontWeight: 700,
-              }}
-            >
-              {student.project_title}
-            </h3>
-            <h5
-              style={{
-                fontSize: "13px",
-                color: "black",
-                fontWeight: 700,
-              }}
-            >
-              {student.student_name}
-            </h5>
-            <p
-              style={{
-                fontSize: "9px",
-                color: "gray",
-                fontWeight: 500,
-              }}
-            >
+            <h3>{student.project_title}</h3>
+            <h5>{student.student_name}</h5>
+            <p>
               {student.topics.map((topic, index) =>
                 index === student.topics.length - 1
-                  ? topic.name
-                  : topic.name + ", "
+                  ? topic.name.toUpperCase()
+                  : topic.name.toUpperCase() + ", "
               )}
             </p>
           </div>

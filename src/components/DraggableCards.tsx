@@ -158,21 +158,9 @@ const DraggableCards = ({ students }: IStudentsProps) => {
     <>
       <div
         {...bind()}
-        style={{
-          position: "relative",
-          width: "100vw",
-          height: "100vh",
-          overflow: "hidden",
-        }}
+        className="position-relative vw-100 vh-100 overflow-hidden"
       >
-        <animated.div
-          style={{
-            position: "absolute",
-            width: windowSize[0],
-            height: windowSize[1],
-            ...position,
-          }}
-        >
+        <animated.div style={{ ...position }}>
           {/* Since Cards are wrapped in React.memo - they will only be re-rendered when matrixXy values change */}
           <Cards
             matrixX={matrixXy[0]}
