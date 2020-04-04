@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link, RouteComponentProps } from "@reach/router";
+import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, CardToShow } from "../types";
-import { useSpring, animated, to, config, SpringValue } from "react-spring";
+import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
 import {
   addVector,
@@ -10,7 +10,6 @@ import {
   multiplyElementWise,
 } from "util/vector";
 import { shuffle } from "lodash-es";
-import Student from "./Student";
 import { cardSize } from "../config";
 import StudentCard from "./StudentCard";
 
@@ -27,22 +26,6 @@ const windowSizeInCards = [
 ];
 console.log(windowSizeInCards);
 const smoother = new SmoothVector();
-
-const initializeMatrix = (
-  students: IStudentSummary[] | undefined
-): number[][] => {
-  const r: number[][] = [];
-  if (students) {
-    for (let i = 0; i < matrixShape[0]; i++) {
-      r.push(
-        Array.from({ length: matrixShape[1] }, () =>
-          Math.floor(Math.random() * students!.length)
-        )
-      );
-    }
-  }
-  return r;
-};
 
 const halfWindowSizeInCards = scaleVector(windowSizeInCards, 0.5) as [
   number,
@@ -209,22 +192,15 @@ interface ICardsProps {
 }
 
 const Cards = React.memo(({ students, matrixX, matrixY }: ICardsProps) => {
-  const [studentsMatrix, setStudentMatrix] = useState<number[][]>();
-
   const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
-
   useEffect(() => {
-    if (!studentsMatrix) return;
-    setInViewportList(
-      getCardsInMatrixToShow(matrixX, matrixY, inViewPortList, students)
+    if (!students) return;
+    setInViewportList((prevState) =>
+      getCardsInMatrixToShow(matrixX, matrixY, prevState, students)
     );
-  }, [matrixX, matrixY, studentsMatrix, students]);
+  }, [matrixX, matrixY, students]);
 
-  useEffect(() => {
-    setStudentMatrix(initializeMatrix(students));
-  }, [students]);
-
-  if (!studentsMatrix) return null;
+  if (!students) return null;
 
   return (
     <>

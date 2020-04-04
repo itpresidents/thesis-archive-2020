@@ -15,19 +15,16 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "classnames": "^2.2.6",
-    "konva": "^4.2.2",
     "lodash-es": "^4.17.15",
     "node-sass": "^4.13.1",
     "puppeteer": "^2.1.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.0",
     "react-dom": "^16.13.1",
-    "react-konva": "^16.12.0-0",
     "react-scripts": "3.4.1",
     "react-spring": "^9.0.0-beta.34",
     "react-use-gesture": "^7.0.0-beta.11",
-    "typescript": "~3.7.2",
-    "vec-la": "^1.5.0"
+    "typescript": "~3.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
