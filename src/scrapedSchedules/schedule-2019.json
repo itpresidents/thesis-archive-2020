@@ -1,0 +1,549 @@
+{
+  "schedule": [
+    {
+      "time": "10:00 AM",
+      "tuesday": {
+        "name": "Amitabh Shrivastava",
+        "slug": "amitabh-shrivastava"
+      },
+      "thursday": {
+        "name": "Lucas Chung",
+        "slug": "lucas-chung"
+      },
+      "friday": {
+        "name": "Mohammad Hafiyyandi",
+        "slug": "mohammad-hafiyyandi"
+      }
+    },
+    {
+      "time": "10:12 AM",
+      "tuesday": {
+        "name": "Adekemi Sijuwade",
+        "slug": "adekemi-sijuwade"
+      },
+      "wednesday": {
+        "name": "Kimberly Lin",
+        "slug": "kimberly-lin"
+      },
+      "thursday": {
+        "name": "Hadar Ben-Tzur",
+        "slug": "hadar-ben-tzur"
+      },
+      "friday": {
+        "name": "Stephanie Paige Chambers",
+        "slug": "stephanie-paige chambers"
+      }
+    },
+    {
+      "time": "10:24 AM",
+      "tuesday": {
+        "name": "Michael Blum",
+        "slug": "michael-blum"
+      },
+      "wednesday": {
+        "name": "Roland Arnoldt",
+        "slug": "roland-arnoldt"
+      },
+      "thursday": {
+        "name": "Beverly Chou",
+        "slug": "beverly-chou"
+      },
+      "friday": {
+        "name": "Xiran Yang",
+        "slug": "xiran-yang"
+      }
+    },
+    {
+      "time": "10:36 AM",
+      "tuesday": {
+        "name": "Krizia Fernando",
+        "slug": "krizia-fernando"
+      },
+      "wednesday": {
+        "name": "Nicolas Peña-Escarpentier",
+        "slug": "nicolas-peña-escarpentier"
+      },
+      "thursday": {
+        "name": "Arnav Wagh",
+        "slug": "arnav-wagh"
+      },
+      "friday": {
+        "name": "Marco Matteo Wylie",
+        "slug": "marco-matteo wylie"
+      }
+    },
+    {
+      "time": "10:48 AM",
+      "tuesday": {
+        "name": "Yu-Hao Ko",
+        "slug": "yu-hao-ko"
+      },
+      "wednesday": {
+        "name": "Daniel Castano",
+        "slug": "daniel-castano"
+      },
+      "thursday": {
+        "name": "Michael Fuller",
+        "slug": "michael-fuller"
+      },
+      "friday": {
+        "name": "Kellee Massey",
+        "slug": "kellee-massey"
+      }
+    },
+    {
+      "time": "11:00 AM",
+      "tuesday": {
+        "name": "Anita Mbabazi",
+        "slug": "anita-mbabazi"
+      },
+      "wednesday": {
+        "name": "Azalea FaghiVaseghi",
+        "slug": "azalea-faghivaseghi"
+      },
+      "thursday": {
+        "name": "Kaiche Hung",
+        "slug": "kaiche-hung"
+      },
+      "friday": {
+        "name": "Keerthana Pareddy",
+        "slug": "keerthana-pareddy"
+      }
+    },
+    {
+      "time": "11:12 AM",
+      "tuesday": {
+        "name": "Assel Dmitriyeva",
+        "slug": "assel-dmitriyeva"
+      },
+      "wednesday": {
+        "name": "Dominick Chang",
+        "slug": "dominick-chang"
+      },
+      "thursday": {
+        "name": "Lin Zhang",
+        "slug": "lin-zhang"
+      },
+      "friday": {
+        "name": "Jason Yung",
+        "slug": "jason-yung"
+      }
+    },
+    {
+      "time": "11:24 AM",
+      "tuesday": {
+        "name": "Amena Hayat",
+        "slug": "amena-hayat"
+      },
+      "wednesday": {
+        "name": "Zohreh Zadbood",
+        "slug": "zohreh-zadbood"
+      },
+      "thursday": {
+        "name": "Dong (Phil) Yoo",
+        "slug": "dong-(phil) yoo"
+      },
+      "friday": {
+        "name": "Alexandra Lopez-Duarte",
+        "slug": "alexandra-lopez-duarte"
+      }
+    },
+    {
+      "time": "11:36 AM",
+      "tuesday": {
+        "name": "Meicheng Jia",
+        "slug": "meicheng-jia"
+      },
+      "wednesday": {
+        "name": "M.H. Rahmani",
+        "slug": "m.h.-rahmani"
+      },
+      "thursday": {
+        "name": "Yeonhee Lee",
+        "slug": "yeonhee-lee"
+      }
+    },
+    {
+      "time": "11:48 AM",
+      "tuesday": {
+        "name": "Erin Cooney",
+        "slug": "erin-cooney"
+      },
+      "wednesday": {
+        "name": "Roxanne Kim",
+        "slug": "roxanne-kim"
+      },
+      "thursday": {
+        "name": "Elizabeth Ferguson",
+        "slug": "elizabeth-ferguson"
+      },
+      "friday": {
+        "name": "Jiyao Zhang",
+        "slug": "jiyao-zhang"
+      }
+    },
+    {
+      "time": "12:00 PM",
+      "friday": {
+        "name": "Alan Peng",
+        "slug": "alan-peng"
+      }
+    },
+    {
+      "time": "12:12 PM",
+      "friday": {
+        "name": "Itay Niv",
+        "slug": "itay-niv"
+      }
+    },
+    {
+      "time": "12:24 PM",
+      "friday": {
+        "name": "Tong Wu ",
+        "slug": "tong-wu "
+      }
+    },
+    {
+      "time": "12:36 PM",
+      "friday": {
+        "name": "Simon Jensen",
+        "slug": "simon-jensen"
+      }
+    },
+    {
+      "time": "12:48 PM",
+      "friday": {
+        "name": "Yiyao Nie",
+        "slug": "yiyao-nie"
+      }
+    },
+    {
+      "time": "1:00 PM",
+      "tuesday": {
+        "name": "Isabella Vento",
+        "slug": "isabella-vento"
+      },
+      "wednesday": {
+        "name": "Vidia Anindhita",
+        "slug": "vidia-anindhita"
+      },
+      "thursday": {
+        "name": "Jarone Wright",
+        "slug": "jarone-wright"
+      },
+      "friday": {
+        "name": "Anthony Bui",
+        "slug": "anthony-bui"
+      }
+    },
+    {
+      "time": "1:12 PM",
+      "tuesday": {
+        "name": "Nicolas Sanin",
+        "slug": "nicolas-sanin"
+      },
+      "wednesday": {
+        "name": "James Huang",
+        "slug": "james-huang"
+      },
+      "thursday": {
+        "name": "Alice Sun",
+        "slug": "alice-sun"
+      }
+    },
+    {
+      "time": "1:24 PM",
+      "tuesday": {
+        "name": "Lauren Race",
+        "slug": "lauren-race"
+      },
+      "wednesday": {
+        "name": "Jim Schmitz",
+        "slug": "jim-schmitz"
+      },
+      "thursday": {
+        "name": "Sam Chasan",
+        "slug": "sam-chasan"
+      }
+    },
+    {
+      "time": "1:36 PM",
+      "tuesday": {
+        "name": "Nathier Fernandez",
+        "slug": "nathier-fernandez"
+      },
+      "wednesday": {
+        "name": "Yue (Effy) Fan",
+        "slug": "yue-(effy) fan"
+      },
+      "thursday": {
+        "name": "Ivy (Danxiaomeng) Huang",
+        "slug": "ivy-(danxiaomeng) huang"
+      }
+    },
+    {
+      "time": "1:48 PM",
+      "wednesday": {
+        "name": "Nick Threadgill Wallace",
+        "slug": "nick-threadgill wallace"
+      },
+      "thursday": {
+        "name": "Shreiya Chowdhary",
+        "slug": "shreiya-chowdhary"
+      }
+    },
+    {
+      "time": "2:00 PM",
+      "tuesday": {
+        "name": "Fanni Fazakas",
+        "slug": "fanni-fazakas"
+      },
+      "wednesday": {
+        "name": "Hau Yuan",
+        "slug": "hau-yuan"
+      }
+    },
+    {
+      "time": "2:12 PM",
+      "tuesday": {
+        "name": "Sandy Hsieh",
+        "slug": "sandy-hsieh"
+      },
+      "wednesday": {
+        "name": "Huiyi Chen",
+        "slug": "huiyi-chen"
+      },
+      "thursday": {
+        "name": "Ilana Pecis Bonder",
+        "slug": "ilana-pecis bonder"
+      }
+    },
+    {
+      "time": "2:24 PM",
+      "tuesday": {
+        "name": "William F. Hallett",
+        "slug": "william-f. hallett"
+      },
+      "thursday": {
+        "name": "Sam Hains",
+        "slug": "sam-hains"
+      }
+    },
+    {
+      "time": "2:36 PM",
+      "tuesday": {
+        "name": "Mengzhen Xiao",
+        "slug": "mengzhen-xiao"
+      },
+      "wednesday": {
+        "name": "Ayal Rosenberg",
+        "slug": "ayal-rosenberg"
+      },
+      "thursday": {
+        "name": "Sofia Suazo",
+        "slug": "sofia-suazo"
+      }
+    },
+    {
+      "time": "2:48 PM",
+      "tuesday": {
+        "name": "Mai Arakida Izsak",
+        "slug": "mai-arakida izsak"
+      },
+      "wednesday": {
+        "name": "Camille Weins",
+        "slug": "camille-weins"
+      },
+      "thursday": {
+        "name": "Alden Jones",
+        "slug": "alden-jones"
+      }
+    },
+    {
+      "time": "3:00 PM",
+      "tuesday": {
+        "name": "Zahra Khosravi",
+        "slug": "zahra-khosravi"
+      },
+      "wednesday": {
+        "name": "Lu Wang",
+        "slug": "lu-wang"
+      },
+      "thursday": {
+        "name": "Barak Hemou",
+        "slug": "barak-hemou"
+      }
+    },
+    {
+      "time": "3:12 PM",
+      "tuesday": {
+        "name": "Xiao (Shawn) Ma",
+        "slug": "xiao-(shawn) ma"
+      },
+      "wednesday": {
+        "name": "Heng Tang",
+        "slug": "heng-tang"
+      },
+      "thursday": {
+        "name": "Ella Chung",
+        "slug": "ella-chung"
+      }
+    },
+    {
+      "time": "3:24 PM",
+      "tuesday": {
+        "name": "Terrick Gutierrez",
+        "slug": "terrick-gutierrez"
+      },
+      "wednesday": {
+        "name": "Camilla Padgitt-Coles",
+        "slug": "camilla-padgitt-coles"
+      },
+      "thursday": {
+        "name": "Ellen Nickles",
+        "slug": "ellen-nickles"
+      }
+    },
+    {
+      "time": "3:36 PM",
+      "wednesday": {
+        "name": "Joohyun Park",
+        "slug": "joohyun-park"
+      },
+      "thursday": {
+        "name": "Brandon Newberg",
+        "slug": "brandon-newberg"
+      }
+    },
+    {
+      "time": "3:48 PM",
+      "tuesday": {
+        "name": "Jillian Zhong",
+        "slug": "jillian-zhong"
+      },
+      "wednesday": {
+        "name": "Aidan Nelson",
+        "slug": "aidan-nelson"
+      }
+    },
+    {
+      "time": "4:00 PM",
+      "tuesday": {
+        "name": "Haiyi Huang",
+        "slug": "haiyi-huang"
+      },
+      "wednesday": {
+        "name": "Chengtao Yi",
+        "slug": "chengtao-yi"
+      },
+      "thursday": {
+        "name": "Chengchao Zhu",
+        "slug": "chengchao-zhu"
+      }
+    },
+    {
+      "time": "4:12 PM",
+      "tuesday": {
+        "name": "Namsoo Kim",
+        "slug": "namsoo-kim"
+      },
+      "thursday": {
+        "name": "Chelsea Chen",
+        "slug": "chelsea-chen"
+      }
+    },
+    {
+      "time": "4:24 PM",
+      "tuesday": {
+        "name": "Chian Huang",
+        "slug": "chian-huang"
+      },
+      "wednesday": {
+        "name": "Max Horwich",
+        "slug": "max-horwich"
+      },
+      "thursday": {
+        "name": "Asha Veeraswamy",
+        "slug": "asha-veeraswamy"
+      }
+    },
+    {
+      "time": "4:36 PM",
+      "tuesday": {
+        "name": "Ridwan Madon",
+        "slug": "ridwan-madon"
+      },
+      "wednesday": {
+        "name": "Katya Rozanova",
+        "slug": "katya-rozanova"
+      },
+      "thursday": {
+        "name": "Oren Shoham",
+        "slug": "oren-shoham"
+      }
+    },
+    {
+      "time": "4:48 PM",
+      "tuesday": {
+        "name": "Jenna Xu",
+        "slug": "jenna-xu"
+      },
+      "wednesday": {
+        "name": "You Jin Chung",
+        "slug": "you-jin chung"
+      },
+      "thursday": {
+        "name": "Rebecca Skurnik",
+        "slug": "rebecca-skurnik"
+      }
+    },
+    {
+      "time": "5:00 PM",
+      "tuesday": {
+        "name": "Yipeng (Eva) Chen",
+        "slug": "yipeng-(eva) chen"
+      },
+      "wednesday": {
+        "name": "Caleb Ferguson",
+        "slug": "caleb-ferguson"
+      },
+      "thursday": {
+        "name": "Yang Yang",
+        "slug": "yang-yang"
+      }
+    },
+    {
+      "time": "5:12 PM",
+      "tuesday": {
+        "name": "Gabriel Goncalves",
+        "slug": "gabriel-goncalves"
+      },
+      "wednesday": {
+        "name": "Luna Olavarria Gallegos",
+        "slug": "luna-olavarria gallegos"
+      },
+      "thursday": {
+        "name": "Dan Oved",
+        "slug": "dan-oved"
+      }
+    },
+    {
+      "time": "5:24 PM",
+      "wednesday": {
+        "name": "April Liu",
+        "slug": "april-liu"
+      },
+      "thursday": {
+        "name": "Carrie Wang",
+        "slug": "carrie-wang"
+      }
+    },
+    {
+      "time": "5:36 PM",
+      "wednesday": {
+        "name": "Jesse Simpson",
+        "slug": "jesse-simpson"
+      }
+    }
+  ]
+}

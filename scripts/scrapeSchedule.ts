@@ -15,40 +15,48 @@ const scrapeSchedule = async (url: string, destinationFileName: string) => {
   console.log('scraping schedule from ', url);
 
   const evalResults: VideoScheduleRowContents[] | null = await page.evaluate(() => {
-    const parseStudentColumn = (column: HTMLTableCellElement): VideoScheduleStudent | undefined => {
+    const parseStudentColumn = (column: HTMLTableCellElement | undefined): VideoScheduleStudent | undefined => {
+      if (!column) return undefined;
       const link = column.querySelector('a');
 
       if (!link) return;
 
-      const linkParts = link.href.split('/');
-      const slug = linkParts[linkParts.length - 1];
+
+      const name = link.innerText;
+      
+      const slug = name.toLowerCase().replace(' ', '-');
 
       return {
-        name: link.innerText,
+        name,
         slug
       }
     };
 
     const parseContents = (rowElement: Element): VideoScheduleRowContents => {
       const columns = rowElement.querySelectorAll('td');
+      const numColumns = columns.length;
 
+      const tuesdayColumn = numColumns === 5 ? 1 : -1;
+      const wednesdayColumn = numColumns === 5 ? 2 : -1;
+      const thursdayColumn = numColumns === 5 ? 3 : -1;
+      const fridayColumn = numColumns === 5 ? 4 : 1;
 
       return {
         time: columns[0].innerText,
-        tuesday: parseStudentColumn(columns[1]),
-        wednesday: parseStudentColumn(columns[2]),
-        thursday: parseStudentColumn(columns[3]),
-        friday: parseStudentColumn(columns[4])
+        tuesday: parseStudentColumn(columns[tuesdayColumn]),
+        wednesday: parseStudentColumn(columns[wednesdayColumn]),
+        thursday: parseStudentColumn(columns[thursdayColumn]),
+        friday: parseStudentColumn(columns[fridayColumn])
       }
     };
 
     const dailyScheduleTable = document.querySelector(
-      "#schedule-holder table:last-child"
+      "article table:last-child"
     );
 
     if (!dailyScheduleTable) return null;
 
-    const rows = dailyScheduleTable.querySelectorAll('tbody tr');
+    const rows = dailyScheduleTable.querySelectorAll('tbody tr:not(:first-child)');
 
     const rowContents: VideoScheduleRowContents[] = [];
 
@@ -59,7 +67,7 @@ const scrapeSchedule = async (url: string, destinationFileName: string) => {
     return rowContents;
   });
 
-  const desinationFile = resolve(join(__dirname, '../public/', destinationFileName));
+  const desinationFile = resolve(join(__dirname, '../src/scrapedSchedules/', destinationFileName));
 
   console.log('writing schedule to ', desinationFile);
 
