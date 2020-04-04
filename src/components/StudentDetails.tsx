@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FunctionComponent } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Container, Row, Col, Figure, Nav } from "react-bootstrap";
 
@@ -9,13 +9,8 @@ import {
   IFeaturedImage,
   IImage,
 } from "../types";
-import { Link, RouteComponentProps, redirectTo } from "@reach/router";
-import {
-  getStudentIdFromSlug,
-  getVideoIdFromUrl,
-  isNumber,
-} from "util/queries";
-import VimeoEmbed from "./VimeoEmbed";
+import { Link, RouteComponentProps } from "@reach/router";
+import { getStudentIdFromSlug, isNumber } from "util/queries";
 import cx from "classnames";
 
 const createMarkup = (html: string) => ({ __html: html });
@@ -192,9 +187,7 @@ const StudentByIdOrSlug = ({
 
   const studentId = getStudentIdFromSlug(students, studentIdOrSlug);
 
-  redirectTo(`/students/${studentId}`);
-
-  return null;
+  return <Student studentId={studentId} />;
 };
 
 export default StudentByIdOrSlug;
