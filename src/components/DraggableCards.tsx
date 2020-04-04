@@ -9,6 +9,7 @@ import {
   scaleVector,
   multiplyElementWise,
 } from "util/vector";
+import { shuffle } from "lodash-es";
 import Student from "./Student";
 import VisibilitySensor from "react-visibility-sensor";
 
@@ -17,8 +18,22 @@ interface IStudentsProps extends RouteComponentProps {
 }
 
 const matrixShape: number[] = [800, 800];
-const cardSize: number[] = [240, 360];
-const windowSizeInCards = [14, 6];
+
+// responsive card size
+const isLandscape: boolean = window.innerWidth >= window.innerHeight;
+const cardWidth: number = isLandscape
+  ? window.innerWidth / 6
+  : window.innerHeight / 4;
+const cardHeight: number = cardWidth * 1.5;
+const cardSize: number[] = [cardWidth, cardHeight];
+// const windowSizeInCards = [14, 6];
+
+// responsive matrix
+const windowSizeInCards = [
+  (Math.ceil(window.innerWidth / (cardSize[0] * 2)) + 4) * 2,
+  (Math.ceil(window.innerHeight / (cardSize[1] * 2)) + 1) * 2,
+];
+console.log(windowSizeInCards);
 const smoother = new SmoothVector();
 
 const initializeMatrix = (
@@ -49,6 +64,10 @@ interface CardToShow {
   matrixY: number;
 }
 
+// const findStudentCardByMatrixPosition = (cards:CardToShow[], x:number, y:number):CardToShow => {
+
+// }
+
 const halfWindowSizeInCards = scaleVector(windowSizeInCards, 0.5) as [
   number,
   number
@@ -57,25 +76,72 @@ const halfWindowSizeInCards = scaleVector(windowSizeInCards, 0.5) as [
 const getCardsInMatrixToShow = (
   matrixX: number,
   matrixY: number,
-  studentsMatrix: number[][],
+  prevCards: CardToShow[],
   students: IStudentSummary[]
 ): CardToShow[] => {
   const startX = matrixX - halfWindowSizeInCards[0];
   const endX = matrixX + halfWindowSizeInCards[0];
   const startY = matrixY - halfWindowSizeInCards[1];
   const endY = matrixY + halfWindowSizeInCards[1];
-
+  let studentsInPrevView: Record<number, Record<number, IStudentSummary>> = {};
+  let studentsInNewView: Record<number, Record<number, IStudentSummary>> = {};
+  let studentsIdsInNewView: string[] = [];
+  let studentsNotInNewView: IStudentSummary[] = [];
   const result: CardToShow[] = [];
 
+  // prepare a matrix to remember previous cards;
+  for (let card of prevCards) {
+    if (studentsInPrevView[card.matrixX] === undefined)
+      studentsInPrevView[card.matrixX] = {};
+    studentsInPrevView[card.matrixX][card.matrixY] = card.student;
+  }
+
+  //add previous existed cards to a matrix;
   for (let x = startX; x < endX; x++) {
     for (let y = startY; y < endY; y++) {
+      if (
+        studentsInPrevView[x] !== undefined &&
+        studentsInPrevView[x][y] !== undefined
+      ) {
+        if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
+        studentsInNewView[x][y] = studentsInPrevView[x][y];
+        studentsIdsInNewView.push(studentsInPrevView[x][y].student_id);
+      }
+    }
+  }
+
+  for (let student of students) {
+    if (!studentsIdsInNewView.includes(student.student_id))
+      studentsNotInNewView.push(student);
+  }
+  studentsNotInNewView = shuffle(studentsNotInNewView);
+
+  // add new card
+  for (let x = startX; x < endX; x++) {
+    for (let y = startY; y < endY; y++) {
+      if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
+      if (studentsInNewView[x][y] === undefined) {
+        // if there's not enough data, just use students.
+        if (studentsNotInNewView.length < 1)
+          studentsNotInNewView = shuffle(students);
+        studentsInNewView[x][
+          y
+        ] = studentsNotInNewView.shift() as IStudentSummary;
+      }
+    }
+  }
+
+  // put cards to show into an array as result
+  for (let x in studentsInNewView) {
+    for (let y in studentsInNewView[x]) {
       result.push({
-        student: students[studentsMatrix[x][y]],
-        matrixX: x,
-        matrixY: y,
+        student: studentsInNewView[x][y],
+        matrixX: parseInt(x),
+        matrixY: parseInt(y),
       });
     }
   }
+  console.log(result);
 
   return result;
 };
@@ -88,7 +154,7 @@ const Cards = React.memo(({ students, matrixX, matrixY }: ICardsProps) => {
   useEffect(() => {
     if (!studentsMatrix) return;
     setInViewportList(
-      getCardsInMatrixToShow(matrixX, matrixY, studentsMatrix, students)
+      getCardsInMatrixToShow(matrixX, matrixY, inViewPortList, students)
     );
   }, [matrixX, matrixY, studentsMatrix, students]);
 
@@ -220,16 +286,16 @@ const StudentCard = React.memo(
           backgroundImage: `url(${student.portfolio_icon.src})`,
         }}
       >
-        <VisibilitySensor partialVisibility={true} delayedCall={true}>
-          <div
-            style={{
-              width: `${cardSize[0] - 20}px`,
-              height: `${cardSize[1] - 20}px`,
-              left: `0px`,
-              top: `0px`,
-            }}
-          ></div>
-        </VisibilitySensor>
+        {/* <VisibilitySensor partialVisibility={true} delayedCall={true}> */}
+        <div
+          style={{
+            width: `${cardSize[0] - 20}px`,
+            height: `${cardSize[1] - 20}px`,
+            left: `0px`,
+            top: `0px`,
+          }}
+        ></div>
+        {/* </VisibilitySensor> */}
       </div>
     );
   }
