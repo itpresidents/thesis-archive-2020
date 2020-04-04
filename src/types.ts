@@ -56,3 +56,9 @@ export interface VideoScheduleRowContents {
   thursday?: VideoScheduleStudent;
   friday?: VideoScheduleStudent;
 }
+
+export interface CardToShow {
+  student: IStudentSummary;
+  matrixX: number;
+  matrixY: number;
+}

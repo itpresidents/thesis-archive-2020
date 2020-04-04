@@ -22,9 +22,22 @@ body {
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  @include custom-cursor-default;
+  // universal default size;
+  font-size: medium;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+a {
+  &:hover {
+    @include custom-cursor-hover-clickable-item;
+  }
+
+  &:active {
+    @include custom-cursor-activated;
   }
 }
 
@@ -33,6 +46,10 @@ body {
   z-index: 10;
   width: 100vw;
   background-color: white;
+
+  h1 {
+    font-size: 4em;
+  }
 }
 
 #header2020-bg-animation {
@@ -81,4 +98,24 @@ body {
   height: 300px;
   display: inline-block;
   box-shadow: gray;
+
+  .card-info {
+    h3 {
+      font-size: 1em;
+      color: black;
+      font-weight: 700;
+    }
+
+    h5 {
+      font-size: 0.8em;
+      color: black;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 0.5em;
+      color: gray;
+      font-weight: 300;
+    }
+  }
 }

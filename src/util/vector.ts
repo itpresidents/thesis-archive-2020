@@ -62,7 +62,7 @@ export class SmoothVector {
   smooth(lastInput: number[], lookBack: number): number[] {
     this.inputs.push(lastInput);
     this.inputs = this.inputs.slice(
-      this.inputs.length - lookBack >= 0 ? this.inputs.length - lookBack : 0,
+      Math.max(this.inputs.length - lookBack, 0),
       this.inputs.length
     );
     let r = this.inputs[0];
