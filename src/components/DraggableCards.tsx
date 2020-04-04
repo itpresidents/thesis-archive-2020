@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, RouteComponentProps } from "@reach/router";
-import { IStudentSummary } from "../types";
+import { IStudentSummary, CardToShow } from "../types";
 import { useSpring, animated, to, config, SpringValue } from "react-spring";
 import { useDrag } from "react-use-gesture";
 import {
@@ -11,20 +11,14 @@ import {
 } from "util/vector";
 import { shuffle } from "lodash-es";
 import Student from "./Student";
+import { cardSize } from "../config";
+import StudentCard from "./StudentCard";
 
 interface IStudentsProps extends RouteComponentProps {
   students?: IStudentSummary[];
 }
 
 const matrixShape: number[] = [800, 800];
-
-// responsive card size
-const isLandscape: boolean = window.innerWidth >= window.innerHeight;
-const cardWidth: number = isLandscape
-  ? window.innerWidth / 6
-  : window.innerHeight / 4;
-const cardHeight: number = cardWidth * 1.5;
-const cardSize: number[] = [cardWidth, cardHeight];
 
 // responsive matrix
 const windowSizeInCards = [
@@ -49,18 +43,6 @@ const initializeMatrix = (
   }
   return r;
 };
-
-interface ICardsProps {
-  students: IStudentSummary[];
-  matrixX: number;
-  matrixY: number;
-}
-
-interface CardToShow {
-  student: IStudentSummary;
-  matrixX: number;
-  matrixY: number;
-}
 
 const halfWindowSizeInCards = scaleVector(windowSizeInCards, 0.5) as [
   number,
@@ -138,41 +120,6 @@ const getCardsInMatrixToShow = (
 
   return result;
 };
-
-const Cards = React.memo(({ students, matrixX, matrixY }: ICardsProps) => {
-  const [studentsMatrix, setStudentMatrix] = useState<number[][]>();
-
-  const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
-
-  useEffect(() => {
-    if (!studentsMatrix) return;
-    setInViewportList(
-      getCardsInMatrixToShow(matrixX, matrixY, inViewPortList, students)
-    );
-  }, [matrixX, matrixY, studentsMatrix, students]);
-
-  useEffect(() => {
-    setStudentMatrix(initializeMatrix(students));
-  }, [students]);
-
-  if (!studentsMatrix) return null;
-
-  return (
-    <>
-      {inViewPortList.map(({ student, matrixX: x, matrixY: y }) => {
-        /* Since Each Student Card is wrapped in React.memo - it will only be re-rendered when matrixXy values change */
-        return (
-          <StudentCard
-            key={`${student.student_id}_${x}_${y}`}
-            student={student}
-            matrixX={x}
-            matrixY={y}
-          />
-        );
-      })}
-    </>
-  );
-});
 
 const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
   number,
@@ -255,41 +202,45 @@ const DraggableCards = ({ students }: IStudentsProps) => {
   );
 };
 
-const getOffset = (xy: number[], cardSize: number[]): number[] =>
-  scaleVector(multiplyElementWise(xy, cardSize), -1);
-
-interface IStudentCardProps {
-  student: IStudentSummary;
+interface ICardsProps {
+  students: IStudentSummary[];
   matrixX: number;
   matrixY: number;
 }
 
-const StudentCard = React.memo(
-  ({ student, matrixX: x, matrixY: y }: IStudentCardProps) => {
-    const offsets = getOffset([x, y], cardSize);
-    return (
-      <div
-        className="student-card shadow"
-        style={{
-          position: "absolute",
-          width: `${cardSize[0] - 20}px`,
-          height: `${cardSize[1] - 20}px`,
-          left: `${offsets[0]}px`,
-          top: `${offsets[1]}px`,
-          backgroundImage: `url(${student.portfolio_icon.src})`,
-        }}
-      >
-        <div
-          style={{
-            width: `${cardSize[0] - 20}px`,
-            height: `${cardSize[1] - 20}px`,
-            left: `0px`,
-            top: `0px`,
-          }}
-        ></div>
-      </div>
+const Cards = React.memo(({ students, matrixX, matrixY }: ICardsProps) => {
+  const [studentsMatrix, setStudentMatrix] = useState<number[][]>();
+
+  const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
+
+  useEffect(() => {
+    if (!studentsMatrix) return;
+    setInViewportList(
+      getCardsInMatrixToShow(matrixX, matrixY, inViewPortList, students)
     );
-  }
-);
+  }, [matrixX, matrixY, studentsMatrix, students]);
+
+  useEffect(() => {
+    setStudentMatrix(initializeMatrix(students));
+  }, [students]);
+
+  if (!studentsMatrix) return null;
+
+  return (
+    <>
+      {inViewPortList.map(({ student, matrixX: x, matrixY: y }) => {
+        /* Since Each Student Card is wrapped in React.memo - it will only be re-rendered when matrixXy values change */
+        return (
+          <StudentCard
+            key={`${student.student_id}_${x}_${y}`}
+            student={student}
+            matrixX={x}
+            matrixY={y}
+          />
+        );
+      })}
+    </>
+  );
+});
 
 export default DraggableCards;

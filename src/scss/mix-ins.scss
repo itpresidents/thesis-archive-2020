@@ -1,0 +1,38 @@
+$cursor-default-lo: "../images/cursor-default.svg";
+$cursor-default-hi: "../images/cursor-default@2x.png";
+
+$cursor-hover-clickable-item-lo: "../images/cursor-hover-clickable-item.svg";
+$cursor-hover-clickable-item-hi: "../images/cursor-hover-clickable-item@2x.png";
+
+$cursor-activated-lo: "../images/cursore-activated.svg";
+$cursor-activated-hi: "../images/cursore-activated@2x.png";
+
+@mixin custom-cursor-default {
+  cursor: url($cursor-default-lo) 22.5 22.5, default;
+  cursor: -webkit-image-set(
+        url($cursor-default-lo) 1x,
+        url($cursor-default-hi) 2x
+      )
+      22.5 22.5,
+    default;
+}
+
+@mixin custom-cursor-hover-clickable-item {
+  cursor: url($cursor-hover-clickable-item-lo) 22.5 22.5, pointer;
+  cursor: -webkit-image-set(
+        url($cursor-hover-clickable-item-lo) 1x,
+        url($cursor-hover-clickable-item-hi) 2x
+      )
+      22.5 22.5,
+    pointer;
+}
+
+@mixin custom-cursor-activated {
+  cursor: url($cursor-activated-lo) 22.5 22.5, pointer;
+  cursor: -webkit-image-set(
+        url($cursor-activated-lo) 1x,
+        url($cursor-activated-hi) 2x
+      )
+      22.5 22.5,
+    pointer;
+}

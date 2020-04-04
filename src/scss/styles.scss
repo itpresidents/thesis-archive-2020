@@ -22,9 +22,20 @@ body {
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  @include custom-cursor-default;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+a {
+  &:hover {
+    @include custom-cursor-hover-clickable-item;
+  }
+
+  &:active {
+    @include custom-cursor-activated;
   }
 }
 
