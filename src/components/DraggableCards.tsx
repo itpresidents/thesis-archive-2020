@@ -9,7 +9,7 @@ import {
   scaleVector,
   multiplyElementWise,
 } from "util/vector";
-import { shuffle } from "lodash-es";
+import shuffle from "lodash.shuffle";
 import { cardSize } from "../config";
 import StudentCard from "./StudentCard";
 
@@ -42,9 +42,12 @@ const getCardsInMatrixToShow = (
   const endX = matrixX + halfWindowSizeInCards[0];
   const startY = matrixY - halfWindowSizeInCards[1];
   const endY = matrixY + halfWindowSizeInCards[1];
-  let studentsInPrevView: Record<number, Record<number, IStudentSummary>> = {};
-  let studentsInNewView: Record<number, Record<number, IStudentSummary>> = {};
-  let studentsIdsInNewView: string[] = [];
+  const studentsInPrevView: Record<
+    number,
+    Record<number, IStudentSummary>
+  > = {};
+  const studentsInNewView: Record<number, Record<number, IStudentSummary>> = {};
+  const studentsIdsInNewView: string[] = [];
   let studentsNotInNewView: IStudentSummary[] = [];
   const result: CardToShow[] = [];
 

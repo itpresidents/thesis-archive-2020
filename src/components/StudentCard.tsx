@@ -31,11 +31,11 @@ const StudentCard = React.memo(
       >
         <Link to={`/students/${student.student_id}`}>
           <div
-            className="card-info mt-2 position-relative"
             style={{
-              top: height,
+              height: height,
             }}
-          >
+          ></div>
+          <div className="card-info mt-2">
             <h3>{student.project_title}</h3>
             <h5>{student.student_name}</h5>
             <p>
