@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import * as api from "util/api";
 import "scss/styles.scss";
 import Home from "./Home";
-import Student from "./Student";
+import StudentDetails from "./StudentDetails";
 import Topic from "./Topic";
 import { Router } from "@reach/router";
 import * as queries from "util/queries";
@@ -22,7 +22,7 @@ const App = ({ students }: IAppProps) => {
       <Header />
       <Router>
         <Home path="/" students={students} topics={topics} />
-        <Student path="students/:studentIdOrSlug" students={students} />
+        <StudentDetails path="students/:studentIdOrSlug" students={students} />
         <Topic path="topics/:topicSlug" students={students} topics={topics} />
         <Videos path="videos" students={students} />
         <Videos path="videos/:studentSlug" students={students} />
