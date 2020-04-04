@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IStudentSummary } from "../types";
 import { cardSize } from "../config";
 import { scaleVector, multiplyElementWise } from "util/vector";
+import { Link, RouteComponentProps } from "@reach/router";
 
 interface IStudentCardProps {
   student: IStudentSummary;
@@ -27,14 +28,16 @@ const StudentCard = React.memo(
           backgroundImage: `url(${student.portfolio_icon.src})`,
         }}
       >
-        <div
-          style={{
-            width: `${cardSize[0] - 20}px`,
-            height: `${cardSize[1] - 20}px`,
-            left: `0px`,
-            top: `0px`,
-          }}
-        ></div>
+        <Link to={`/students/${student.student_id}`}>
+          <div
+            style={{
+              width: `${cardSize[0] - 20}px`,
+              height: `${cardSize[1] - 20}px`,
+              left: `0px`,
+              top: `0px`,
+            }}
+          ></div>
+        </Link>
       </div>
     );
   }
