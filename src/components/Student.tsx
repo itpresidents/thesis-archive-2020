@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FunctionComponent } from "react";
 
-import { Container, Row, Col, Figure } from "react-bootstrap";
+import { Container, Row, Col, Figure, Nav } from "react-bootstrap";
 
 import * as api from "util/api";
 import {
@@ -23,8 +23,6 @@ const createMarkup = (html: string) => ({ __html: html });
 interface IStudentDetailsProps {
   student: IStudentDetails;
 }
-
-const MAIN_COLS_MD = 8;
 
 const FeaturedImage = ({ image }: { image: IFeaturedImage | undefined }) => {
   if (!image) return null;
@@ -54,16 +52,35 @@ const ImageWithCaption = ({ image }: { image: IImage | undefined }) => {
 
 type EmptyProps = {};
 
+const MAIN_COLS_MD = 8;
+
+const TEXT_SECTION_MD = 6;
+
 const TextSection = ({ children }: { children: React.ReactNode }) => (
   <Row className={cx(justify, justifyText)}>
-    <Col md={MAIN_COLS_MD}>{children}</Col>
+    <Col md={TEXT_SECTION_MD}>{children}</Col>
   </Row>
 );
 
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
     <Container>
-      <FeaturedImage image={student.thumbnail_image} />
+      <Row className={justify}>
+        <Col md={12}>
+          <FeaturedImage image={student.thumbnail_image} />
+        </Col>
+      </Row>
+      <Row className={cx(justify, centerText)}>
+        <Nav className="justify-content-center" activeKey="/home">
+          {student.tags.map((topic) => (
+            <Nav.Item key={topic.slug}>
+              <Link to={`/topics/${topic.slug}`} className="nav-link">
+                {topic.name}
+              </Link>
+            </Nav.Item>
+          ))}
+        </Nav>
+      </Row>
       <Row className={cx(justify, centerText)}>
         <Col md={MAIN_COLS_MD}>
           <h1>{student.title}</h1>
@@ -78,19 +95,23 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
           />
         </Col>
       </Row>
-      <hr />
-      <Row className={centerText}>
-        <Col>
+      <Row className={cx(justify, centerText)}>
+        <Col md={MAIN_COLS_MD}>
+          <hr />
+        </Col>
+      </Row>
+      <Row className={cx(justify, centerText)}>
+        <Col md={2}>
           <h3>Student</h3> {student.student_name}
         </Col>
-        <Col>
+        <Col md={2}>
           <h3>Portfolio</h3> <a href="//www.example.com">www.example.com</a>
         </Col>
-        <Col>
+        <Col md={2}>
           <h3>Advisor</h3>
           <a href="//www.example.com">{student.advisor_name}</a>
         </Col>
-        <Col>
+        <Col md={2}>
           <h3>Watch</h3>
           <Link to={`/videos/${student.student_slug}`}>Watch</Link>
         </Col>
@@ -99,7 +120,11 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         <h2>Abstract</h2>
         <div dangerouslySetInnerHTML={createMarkup(student.abstract)} />
       </TextSection>
-      <ImageWithCaption image={student.slide_show[0]} />
+      <Row className={justify}>
+        <Col md={MAIN_COLS_MD}>
+          <ImageWithCaption image={student.slide_show[0]} />
+        </Col>
+      </Row>
 
       <TextSection>
         <h2>Research</h2>
@@ -110,42 +135,20 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         />
       </TextSection>
 
-      {student.slide_show
-        .slice(1, student.slide_show.length - 2)
-        .map((image) => (
-          <ImageWithCaption key={image.src} image={image} />
-        ))}
-
-      <TextSection>
-        <h2>Research</h2>
-        <div dangerouslySetInnerHTML={createMarkup(student.context_research)} />
-        <h2>Technical Details</h2>
-        <div
-          dangerouslySetInnerHTML={createMarkup(student.technical_details)}
-        />
-      </TextSection>
-
-      <VimeoEmbed
-        vimeoVideoId={getVideoIdFromUrl(student.video_presentation_url)}
-      />
+      <Row className={justify}>
+        <Col md={MAIN_COLS_MD}>
+          {student.slide_show
+            .slice(1, student.slide_show.length - 2)
+            .map((image) => (
+              <ImageWithCaption key={image.src} image={image} />
+            ))}
+        </Col>
+      </Row>
 
       <TextSection>
         <h2>Further Reading</h2>
         <div dangerouslySetInnerHTML={createMarkup(student.further_reading)} />
       </TextSection>
-
-      <ul>
-        <li>
-          Tags:
-          <ul>
-            {student.tags.map((topic) => (
-              <li key={topic.slug}>
-                <Link to={`/topics/${topic.slug}`}>{topic.name}</Link>
-              </li>
-            ))}
-          </ul>
-        </li>
-      </ul>
     </Container>
   );
 };
