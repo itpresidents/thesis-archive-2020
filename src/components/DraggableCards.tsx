@@ -11,7 +11,6 @@ import {
 } from "util/vector";
 import { shuffle } from "lodash-es";
 import Student from "./Student";
-import VisibilitySensor from "react-visibility-sensor";
 
 interface IStudentsProps extends RouteComponentProps {
   students?: IStudentSummary[];
@@ -26,7 +25,6 @@ const cardWidth: number = isLandscape
   : window.innerHeight / 4;
 const cardHeight: number = cardWidth * 1.5;
 const cardSize: number[] = [cardWidth, cardHeight];
-// const windowSizeInCards = [14, 6];
 
 // responsive matrix
 const windowSizeInCards = [
@@ -63,10 +61,6 @@ interface CardToShow {
   matrixX: number;
   matrixY: number;
 }
-
-// const findStudentCardByMatrixPosition = (cards:CardToShow[], x:number, y:number):CardToShow => {
-
-// }
 
 const halfWindowSizeInCards = scaleVector(windowSizeInCards, 0.5) as [
   number,
@@ -141,7 +135,6 @@ const getCardsInMatrixToShow = (
       });
     }
   }
-  console.log(result);
 
   return result;
 };
@@ -286,7 +279,6 @@ const StudentCard = React.memo(
           backgroundImage: `url(${student.portfolio_icon.src})`,
         }}
       >
-        {/* <VisibilitySensor partialVisibility={true} delayedCall={true}> */}
         <div
           style={{
             width: `${cardSize[0] - 20}px`,
@@ -295,7 +287,6 @@ const StudentCard = React.memo(
             top: `0px`,
           }}
         ></div>
-        {/* </VisibilitySensor> */}
       </div>
     );
   }
