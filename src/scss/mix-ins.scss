@@ -1,11 +1,11 @@
-$cursor-default-lo: "../images/cursor-default.svg";
-$cursor-default-hi: "../images/cursor-default@2x.png";
+$cursor-default-lo: "../images/cursors/cursor-default.svg";
+$cursor-default-hi: "../images/cursors/cursor-default@2x.png";
 
-$cursor-hover-clickable-item-lo: "../images/cursor-hover-clickable-item.svg";
-$cursor-hover-clickable-item-hi: "../images/cursor-hover-clickable-item@2x.png";
+$cursor-hover-clickable-item-lo: "../images/cursors/cursor-hover-clickable-item.svg";
+$cursor-hover-clickable-item-hi: "../images/cursors/cursor-hover-clickable-item@2x.png";
 
-$cursor-activated-lo: "../images/cursore-activated.svg";
-$cursor-activated-hi: "../images/cursore-activated@2x.png";
+$cursor-activated-lo: "../images/cursors/cursor-activated.svg";
+$cursor-activated-hi: "../images/cursors/cursor-activated@2x.png";
 
 @mixin custom-cursor-default {
   cursor: url($cursor-default-lo) 22.5 22.5, default;
