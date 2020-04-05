@@ -1,4 +1,22 @@
-<svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="22.5" cy="22.5" r="22" stroke="black"/>
-<circle cx="22.5" cy="22.5" r="3" fill="black" stroke="black"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="45px" height="46px" viewBox="0 0 45 46" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61 (89581) - https://sketch.com -->
+    <title>cursor-default</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-2.8%" y="-2.8%" width="105.6%" height="105.6%" filterUnits="objectBoundingBox" id="filter-1">
+            <feOffset dx="0" dy="0.5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feColorMatrix values="0 0 0 0 1   0 0 0 0 1   0 0 0 0 1  0 0 0 0.5 0" type="matrix" in="shadowOffsetOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cursor-default" filter="url(#filter-1)" stroke="#000000">
+            <circle id="Oval" cx="22.5" cy="22.5" r="22"></circle>
+            <circle id="Oval" fill="#000000" fill-rule="nonzero" cx="22.5" cy="22.5" r="3"></circle>
+        </g>
+    </g>
 </svg>
