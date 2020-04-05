@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { IStudentSummary } from "../types";
 import { cardSize } from "../config";
 import { scaleVector, multiplyElementWise } from "util/vector";
@@ -19,9 +19,9 @@ const StudentCard = React.memo(
     const width = `${cardSize[0] - 24}px`;
     const height = `${cardSize[1] - 120}px`;
     const linkRef = useRef<null | HTMLAnchorElement | any>(null);
-    const preventDefault = (e: React.FormEvent<HTMLAnchorElement>): void => {
-      console.log("prevent default");
-      e.preventDefault();
+    const [isDragging, setDragging] = useState<boolean>(false);
+    const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
+      if (isDragging) e.preventDefault();
     };
     let clickStartXy = [0, 0];
     const onMouseDown = (e: React.MouseEvent) => {
@@ -34,8 +34,8 @@ const StudentCard = React.memo(
         e.clientX - clickStartXy[0],
         e.clientY - clickStartXy[1]
       );
-      if (dist > 10) linkRef.current!.addEventListener("click", preventDefault);
-      else linkRef.current!.removeEventListener("click", preventDefault);
+      if (dist > 10) setDragging(true);
+      else setDragging(false);
     };
     return (
       <div
@@ -55,6 +55,7 @@ const StudentCard = React.memo(
           ref={linkRef}
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
+          onClick={onClick}
         >
           <div
             style={{
