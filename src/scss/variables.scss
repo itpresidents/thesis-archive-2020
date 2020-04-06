@@ -5,9 +5,18 @@ $canvasSize: 10000px;
 $body-bg: #fefffe;
 
 $primary-color: #e758fe;
+$secondary-color: #828282;
+$tertiary-color: #bdbdbd;
+$text-color: #000;
+
+/*** bootstrap overrides ***/
+$navbar-light-active-color: $primary-color;
+
+$navbar-collapse-color: $primary-color;
+$navbar-light-color: $text-color;
+$navbar-light-toggler-icon-bg: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='#{$navbar-collapse-color}' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+$navbar-light-toggler-border-color: none;
 
 $theme-colors: (
   "primary": $primary-color,
 );
-
-$font-family-sans-serif: Helvetica, sans-serif;
