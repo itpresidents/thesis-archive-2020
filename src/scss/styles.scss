@@ -2,6 +2,7 @@
 @import "./variables.scss";
 @import "./keyframes.scss";
 @import "./mix-ins.scss";
+@import "./bootstrap-overrides.scss";
 @import "~bootstrap/scss/bootstrap.scss";
 
 :root {
@@ -13,11 +14,13 @@ h1,
 h2,
 h3 {
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.03em;
 }
 
 h1 {
   font-size: 3.5em;
+  line-height: 1.15em;
 }
 
 h2 {
@@ -53,6 +56,30 @@ body {
     display: none;
   }
 }
+
+/**** navbar ****/
+
+.navbar {
+  border-top: 1px solid $black;
+  border-bottom: 1px solid $black;
+  .navbar-brand {
+    font-size: 0.75rem;
+    font-weight: $font-weight-bold;
+    color: $text-color;
+  }
+  padding: 0.5rem;
+
+  .navbar-nav .nav-link {
+    text-transform: uppercase;
+    font-weight: $font-weight-bold;
+
+    // &.active {
+    //   color: $primary-color;
+    // }
+  }
+}
+
+/**** home ****/
 
 a {
   &:hover {
@@ -140,7 +167,7 @@ a {
 
     p {
       font-size: 0.4em;
-      color: gray;
+      color: $tertiary-color;
       font-weight: 300;
       white-space: nowrap;
       overflow: hidden;
@@ -149,9 +176,22 @@ a {
   }
 }
 
+/**** Student Details ****/
+
 hr {
   border: none;
   height: 1px;
   background-color: $primary-color;
   border-radius: 2px;
+}
+
+#details {
+  .tags {
+    &,
+    & a {
+      color: $secondary;
+      text-transform: uppercase;
+      font-weight: $font-weight-bold;
+    }
+  }
 }

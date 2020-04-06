@@ -3,29 +3,26 @@ import * as api from "util/api";
 import "scss/styles.scss";
 import Home from "./Home";
 import StudentDetails from "./StudentDetails";
-import Topic from "./Topic";
 import { Router } from "@reach/router";
-import * as queries from "util/queries";
 import { IStudentSummary } from "types";
 import Header from "./Header";
 import Videos from "./Videos";
+import NotFound from "./NotFound";
+import Footer, { FooterMain } from "./Footer";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
 }
 
 const App = ({ students }: IAppProps) => {
-  const topics = students ? queries.getTags(students) : {};
-
   return (
     <>
       <Header />
       <Router>
-        <Home path="/" students={students} topics={topics} />
         <StudentDetails path="students/:studentIdOrSlug" students={students} />
-        <Topic path="topics/:topicSlug" students={students} topics={topics} />
         <Videos path="videos" students={students} />
         <Videos path="videos/:studentSlug" students={students} />
+        <Home path="/" students={students} />
       </Router>
     </>
   );
