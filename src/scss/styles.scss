@@ -2,6 +2,7 @@
 @import "./variables.scss";
 @import "./keyframes.scss";
 @import "./mix-ins.scss";
+@import "./bootstrap-overrides.scss";
 @import "~bootstrap/scss/bootstrap.scss";
 
 :root {
@@ -59,6 +60,8 @@ body {
 /**** navbar ****/
 
 .navbar {
+  border-top: 1px solid $black;
+  border-bottom: 1px solid $black;
   .navbar-brand {
     font-size: 0.75rem;
     font-weight: $font-weight-bold;

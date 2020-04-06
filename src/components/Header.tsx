@@ -20,12 +20,7 @@ const NavLink = <TState extends {}>(props: LinkProps<TState>) => {
 const Header = () => (
   <>
     <HeaderBG />
-    <Navbar
-      expand="md"
-      sticky="top"
-      className="border-top border-bottom"
-      bg="white"
-    >
+    <Navbar expand="md" sticky="top" bg="white">
       <Link to="/" className="navbar-brand">
         ITP Thesis Archive 2020
       </Link>

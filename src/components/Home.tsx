@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 // import StudentCards from "./StudentCards";
-import { RouteComponentProps } from "@reach/router";
-import { IStudentSummary, TopicDict } from "types";
+import { RouteComponentProps, useMatch, Redirect, Router } from "@reach/router";
+import { IStudentSummary, IStudentFilter } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import ContainerDimensions from "react-container-dimensions";
+import Footer, { FooterMain } from "./Footer";
 
 interface IHomeProps extends RouteComponentProps {
   students: IStudentSummary[] | undefined;
-  topics: TopicDict;
 }
 
-const Home = ({ students, topics }: IHomeProps) => {
+const Home = ({ students, path }: IHomeProps) => {
   if (!students) return <h2>loading...</h2>;
 
   return (
@@ -23,6 +23,7 @@ const Home = ({ students, topics }: IHomeProps) => {
           )}
         </ContainerDimensions>
       </div>
+      <Footer />
     </Container>
   );
 };

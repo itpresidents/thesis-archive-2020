@@ -65,3 +65,7 @@ export interface CardToShow {
   matrixX: number;
   matrixY: number;
 }
+
+export declare type IStudentFilter = (
+  students: IStudentSummary[]
+) => IStudentSummary[];
