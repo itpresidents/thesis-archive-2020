@@ -10,6 +10,6 @@ export const api = apis.FAKE_FROM_2018;
 // responsive card size
 const cardWidth =
   window.innerWidth >= window.innerHeight
-    ? window.innerWidth / 6
+    ? 160 + window.innerWidth / 12
     : window.innerHeight / 4;
-export const cardSize = [cardWidth, cardWidth * 1.8];
+export const cardSize = [cardWidth, cardWidth * 1.6];

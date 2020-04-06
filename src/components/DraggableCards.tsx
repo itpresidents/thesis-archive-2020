@@ -33,10 +33,10 @@ const getCardsInMatrixToShow = (
 ): CardToShow[] => {
   // responsive matrix
   const windowSizeInCards = [
-    (Math.ceil(width / (cardSize[0] * 2)) + 2) * 2,
-    Math.ceil(height / (cardSize[1] * 2)) * 2,
+    Math.ceil(width / cardSize[0]),
+    Math.ceil(height / cardSize[1]),
   ];
-  console.log(windowSizeInCards);
+  // console.log(windowSizeInCards);
   const startX = matrixX - windowSizeInCards[0];
   const endX = matrixX + 2;
   const startY = matrixY - windowSizeInCards[1];
