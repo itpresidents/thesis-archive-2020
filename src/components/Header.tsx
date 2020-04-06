@@ -27,7 +27,7 @@ const Header = () => (
       bg="white"
     >
       <Link to="/" className="navbar-brand">
-        Thesis Archive 2020
+        ITP Thesis Archive 2020
       </Link>
       <Navbar.Toggle />
       <Navbar.Collapse id="basic-navbar-nav">
