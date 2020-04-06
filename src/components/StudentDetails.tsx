@@ -59,27 +59,29 @@ const TextSection = ({ children }: { children: React.ReactNode }) => (
 
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
-    <Container>
+    <Container id="details">
       <Row className={justify}>
         <Col md={12}>
           <FeaturedImage image={student.thumbnail_image} />
         </Col>
       </Row>
-      <Row className={cx(justify, centerText)}>
-        <Nav className="justify-content-center" activeKey="/home">
-          {student.tags.map((topic) => (
-            <Nav.Item key={topic.slug}>
-              <Link to={`/topics/${topic.slug}`} className="nav-link">
-                {topic.name}
-              </Link>
-            </Nav.Item>
-          ))}
-        </Nav>
-      </Row>
+
       <Row className={cx(justify, centerText)}>
         <Col md={MAIN_COLS_MD}>
           <h1>{student.title}</h1>
           <h1>by {student.student_name}</h1>
+        </Col>
+      </Row>
+      <Row className={cx(justify, centerText)}>
+        <Col md={MAIN_COLS_MD} className="tags">
+          {student.tags.map((topic, i) => (
+            <>
+              <Link key={topic.slug} to={`/topics/${topic.slug}`}>
+                {topic.name}
+              </Link>
+              {i !== student.tags.length - 1 && " | "}
+            </>
+          ))}
         </Col>
       </Row>
       <Row className={cx(justify, centerText)}>

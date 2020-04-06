@@ -3,11 +3,9 @@ $scrollSpeed: 4s;
 $canvasSize: 10000px;
 
 $body-bg: #fefffe;
+$black: #000;
 
 $primary-color: #e758fe;
-
-$theme-colors: (
-  "primary": $primary-color,
-);
-
-$font-family-sans-serif: Helvetica, sans-serif;
+$secondary-color: #828282;
+$tertiary-color: #bdbdbd;
+$text-color: $black;
