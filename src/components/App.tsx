@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as api from "util/api";
 import "scss/styles.scss";
-import Home from "./Home";
+import Explore from "./Explore";
 import StudentDetails from "./StudentDetails";
 import { Router } from "@reach/router";
 import { IStudentSummary } from "types";
@@ -22,7 +22,7 @@ const App = ({ students }: IAppProps) => {
         <StudentDetails path="students/:studentIdOrSlug" students={students} />
         <Videos path="videos" students={students} />
         <Videos path="videos/:studentSlug" students={students} />
-        <Home path="/" students={students} />
+        <Explore path="/" students={students} />
       </Router>
     </>
   );
