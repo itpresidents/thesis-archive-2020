@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import * as api from "util/api";
 import "scss/styles.scss";
-import Home from "./Home";
+import Explore from "./Explore";
 import StudentDetails from "./StudentDetails";
-import { Router } from "@reach/router";
+import { Switch, Route } from "react-router-dom";
 import { IStudentSummary } from "types";
 import Header from "./Header";
 import Videos from "./Videos";
 import NotFound from "./NotFound";
-import Footer, { FooterMain } from "./Footer";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -18,12 +17,17 @@ const App = ({ students }: IAppProps) => {
   return (
     <>
       <Header />
-      <Router>
-        <StudentDetails path="students/:studentIdOrSlug" students={students} />
-        <Videos path="videos" students={students} />
-        <Videos path="videos/:studentSlug" students={students} />
-        <Home path="/" students={students} />
-      </Router>
+      <Switch>
+        <Route path="/students/:studentIdOrSlug">
+          <StudentDetails students={students} />
+        </Route>
+        <Route path="/videos/:studentSlug?">
+          <Videos students={students} />
+        </Route>
+        <Route path="/">
+          <Explore students={students} />
+        </Route>
+      </Switch>
     </>
   );
 };

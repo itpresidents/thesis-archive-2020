@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { RouteComponentProps, Link } from "@reach/router";
+import {
+  Link,
+  Switch,
+  Route,
+  useRouteMatch,
+  useParams,
+} from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 
 import { schedule } from "scrapedSchedules/schedule-2019.json";
@@ -72,12 +78,12 @@ const Videos = ({ studentSlug, studentId }: IVideosProps) => (
   </Row>
 );
 
-interface IVideosContainerProps extends RouteComponentProps {
+interface IVideosContainerProps {
   students: IStudentSummary[] | undefined;
-  studentSlug?: string;
 }
 
-const VideosContainer = ({ studentSlug, students }: IVideosContainerProps) => {
+const VideosContainer = ({ students }: IVideosContainerProps) => {
+  const { studentSlug } = useParams<{ studentSlug?: string }>();
   const [activeSlug, setActiveSlug] = useState<string>();
   const [studentId, setStudentId] = useState<string>();
 
@@ -109,5 +115,24 @@ const VideosContainer = ({ studentSlug, students }: IVideosContainerProps) => {
 
   return <Videos studentSlug={activeSlug} studentId={studentId} />;
 };
+
+// interface VideosRouterProps {
+//   students: IStudentSummary[] | undefined;
+// }
+
+// const VideosRouter = ({ students }: VideosRouterProps) => {
+//   const { path } = useRouteMatch();
+
+//   return (
+//     <Switch>
+//        <Route exact path={path}>
+//           <VideosContainer students={students} />
+//        </Route>
+//        <Route path={`${path}/:studentSlug`}>
+//           <VideosContainer students={students} />
+//       </Route>
+//     </Switch>
+//   );
+// }
 
 export default VideosContainer;

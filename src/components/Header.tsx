@@ -1,20 +1,11 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
-import { Link, LinkProps } from "@reach/router";
+import { NavLink, Link, LinkProps } from "react-router-dom";
 import HeaderBG from "./HeaderBG";
 import cx from "classnames";
 
-const NavLink = <TState extends {}>(props: LinkProps<TState>) => {
-  return (
-    <Link
-      to={props.to}
-      getProps={({ isCurrent }) => ({
-        class: cx("nav-link", { active: isCurrent }),
-      })}
-    >
-      {props.children}
-    </Link>
-  );
+const NavIgLink = <TState extends {}>(props: LinkProps<TState>) => {
+  return <NavLink to={props.to}>{props.children}</NavLink>;
 };
 
 const Header = () => (
@@ -28,13 +19,19 @@ const Header = () => (
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="justify-content-end ml-md-auto" as="ul">
           <Nav.Item>
-            <NavLink to="/">Explore</NavLink>{" "}
+            <NavLink to="/" exact className="nav-link">
+              Explore
+            </NavLink>
           </Nav.Item>
           <Nav.Item>
-            <NavLink to="/videos">Watch</NavLink>{" "}
+            <NavLink to="/videos" className="nav-link">
+              Watch
+            </NavLink>
           </Nav.Item>
           <Nav.Item>
-            <NavLink to="/about">About</NavLink>{" "}
+            <NavLink to="/about" className="nav-link">
+              About
+            </NavLink>
           </Nav.Item>
         </Nav>
       </Navbar.Collapse>
