@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, CardToShow } from "../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
@@ -14,7 +13,7 @@ import { cardSize } from "config";
 import StudentCard from "./StudentCard";
 import { usePrevious } from "util/usePrevious";
 
-interface IDraggableCardsProps extends RouteComponentProps {
+interface IDraggableCardsProps {
   students?: IStudentSummary[];
   width: number;
   height: number;

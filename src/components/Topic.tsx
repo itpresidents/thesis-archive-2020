@@ -1,9 +1,8 @@
 import React from "react";
 import StudentCards from "./StudentCards";
-import { RouteComponentProps } from "@reach/router";
 import { IStudentSummary, TopicDict } from "types";
 
-interface ITopicProps extends RouteComponentProps {
+interface ITopicProps {
   students: IStudentSummary[] | undefined;
   topics: TopicDict;
   topicSlug?: string;

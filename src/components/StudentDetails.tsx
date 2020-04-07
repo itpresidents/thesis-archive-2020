@@ -9,7 +9,7 @@ import {
   IFeaturedImage,
   IImage,
 } from "types";
-import { Link, RouteComponentProps } from "@reach/router";
+import { Link } from "react-router-dom";
 import { getStudentIdFromSlug, isNumber } from "util/queries";
 import cx from "classnames";
 
@@ -150,7 +150,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
   );
 };
 
-interface IStudentProps extends RouteComponentProps {
+interface IStudentProps {
   studentId: string;
 }
 
@@ -170,7 +170,7 @@ const Student = ({ studentId }: IStudentProps) => {
   return <StudentDetails student={student} />;
 };
 
-interface IStudentByIdOrSlugProps extends RouteComponentProps {
+interface IStudentByIdOrSlugProps {
   studentIdOrSlug?: string;
   students: IStudentSummary[] | undefined;
 }

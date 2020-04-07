@@ -1,8 +1,8 @@
 import React from "react";
-import { Link, RouteComponentProps } from "@reach/router";
+import { Link } from "react-router-dom";
 import { TopicDict } from "types";
 
-interface ITopicsProps extends RouteComponentProps {
+interface ITopicsProps {
   topics: TopicDict;
   topicSlug?: string;
 }

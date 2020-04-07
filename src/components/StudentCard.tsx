@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { IStudentSummary } from "../types";
 import { cardSize } from "../config";
 import { scaleVector, multiplyElementWise } from "util/vector";
-import { Link } from "@reach/router";
+import { Link } from "react-router-dom";
 
 interface IStudentCardProps {
   student: IStudentSummary;

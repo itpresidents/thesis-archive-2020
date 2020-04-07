@@ -2,13 +2,12 @@ import React from "react";
 
 import "scss/footer.scss";
 import { Navbar, Nav } from "react-bootstrap";
-import { Link, RouteComponentProps } from "@reach/router";
-import { useMatch } from "@reach/router";
+import { Link } from "react-router-dom";
 import { IStudentFilter } from "types";
 
 type mode = "filter" | "search" | null;
 
-interface FooterMainProps extends RouteComponentProps {}
+interface FooterMainProps {}
 
 export const FooterMain = (props: FooterMainProps) => (
   <Nav className="d-flex justify-content-center w-100">

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 // import StudentCards from "./StudentCards";
-import { RouteComponentProps, useMatch, Redirect, Router } from "@reach/router";
 import { IStudentSummary, IStudentFilter } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import ContainerDimensions from "react-container-dimensions";
 import Footer, { FooterMain } from "./Footer";
 
-interface IHomeProps extends RouteComponentProps {
+interface IHomeProps {
   students: IStudentSummary[] | undefined;
 }
 
-const Home = ({ students, path }: IHomeProps) => {
+const Explore = ({ students }: IHomeProps) => {
   if (!students) return <h2>loading...</h2>;
 
   return (
@@ -28,4 +27,4 @@ const Home = ({ students, path }: IHomeProps) => {
   );
 };
 
-export default Home;
+export default Explore;
