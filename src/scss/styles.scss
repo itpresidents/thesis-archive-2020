@@ -93,7 +93,6 @@ a {
 
 #header2020-bg {
   position: relative;
-  z-index: 10;
   width: 100vw;
   background-color: white;
 
@@ -103,20 +102,12 @@ a {
 }
 
 #header2020-bg-animation {
-  position: absolute;
+  position: fixed;
   left: 0;
-  top: 0;
-  height: 100%;
-  z-index: 9999;
+  top: 5px;
   width: 100vw;
   background: url("../images/20.svg") repeat-x;
-  background-size: $width2020;
   animation: move_background $scrollSpeed infinite linear;
-}
-
-#header-invisible-height {
-  visibility: hidden;
-  width: $width2020 + 1vh;
 }
 
 #canvas-invisible-height {

@@ -16,8 +16,8 @@ const getOffset = (xy: number[], cardSize: number[]): number[] =>
 const StudentCard = React.memo(
   ({ student, matrixX: x, matrixY: y }: IStudentCardProps) => {
     const offsets = getOffset([x, y], cardSize);
-    const width = `${cardSize[0] - 24}px`;
-    const height = `${cardSize[1] - 120}px`;
+    const width = `${cardSize[0] * 0.75}px`;
+    const height = `${(cardSize[0] - 70) * 1.4}px`;
     const linkRef = useRef<null | HTMLAnchorElement | any>(null);
     const [isDragging, setDragging] = useState<boolean>(false);
     const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
@@ -61,11 +61,11 @@ const StudentCard = React.memo(
             style={{
               height: height,
             }}
+          ></div>
+          <div
+            className="card-info mt-2"
+            style={{ height: `${cardSize[0] * 0.4}px` }}
           >
-            {/* <h1>{x}</h1>
-            <h1>{y}</h1> */}
-          </div>
-          <div className="card-info mt-2">
             <h3>{student.title}</h3>
             <h5>{student.student_name}</h5>
             <p>
