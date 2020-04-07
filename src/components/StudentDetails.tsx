@@ -9,7 +9,7 @@ import {
   IFeaturedImage,
   IImage,
 } from "types";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getStudentIdFromSlug, isNumber } from "util/queries";
 import cx from "classnames";
 
@@ -175,10 +175,9 @@ interface IStudentByIdOrSlugProps {
   students: IStudentSummary[] | undefined;
 }
 
-const StudentByIdOrSlug = ({
-  studentIdOrSlug,
-  students,
-}: IStudentByIdOrSlugProps) => {
+const StudentByIdOrSlug = ({ students }: IStudentByIdOrSlugProps) => {
+  const { studentIdOrSlug } = useParams<{ studentIdOrSlug?: string }>();
+
   if (!studentIdOrSlug) return null;
 
   if (isNumber(studentIdOrSlug)) {
