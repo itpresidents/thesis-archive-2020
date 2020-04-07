@@ -4,14 +4,29 @@ import { IStudentSummary, IStudentFilter } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import ContainerDimensions from "react-container-dimensions";
-import Footer, { FooterMain } from "./Footer";
+import Footer from "./Footer";
 
 interface IHomeProps {
   students: IStudentSummary[] | undefined;
 }
 
 const Explore = ({ students }: IHomeProps) => {
-  if (!students) return <h2>loading...</h2>;
+  const [filter, setFilter] = useState<IStudentFilter | undefined>();
+  const [filteredStudents, setFilteredStudents] = useState<
+    IStudentSummary[] | undefined
+  >();
+
+  useEffect(() => {
+    if (!students) return;
+
+    if (!filter) {
+      setFilteredStudents(students);
+    } else {
+      setFilteredStudents(filter(students));
+    }
+  }, [students, filter]);
+
+  if (!filteredStudents) return <h2>loading...</h2>;
 
   return (
     <Container fluid>
@@ -22,7 +37,7 @@ const Explore = ({ students }: IHomeProps) => {
           )}
         </ContainerDimensions>
       </div>
-      <Footer />
+      <Footer students={students} />
     </Container>
   );
 };

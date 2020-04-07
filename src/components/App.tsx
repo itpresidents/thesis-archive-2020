@@ -8,7 +8,6 @@ import { IStudentSummary } from "types";
 import Header from "./Header";
 import Videos from "./Videos";
 import NotFound from "./NotFound";
-import Footer, { FooterMain } from "./Footer";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
