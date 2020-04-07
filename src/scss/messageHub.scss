@@ -1,56 +1,53 @@
 @import "./variables.scss";
 
-#Main {
-  position: absolute;
+#message-hub-positioner {
+  position: relative;
   z-index: 99999;
   width: 100%;
-  height: 50vh;
-  overflow: hidden;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #676767;
+  top: 0;
+  height: 0;
 }
 
 #Container {
   position: absolute;
   top: 0;
-  z-index: 1000;
   width: 100%;
-  margin: 0 auto;
-  left: 0px;
-  right: 0px;
-  display: block;
-  height: 100%;
-  pointer-events: none;
-  top: 30px;
-  bottom: 0px;
-  flex-direction: row;
-  align-items: center;
+  justify-content: center;
 }
 
 #Message {
-  box-sizing: border-box;
-  display: block;
   position: relative;
   overflow: hidden;
   width: 100%;
   text-align: center;
+  background-color: $primary-color;
+
+  @for $i from 2 to 8 {
+    &:nth-child(#{$i}) {
+      background-color: lighten($color: $primary-color, $amount: $i * 5%);
+    }
+  }
 }
 
 #Content {
   color: white;
-  background: $primary-color;
-  opacity: 0.9;
-  padding: 12px 22px;
-  font-size: 1em;
+  opacity: 0.96;
+  padding: 0.3em, 0.3em;
+  display: flex;
+  width: 100%;
   display: grid;
-  grid-gap: 0px;
-  overflow: hidden;
-  //   grid-template-columns: ${props => (props.canClose === false ? '1fr' : '1fr auto')};
-  //   margin-top: ${props => (props.top ? '0' : '10px')};
-  //   margin-bottom: ${props => (props.top ? '10px' : '0')};
+  grid-template-columns: 1fr auto;
+
+  p {
+    font-size: 1.5em;
+    line-height: 1.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+  }
 }
 
 #Button {
@@ -59,12 +56,13 @@
   outline: 0;
   border: none;
   background: transparent;
-  display: flex;
+  display: block;
   align-self: flex-end;
   overflow: hidden;
   margin: 0;
   padding: 0;
-  padding-bottom: 14px;
+  height: 100%;
+  width: 60px;
   color: rgba(255, 255, 255, 0.5);
 
   :hover {
@@ -72,11 +70,10 @@
   }
 }
 
-#lllife {
+#messageLife {
   position: absolute;
   left: 0px;
   bottom: 0px;
-  background-image: linear-gradient(130deg, #00b4e6, #00f0e0);
+  background-image: linear-gradient(130deg, #48c7ffa3, #aaddf0);
   height: 5px;
-  //   bottom: ${props => (props.top ? '10px' : '0')};
 }
