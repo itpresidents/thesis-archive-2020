@@ -3,6 +3,7 @@ import { Navbar, Nav } from "react-bootstrap";
 import { NavLink, Link, LinkProps } from "react-router-dom";
 import HeaderBG from "./HeaderBG";
 import cx from "classnames";
+import MessageHub from "./MessageHub.jsx";
 
 const NavIgLink = <TState extends {}>(props: LinkProps<TState>) => {
   return <NavLink to={props.to}>{props.children}</NavLink>;
@@ -36,6 +37,7 @@ const Header = () => (
         </Nav>
       </Navbar.Collapse>
     </Navbar>
+    <MessageHub />
   </>
 );
 
