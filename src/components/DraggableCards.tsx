@@ -138,14 +138,14 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
 
   useEffect(() => {
     const xy = [
-      position.x.getValue() + (width - prevWidth!) / 2,
-      position.y.getValue() + (height - prevHeight!) / 2,
+      position.x.get() + (width - prevWidth!) / 2,
+      position.y.get() + (height - prevHeight!) / 2,
     ];
     setSpring({
       x: xy[0],
       y: xy[1],
-      onFrame: (xy) => {
-        setMatrixCenterXy(toPositionInMatrix([xy.x, xy.y]));
+      onChange: (xy) => {
+        setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
       },
     });
   }, [width, height]);
@@ -160,17 +160,13 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
         x: xy[0],
         y: xy[1],
         immediate: down,
-        config: {
-          velocity: scaleVector(direction, velocity * 1000),
-          decay: false,
-        },
-        onFrame: (xy) => {
-          setMatrixCenterXy(toPositionInMatrix([xy.x, xy.y]));
+        onChange: (xy) => {
+          setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
         },
       });
     },
     {
-      initial: () => [position.x.getValue(), position.y.getValue()],
+      initial: () => [position.x.get(), position.y.get()],
     }
   );
 
