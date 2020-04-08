@@ -27,7 +27,7 @@ const getCardsInMatrixToShow = (
   matrixX: number,
   matrixY: number,
   prevCards: CardToShow[],
-  students: IStudentSummary[],
+  filteredStudents: IStudentSummary[],
   width: number,
   height: number
 ): CardToShow[] => {
@@ -47,7 +47,15 @@ const getCardsInMatrixToShow = (
   > = {};
   const studentsInNewView: Record<number, Record<number, IStudentSummary>> = {};
   const studentsIdsInNewView: string[] = [];
-  let studentsNotInNewView: IStudentSummary[] = [];
+  let studentsNotInNewView: IStudentSummary[] = shuffle(
+    filteredStudents.filter(
+      (student) => !studentsIdsInNewView.includes(student.student_id)
+    )
+  );
+  const filteredStudentsIds: string[] = filteredStudents.map(
+    (student) => student.student_id
+  );
+
   const result: CardToShow[] = [];
 
   // prepare a matrix to remember previous cards;
@@ -62,7 +70,8 @@ const getCardsInMatrixToShow = (
     for (let y = startY; y < endY; y++) {
       if (
         studentsInPrevView[x] !== undefined &&
-        studentsInPrevView[x][y] !== undefined
+        studentsInPrevView[x][y] !== undefined &&
+        filteredStudentsIds.includes(studentsInPrevView[x][y].student_id)
       ) {
         if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
         studentsInNewView[x][y] = studentsInPrevView[x][y];
@@ -71,12 +80,6 @@ const getCardsInMatrixToShow = (
     }
   }
 
-  for (let student of students) {
-    if (!studentsIdsInNewView.includes(student.student_id))
-      studentsNotInNewView.push(student);
-  }
-  studentsNotInNewView = shuffle(studentsNotInNewView);
-
   // add new card
   for (let x = startX; x < endX; x++) {
     for (let y = startY; y < endY; y++) {
@@ -84,7 +87,7 @@ const getCardsInMatrixToShow = (
       if (studentsInNewView[x][y] === undefined) {
         // if there's not enough data, just use students.
         if (studentsNotInNewView.length < 1)
-          studentsNotInNewView = shuffle(students);
+          studentsNotInNewView = shuffle(filteredStudents);
         studentsInNewView[x][
           y
         ] = studentsNotInNewView.shift() as IStudentSummary;
