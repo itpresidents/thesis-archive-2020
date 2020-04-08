@@ -2,10 +2,15 @@ $width2020: 25vh;
 $scrollSpeed: 4s;
 $canvasSize: 10000px;
 
-$body-bg: #fefffe;
+/*** colors ***/
 $black: #000;
+$white: #fff;
+$bright-pink: #ff00ff;
+$dark-gray: #828282;
+$medium-gray: #c4c4c4;
+$light-gray: #e5e5e5;
 
 $primary-color: #e758fe;
-$secondary-color: #828282;
-$tertiary-color: #bdbdbd;
+$secondary-color: $dark-gray;
+$tertiary-color: $light-gray;
 $text-color: $black;
