@@ -36,6 +36,7 @@ body {
 .navbar {
   border-top: 1px solid $black;
   border-bottom: 1px solid $black;
+
   .navbar-brand {
     @extend .body2;
   }
@@ -100,6 +101,8 @@ a {
   margin: 10px;
   width: 200px;
   height: 300px;
+  background-size: cover;
+  background-position: center center;
   display: inline-block;
   box-shadow: gray;
 
