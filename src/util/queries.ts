@@ -16,6 +16,15 @@ export const getTags = (students: IStudentSummary[]): TopicDict => {
   return result;
 };
 
+export const filterByTag = (
+  students: IStudentSummary[],
+  tagSlug: string
+): IStudentSummary[] => {
+  return students.filter(({ tags }) =>
+    tags.map(({ slug }) => slug).includes(tagSlug)
+  );
+};
+
 export const getStudentIdFromSlug = (
   students: IStudentSummary[],
   studentSlug: string

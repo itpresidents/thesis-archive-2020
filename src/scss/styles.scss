@@ -1,35 +1,9 @@
-@import "./typography.scss";
 @import "./variables.scss";
 @import "./keyframes.scss";
 @import "./mix-ins.scss";
 @import "./bootstrap-overrides.scss";
 @import "~bootstrap/scss/bootstrap.scss";
-
-:root {
-  // universal default size;
-  font-size: $font-size-root;
-}
-
-h1,
-h2,
-h3 {
-  text-transform: uppercase;
-  font-weight: $font-weight-bold;
-  letter-spacing: -0.03em;
-}
-
-h1 {
-  font-size: 3.5em;
-  line-height: 1.15em;
-}
-
-h2 {
-  font-size: 2em;
-}
-
-h3 {
-  font-size: 1em;
-}
+@import "./typography.scss";
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -62,21 +36,11 @@ body {
 .navbar {
   border-top: 1px solid $black;
   border-bottom: 1px solid $black;
+
   .navbar-brand {
-    font-size: 0.75rem;
-    font-weight: $font-weight-bold;
-    color: $text-color;
+    @extend .body2;
   }
-  padding: 0.5rem;
-
-  .navbar-nav .nav-link {
-    text-transform: uppercase;
-    font-weight: $font-weight-bold;
-
-    // &.active {
-    //   color: $primary-color;
-    // }
-  }
+  padding: 0.5rem 31px;
 }
 
 /**** home ****/
@@ -137,23 +101,21 @@ a {
   margin: 10px;
   width: 200px;
   height: 300px;
+  background-size: cover;
+  background-position: center center;
   display: inline-block;
   box-shadow: gray;
 
   .card-info {
     h3 {
-      font-size: 0.75em;
-      color: black;
-      font-weight: 700;
+      @extend .subtitle;
       max-height: 2.2em;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     h5 {
-      font-size: 0.6em;
-      color: black;
-      font-weight: 700;
+      @extend .body2;
     }
 
     p {
@@ -180,9 +142,7 @@ hr {
   .tags {
     &,
     & a {
-      color: $secondary;
-      text-transform: uppercase;
-      font-weight: $font-weight-bold;
+      @extend .subtitle;
     }
   }
 }

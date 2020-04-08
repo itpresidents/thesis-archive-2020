@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import { IStudentSummary, CardToShow } from "../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
@@ -12,6 +12,7 @@ import shuffle from "lodash.shuffle";
 import { cardSize } from "config";
 import StudentCard from "./StudentCard";
 import { usePrevious } from "util/usePrevious";
+import { AddMessage } from "./MessageHub";
 
 interface IDraggableCardsProps {
   students?: IStudentSummary[];
@@ -26,7 +27,7 @@ const getCardsInMatrixToShow = (
   matrixX: number,
   matrixY: number,
   prevCards: CardToShow[],
-  students: IStudentSummary[],
+  filteredStudents: IStudentSummary[],
   width: number,
   height: number
 ): CardToShow[] => {
@@ -46,7 +47,15 @@ const getCardsInMatrixToShow = (
   > = {};
   const studentsInNewView: Record<number, Record<number, IStudentSummary>> = {};
   const studentsIdsInNewView: string[] = [];
-  let studentsNotInNewView: IStudentSummary[] = [];
+  let studentsNotInNewView: IStudentSummary[] = shuffle(
+    filteredStudents.filter(
+      (student) => !studentsIdsInNewView.includes(student.student_id)
+    )
+  );
+  const filteredStudentsIds: string[] = filteredStudents.map(
+    (student) => student.student_id
+  );
+
   const result: CardToShow[] = [];
 
   // prepare a matrix to remember previous cards;
@@ -61,7 +70,8 @@ const getCardsInMatrixToShow = (
     for (let y = startY; y < endY; y++) {
       if (
         studentsInPrevView[x] !== undefined &&
-        studentsInPrevView[x][y] !== undefined
+        studentsInPrevView[x][y] !== undefined &&
+        filteredStudentsIds.includes(studentsInPrevView[x][y].student_id)
       ) {
         if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
         studentsInNewView[x][y] = studentsInPrevView[x][y];
@@ -70,12 +80,6 @@ const getCardsInMatrixToShow = (
     }
   }
 
-  for (let student of students) {
-    if (!studentsIdsInNewView.includes(student.student_id))
-      studentsNotInNewView.push(student);
-  }
-  studentsNotInNewView = shuffle(studentsNotInNewView);
-
   // add new card
   for (let x = startX; x < endX; x++) {
     for (let y = startY; y < endY; y++) {
@@ -83,7 +87,7 @@ const getCardsInMatrixToShow = (
       if (studentsInNewView[x][y] === undefined) {
         // if there's not enough data, just use students.
         if (studentsNotInNewView.length < 1)
-          studentsNotInNewView = shuffle(students);
+          studentsNotInNewView = shuffle(filteredStudents);
         studentsInNewView[x][
           y
         ] = studentsNotInNewView.shift() as IStudentSummary;
@@ -119,11 +123,11 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
 };
 
 const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
-  const windowSize = multiplyElementWise(matrixShape, cardSize) as [
+  const canvasSize = multiplyElementWise(matrixShape, cardSize) as [
     number,
     number
   ];
-  const [startX, startY] = scaleVector(windowSize, 0.5);
+  const [startX, startY] = scaleVector(canvasSize, 0.5);
   const [position, setSpring] = useSpring<Position>(() => ({
     x: startX,
     y: startY,
@@ -136,16 +140,35 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
   const prevWidth = usePrevious(width);
   const prevHeight = usePrevious(height);
 
+  const scrollDivRef = useRef<HTMLDivElement>(null);
+  const [sentDraggingTip, setSentDraggingTip] = useState<boolean>(false);
+
+  const onBodyScroll = useCallback(() => {
+    if (!scrollDivRef.current) return;
+    if (
+      scrollDivRef.current?.getBoundingClientRect().top < 100 &&
+      !sentDraggingTip
+    ) {
+      setSentDraggingTip(true);
+    }
+  }, [sentDraggingTip]);
+
+  document.body.addEventListener("scroll", onBodyScroll);
+
+  useEffect(() => {
+    if (sentDraggingTip) AddMessage("Drag to explore, click to Read More.");
+  }, [sentDraggingTip]);
+
   useEffect(() => {
     const xy = [
-      position.x.getValue() + (width - prevWidth!) / 2,
-      position.y.getValue() + (height - prevHeight!) / 2,
+      position.x.get() + (width - prevWidth!) / 2,
+      position.y.get() + (height - prevHeight!) / 2,
     ];
     setSpring({
       x: xy[0],
       y: xy[1],
-      onFrame: (xy) => {
-        setMatrixCenterXy(toPositionInMatrix([xy.x, xy.y]));
+      onChange: (xy) => {
+        setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
       },
     });
   }, [width, height]);
@@ -160,17 +183,13 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
         x: xy[0],
         y: xy[1],
         immediate: down,
-        config: {
-          velocity: scaleVector(direction, velocity * 1000),
-          decay: false,
-        },
-        onFrame: (xy) => {
-          setMatrixCenterXy(toPositionInMatrix([xy.x, xy.y]));
+        onChange: (xy) => {
+          setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
         },
       });
     },
     {
-      initial: () => [position.x.getValue(), position.y.getValue()],
+      initial: () => [position.x.get(), position.y.get()],
     }
   );
 
@@ -180,6 +199,7 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
     <>
       <div
         {...bind()}
+        ref={scrollDivRef}
         className="position-relative vw-100 vh-100 overflow-hidden"
       >
         <animated.div style={{ ...position }}>
