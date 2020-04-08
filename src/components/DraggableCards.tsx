@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useCallback, useEffect, useState } from "react";
 import { IStudentSummary, CardToShow } from "../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
@@ -12,6 +12,7 @@ import shuffle from "lodash.shuffle";
 import { cardSize } from "config";
 import StudentCard from "./StudentCard";
 import { usePrevious } from "util/usePrevious";
+import { AddMessage } from "./MessageHub";
 
 interface IDraggableCardsProps {
   students?: IStudentSummary[];
@@ -119,11 +120,11 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
 };
 
 const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
-  const windowSize = multiplyElementWise(matrixShape, cardSize) as [
+  const canvasSize = multiplyElementWise(matrixShape, cardSize) as [
     number,
     number
   ];
-  const [startX, startY] = scaleVector(windowSize, 0.5);
+  const [startX, startY] = scaleVector(canvasSize, 0.5);
   const [position, setSpring] = useSpring<Position>(() => ({
     x: startX,
     y: startY,
@@ -135,6 +136,25 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
 
   const prevWidth = usePrevious(width);
   const prevHeight = usePrevious(height);
+
+  const scrollDivRef = useRef<HTMLDivElement>(null);
+  const [sentDraggingTip, setSentDraggingTip] = useState<boolean>(false);
+
+  const onBodyScroll = useCallback(() => {
+    if (!scrollDivRef.current) return;
+    if (
+      scrollDivRef.current?.getBoundingClientRect().top < 100 &&
+      !sentDraggingTip
+    ) {
+      setSentDraggingTip(true);
+    }
+  }, [sentDraggingTip]);
+
+  document.body.addEventListener("scroll", onBodyScroll);
+
+  useEffect(() => {
+    if (sentDraggingTip) AddMessage("Drag to explore, click to Read More.");
+  }, [sentDraggingTip]);
 
   useEffect(() => {
     const xy = [
@@ -176,6 +196,7 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
     <>
       <div
         {...bind()}
+        ref={scrollDivRef}
         className="position-relative vw-100 vh-100 overflow-hidden"
       >
         <animated.div style={{ ...position }}>

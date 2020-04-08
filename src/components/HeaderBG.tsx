@@ -1,12 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { AddMessage } from "./MessageHub";
 
 const magicNumber = 0.22;
 
 const HeaderBG = () => {
   const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
   const [height, setHeight] = useState<number>(windowHeight * magicNumber);
-  const [tipSent, setSent] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -20,19 +18,9 @@ const HeaderBG = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!tipSent && height < 10) {
-      AddMessage("Drag to explore, click to Read More.");
-      setSent(true);
-    }
-  }, [height]);
-
-  const onScroll = useCallback(
-    (e: any) => {
-      setHeight(windowHeight * magicNumber - e.target.scrollTop);
-    },
-    [height]
-  );
+  const onScroll = useCallback((e: any) => {
+    setHeight(windowHeight * magicNumber - e.target.scrollTop);
+  }, []);
   document.body.addEventListener("scroll", onScroll);
   return (
     <div id="header2020-bg">
