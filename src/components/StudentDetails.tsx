@@ -76,7 +76,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         <Col md={MAIN_COLS_MD} className="tags">
           {student.tags.map((topic, i) => (
             <>
-              <Link key={topic.slug} to={`/topics/${topic.slug}`}>
+              <Link key={topic.slug} to={`/filter/category/${topic.slug}`}>
                 {topic.name}
               </Link>
               {i !== student.tags.length - 1 && " | "}
