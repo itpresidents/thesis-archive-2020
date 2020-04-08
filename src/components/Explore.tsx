@@ -5,26 +5,32 @@ import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import ContainerDimensions from "react-container-dimensions";
 import Footer from "./Footer";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
+import * as queries from "util/queries";
 
 interface IHomeProps {
   students: IStudentSummary[] | undefined;
 }
 
 const Explore = ({ students }: IHomeProps) => {
-  const [filter, setFilter] = useState<IStudentFilter | undefined>();
   const [filteredStudents, setFilteredStudents] = useState<
     IStudentSummary[] | undefined
   >();
 
+  const tagMatch = useRouteMatch<{ tag: string }>("/filter/category/:tag");
+
+  const tag = tagMatch && tagMatch.params.tag;
+
   useEffect(() => {
     if (!students) return;
 
-    if (!filter) {
+    if (!tag) {
       setFilteredStudents(students);
     } else {
-      setFilteredStudents(filter(students));
+      const studentsWithTag = queries.filterByTag(students, tag);
+      setFilteredStudents(studentsWithTag);
     }
-  }, [students, filter]);
+  }, [students, tag]);
 
   if (!filteredStudents) return <h2>loading...</h2>;
 
@@ -33,7 +39,11 @@ const Explore = ({ students }: IHomeProps) => {
       <div className="row">
         <ContainerDimensions>
           {({ width, height }) => (
-            <DraggableCards students={students} width={width} height={height} />
+            <DraggableCards
+              students={filteredStudents}
+              width={width}
+              height={height}
+            />
           )}
         </ContainerDimensions>
       </div>

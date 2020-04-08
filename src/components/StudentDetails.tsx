@@ -9,7 +9,7 @@ import {
   IFeaturedImage,
   IImage,
 } from "types";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getStudentIdFromSlug, isNumber } from "util/queries";
 import cx from "classnames";
 
@@ -59,7 +59,7 @@ const TextSection = ({ children }: { children: React.ReactNode }) => (
 
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
-    <Container id="details">
+    <Container id="details" className="body1">
       <Row className={justify}>
         <Col md={12}>
           <FeaturedImage image={student.thumbnail_image} />
@@ -68,15 +68,18 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
 
       <Row className={cx(justify, centerText)}>
         <Col md={MAIN_COLS_MD}>
-          <h1>{student.title}</h1>
-          <h1>by {student.student_name}</h1>
+          <h2>
+            {student.title}
+            <br />
+            by {student.student_name}
+          </h2>
         </Col>
       </Row>
       <Row className={cx(justify, centerText)}>
         <Col md={MAIN_COLS_MD} className="tags">
           {student.tags.map((topic, i) => (
             <>
-              <Link key={topic.slug} to={`/topics/${topic.slug}`}>
+              <Link key={topic.slug} to={`/filter/category/${topic.slug}`}>
                 {topic.name}
               </Link>
               {i !== student.tags.length - 1 && " | "}
@@ -87,7 +90,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
       <Row className={cx(justify, centerText)}>
         <Col md={MAIN_COLS_MD}>
           <p
-            className="lead"
+            className="summary"
             dangerouslySetInnerHTML={createMarkup(student.thesis_statement)}
           />
         </Col>
@@ -99,22 +102,23 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
       </Row>
       <Row className={cx(justify, centerText)}>
         <Col md={2}>
-          <h3>Student</h3> {student.student_name}
+          <div className="subtitle">Student</div> {student.student_name}
         </Col>
         <Col md={2}>
-          <h3>Portfolio</h3> <a href="//www.example.com">www.example.com</a>
+          <div className="subtitle">Portfolio</div>{" "}
+          <a href="//www.example.com">www.example.com</a>
         </Col>
         <Col md={2}>
-          <h3>Advisor</h3>
+          <div className="subtitle">Advisor</div>
           <a href="//www.example.com">{student.advisor_name}</a>
         </Col>
         <Col md={2}>
-          <h3>Watch</h3>
+          <div className="subtitle">Watch</div>
           <Link to={`/videos/${student.student_slug}`}>Watch</Link>
         </Col>
       </Row>
       <TextSection>
-        <h2>Abstract</h2>
+        <h3>Abstract</h3>
         <div dangerouslySetInnerHTML={createMarkup(student.abstract)} />
       </TextSection>
       <Row className={justify}>
@@ -124,9 +128,9 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
       </Row>
 
       <TextSection>
-        <h2>Research</h2>
+        <h3>Research</h3>
         <div dangerouslySetInnerHTML={createMarkup(student.context_research)} />
-        <h2>Technical Details</h2>
+        <h3>Technical Details</h3>
         <div
           dangerouslySetInnerHTML={createMarkup(student.technical_details)}
         />
@@ -143,7 +147,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
       </Row>
 
       <TextSection>
-        <h2>Further Reading</h2>
+        <h3>Further Reading</h3>
         <div dangerouslySetInnerHTML={createMarkup(student.further_reading)} />
       </TextSection>
     </Container>
@@ -175,10 +179,9 @@ interface IStudentByIdOrSlugProps {
   students: IStudentSummary[] | undefined;
 }
 
-const StudentByIdOrSlug = ({
-  studentIdOrSlug,
-  students,
-}: IStudentByIdOrSlugProps) => {
+const StudentByIdOrSlug = ({ students }: IStudentByIdOrSlugProps) => {
+  const { studentIdOrSlug } = useParams<{ studentIdOrSlug?: string }>();
+
   if (!studentIdOrSlug) return null;
 
   if (isNumber(studentIdOrSlug)) {

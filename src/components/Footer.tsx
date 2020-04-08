@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 
 import "scss/footer.scss";
 import { Navbar, Nav } from "react-bootstrap";
@@ -9,29 +9,30 @@ import * as queries from "util/queries";
 type mode = "filter" | "search" | null;
 
 const FooterMain = () => {
-  const { url } = useRouteMatch();
+  // const { path } = useRouteMatch();
   return (
     <Nav className="d-flex justify-content-center w-100">
       <Nav.Item>Search</Nav.Item>
       <Nav.Item>
-        <Link to={`${url}filter/category`}>Filter</Link>
+        <Link to={`/filter`} replace>
+          Filter
+        </Link>
       </Nav.Item>
     </Nav>
   );
 };
 
 const FilterLeft = () => {
-  const { url } = useRouteMatch();
   return (
     <Nav>
       <Nav.Item>Filter By:</Nav.Item>
       <Nav.Item>
-        <NavLink to={`${url}/category`} className="nav-link">
+        <NavLink to={`/filter/category`} className="nav-link" replace>
           Category
         </NavLink>
       </Nav.Item>
       <Nav.Item>
-        <NavLink to={`${url}/advisor`} className="nav-link">
+        <NavLink to={`/filter/advisor`} className="nav-link" replace>
           Advisor
         </NavLink>
       </Nav.Item>
@@ -43,18 +44,12 @@ interface OptionallyHasStudents {
   students: IStudentSummary[] | undefined;
 }
 
-interface FilterMainProps {
-  tags?: TopicDict;
-}
-
 const TagFilters = ({ tags }: { tags: TopicDict }) => {
-  const { url } = useRouteMatch();
-
   return (
     <Nav>
       {Object.entries(tags).map(([tagSlug, tagName]) => (
-        <Nav.Item>
-          <NavLink to={`${url}/${tagSlug}`} className="nav-link">
+        <Nav.Item key={tagSlug}>
+          <NavLink to={`/filter/category/${tagSlug}`} className="nav-link">
             {tagName}
           </NavLink>
         </Nav.Item>
@@ -63,14 +58,16 @@ const TagFilters = ({ tags }: { tags: TopicDict }) => {
   );
 };
 
-const FilterMain = ({ tags }: FilterMainProps) => {
-  const { path } = useRouteMatch();
+interface FilterMainProps {
+  tags?: TopicDict;
+}
 
+const FilterMain = ({ tags }: FilterMainProps) => {
   return (
     <>
       <FilterLeft />
       <Switch>
-        <Route path={`${path}category`}>
+        <Route path="/filter/category">
           {tags && <TagFilters tags={tags} />}
         </Route>
       </Switch>
@@ -78,13 +75,9 @@ const FilterMain = ({ tags }: FilterMainProps) => {
   );
 };
 
-interface FooterProps extends OptionallyHasStudents {
-  // setFilter: (fn: IStudentFilter) => void
-}
+interface FooterProps extends OptionallyHasStudents {}
 
 const Footer = ({ students }: FooterProps) => {
-  const { path } = useRouteMatch();
-
   const [tags, setTags] = useState<TopicDict | undefined>();
 
   useEffect(() => {
@@ -96,10 +89,10 @@ const Footer = ({ students }: FooterProps) => {
   return (
     <Navbar fixed="bottom" bg="white">
       <Switch>
-        <Route exact path={path}>
+        <Route exact path="/">
           <FooterMain />
         </Route>
-        <Route path={`${path}filter/`}>
+        <Route path="/filter">
           <FilterMain tags={tags} />
         </Route>
       </Switch>

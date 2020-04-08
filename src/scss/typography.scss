@@ -1,10 +1,119 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins/_breakpoints";
+
+@import "./variables.scss";
+
 $font-size-root: 21px;
 $font-family-sans-serif: Helvetica, sans-serif;
 
-h1,
-h2,
-h3 {
-  text-transform: uppercase;
+$font-weight-bold: bold;
+
+$browser-context: 16;
+
+:root {
+  // universal default size;
+  font-size: #{$browser-context}px;
 }
 
-$font-weight-bold: bold;
+@function fontSizeEm($font-size-px) {
+  @return $font-size-px / $browser-context;
+}
+
+@function lineHeight($line-height-px) {
+  $line-height-em: #{$line-height-px / $browser-context}rem;
+
+  @return $line-height-em;
+}
+
+@mixin font-size-spec(
+  $font-size-desktop-em,
+  $line-height-desktop-px,
+  $font-size-mobile-em,
+  $line-height-mobile-px
+) {
+  font-size: #{$font-size-mobile-em}rem;
+  line-height: lineHeight($line-height-mobile-px);
+
+  @include media-breakpoint-up(md) {
+    font-size: #{$font-size-desktop-em}rem;
+    line-height: lineHeight($line-height-desktop-px);
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+.subtitle {
+  text-transform: uppercase;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.03rem;
+  color: $black;
+}
+
+h1 {
+  @include font-size-spec(6.87, 128, 5.25, 80);
+}
+
+h2 {
+  @include font-size-spec(4, 74, 3, 74);
+}
+
+h3 {
+  @include font-size-spec(fontSizeEm(42), 42, 3, 21);
+}
+
+h4 {
+  @include font-size-spec(2, 21, 2, 37);
+}
+
+.subtitle {
+  @include font-size-spec(1.125, 21, 1, 18);
+}
+
+.summary {
+  @include font-size-spec(1.6, 36, fontSizeEm(21), 18);
+  letter-spacing: 0rem;
+  color: $dark-gray;
+}
+
+.body1 {
+  @include font-size-spec(1.3, 36, 1.12, 28);
+  letter-spacing: 0rem;
+  color: $black;
+}
+
+.body2 {
+  @include font-size-spec(1.125, 28, 1.12, 21);
+  letter-spacing: 0rem;
+  font-weight: bold;
+  color: $black;
+}
+
+.description {
+  @include font-size-spec(1, 42, 0.875, 24);
+  color: $dark-gray;
+  letter-spacing: -0.03rem;
+}
+
+.link {
+  color: $primary-color;
+  text-decoration: underline;
+  @include font-size-spec(1.3, 36, 1.12, 28);
+  letter-spacing: 0;
+}
+
+.navbar-nav .nav-link {
+  @include font-size-spec(2, 37, 2, 37);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: $black;
+  letter-spacing: 0;
+  font-weight: bold;
+  margin: 0 0.3em;
+
+  &.active {
+    color: $primary-color;
+  }
+}
