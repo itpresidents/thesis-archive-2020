@@ -24,7 +24,6 @@ body {
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  perspective: 5.5cm !important;
   @include custom-cursor-default;
 
   &::-webkit-scrollbar {
