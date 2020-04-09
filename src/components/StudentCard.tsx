@@ -10,12 +10,8 @@ interface IStudentCardProps {
   matrixY: number;
 }
 
-const getOffset = (xy: number[], cardSize: number[]): number[] =>
-  scaleVector(multiplyElementWise(xy, cardSize), -1);
-
 const StudentCard = React.memo(
   ({ student, matrixX: x, matrixY: y }: IStudentCardProps) => {
-    const offsets = getOffset([x, y], cardSize);
     const width = `${cardSize[0] * 0.75}px`;
     const height = `${(cardSize[0] - 70) * 1.4}px`;
     const linkRef = useRef<null | HTMLAnchorElement | any>(null);
@@ -39,12 +35,10 @@ const StudentCard = React.memo(
     };
     return (
       <div
-        className="student-card position-absolute"
+        className="student-card"
         style={{
           width: width,
           height: height,
-          left: `${offsets[0]}px`,
-          top: `${offsets[1]}px`,
           backgroundImage: `url(${
             student.thumbnail_image && student.thumbnail_image.src
           })`,

@@ -24,6 +24,7 @@ body {
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  perspective: 5.5cm !important;
   @include custom-cursor-default;
 
   &::-webkit-scrollbar {
@@ -40,6 +41,7 @@ body {
   .navbar-brand {
     @extend .body2;
   }
+
   padding: 0.5rem 31px;
 }
 
