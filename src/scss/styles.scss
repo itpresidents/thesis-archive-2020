@@ -131,18 +131,99 @@ a {
 
 /**** Student Details ****/
 
-hr {
-  border: none;
-  height: 1px;
-  background-color: $primary-color;
-  border-radius: 2px;
-}
+$section-top-margin: 120px;
+$header-bottom-margin: 34px;
+$text-block-bottom-margin: 40px;
+$image-top-margin: 60px;
 
 #details {
+  h2 {
+    @include media-breakpoint-up(md) {
+      margin-top: 67px;
+      margin-bottom: 38px;
+    }
+  }
+
   .tags {
     &,
     & a {
       @extend .subtitle;
+    }
+
+    @include media-breakpoint-up(md) {
+      margin-bottom: 31px;
+    }
+  }
+
+  .summary {
+    @include media-breakpoint-up(md) {
+      margin-bottom: 56px;
+    }
+  }
+
+  hr {
+    border: none;
+    height: 1px;
+    background-color: $primary-color;
+    border-radius: 2px;
+    margin-top: 0;
+    margin-bottom: #{27+27-18}px;
+  }
+
+  .links {
+    h4 {
+      @include font-size-spec(1.125, 18, 1.125, 18);
+      margin-bottom: 27px;
+    }
+
+    span,
+    a {
+      @include font-size-spec(1.3, 21, 1.3, 21);
+      color: $black;
+      margin-bottom: 0;
+    }
+  }
+
+  h3 {
+    margin-top: $section-top-margin;
+    margin-bottom: $header-bottom-margin;
+  }
+
+  .textblock {
+    margin-bottom: $text-block-bottom-margin;
+  }
+
+  figure {
+    margin-top: $image-top-margin;
+    img {
+      margin: 0;
+    }
+
+    figcaption {
+      @extend .description;
+    }
+  }
+
+  .project {
+    width: 323px;
+    height: 46px;
+    line-height: 46px;
+    color: $black;
+    border: $black 1px solid;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding-left: 61px;
+    font-size: 1.125rem;
+    margin-left: 1px;
+    margin-right: 1px;
+    &,
+    &:hover {
+      text-decoration: none;
+    }
+
+    svg {
+      margin-left: 33px;
     }
   }
 }
