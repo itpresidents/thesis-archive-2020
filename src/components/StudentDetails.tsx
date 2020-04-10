@@ -13,7 +13,7 @@ import { Link, useParams } from "react-router-dom";
 import { getStudentIdFromSlug, isNumber } from "util/queries";
 import cx from "classnames";
 
-import Vector from "./svg/Vector";
+import { Chevron, WatchPlay } from "./Svg";
 
 const createMarkup = (html: string) => ({ __html: html });
 
@@ -125,7 +125,9 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
               </Col>
               <Col sm={12} md={3}>
                 <h4>Watch</h4>
-                <Link to={`/videos/${student.student_slug}`}>Watch</Link>
+                <Link to={`/videos/${student.student_slug}`}>
+                  <WatchPlay />
+                </Link>
               </Col>
             </Row>
           </Col>
@@ -134,7 +136,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
           <h3>Abstract</h3>
           <TextBlock text={student.abstract} />
           <a href={student.project_url} className="project">
-            Project Website <Vector />
+            Project Website <Chevron />
           </a>
         </TextSection>
         <Row className={justify}>
