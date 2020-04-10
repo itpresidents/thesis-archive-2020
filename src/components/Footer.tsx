@@ -5,7 +5,7 @@ import { Navbar, Nav } from "react-bootstrap";
 import { NavLink, Link, useRouteMatch, Route, Switch } from "react-router-dom";
 import { IStudentSummary, TopicDict, IStudentFilter } from "types";
 import * as queries from "util/queries";
-import { Filter, Search, CloseBlack } from "./Svg";
+import { Filter, Search, CloseBlack, Random } from "./Svg";
 
 type mode = "filter" | "search" | null;
 
@@ -21,6 +21,11 @@ const FooterMain = () => {
       <Nav.Item>
         <Link to={`/filter/category`} replace>
           <Filter /> Filter
+        </Link>
+      </Nav.Item>
+      <Nav.Item className="randon">
+        <Link to={`/random`} replace>
+          <Random /> Random
         </Link>
       </Nav.Item>
     </Nav>
