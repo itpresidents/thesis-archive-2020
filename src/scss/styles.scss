@@ -40,7 +40,7 @@ body {
   .navbar-brand {
     @extend .body2;
   }
-  padding: 0.5rem 31px;
+  padding: #{(60-42) / 2}px 31px;
 }
 
 /**** home ****/
@@ -225,6 +225,73 @@ $image-top-margin: 60px;
     svg {
       margin-left: 33px;
       margin-top: -3px;
+    }
+  }
+}
+
+/********** footer ******/
+
+$nav-size: 60px;
+$footer-padding: 24px;
+
+.footer {
+  height: $nav-size;
+
+  .navbar-nav {
+    float: left;
+  }
+
+  .nav-item {
+    @extend .subtitle;
+    color: $black;
+
+    &:not(:last-child) {
+      margin-right: 32px;
+    }
+
+    svg {
+      margin-right: 10px;
+      margin-top: -2px;
+    }
+    a {
+      color: $black;
+
+      &.active {
+        color: $primary-color;
+      }
+    }
+  }
+
+  .navbar-nav.left {
+    // border-right: $black 1px solid;
+    padding: 0 $footer-padding;
+    width: 400px;
+    border-right: $black 1px solid;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    height: $nav-size;
+
+    .nav-item {
+      height: 100%;
+      line-height: $nav-size;
+    }
+  }
+
+  .navbar-nav.right {
+    position: fixed;
+    left: 400px;
+    padding: 0 $footer-padding;
+    width: 5000px;
+    height: $nav-size;
+    bottom: 0;
+    overflow-x: scroll;
+
+    .nav-item {
+      height: 100%;
+      line-height: $nav-size;
     }
   }
 }

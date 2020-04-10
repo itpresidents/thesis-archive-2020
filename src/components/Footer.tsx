@@ -5,17 +5,22 @@ import { Navbar, Nav } from "react-bootstrap";
 import { NavLink, Link, useRouteMatch, Route, Switch } from "react-router-dom";
 import { IStudentSummary, TopicDict, IStudentFilter } from "types";
 import * as queries from "util/queries";
+import { Filter, Search, CloseBlack } from "./Svg";
 
 type mode = "filter" | "search" | null;
 
 const FooterMain = () => {
   // const { path } = useRouteMatch();
   return (
-    <Nav className="d-flex justify-content-center w-100">
-      <Nav.Item>Search</Nav.Item>
+    <Nav className="d-flex justify-content-center w-100 main">
       <Nav.Item>
-        <Link to={`/filter`} replace>
-          Filter
+        <Link to={`/search`} replace>
+          <Search /> Search
+        </Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Link to={`/filter/category`} replace>
+          <Filter /> Filter
         </Link>
       </Nav.Item>
     </Nav>
@@ -24,15 +29,20 @@ const FooterMain = () => {
 
 const FilterLeft = () => {
   return (
-    <Nav>
-      <Nav.Item>Filter By:</Nav.Item>
+    <Nav className="left">
       <Nav.Item>
-        <NavLink to={`/filter/category`} className="nav-link" replace>
+        <Link to="/">
+          <CloseBlack />
+        </Link>{" "}
+        Filter By:
+      </Nav.Item>
+      <Nav.Item>
+        <NavLink to={`/filter/category`} replace>
           Category
         </NavLink>
       </Nav.Item>
       <Nav.Item>
-        <NavLink to={`/filter/advisor`} className="nav-link" replace>
+        <NavLink to={`/filter/advisor`} replace>
           Advisor
         </NavLink>
       </Nav.Item>
@@ -46,12 +56,10 @@ interface OptionallyHasStudents {
 
 const TagFilters = ({ tags }: { tags: TopicDict }) => {
   return (
-    <Nav>
+    <Nav className="right">
       {Object.entries(tags).map(([tagSlug, tagName]) => (
         <Nav.Item key={tagSlug}>
-          <NavLink to={`/filter/category/${tagSlug}`} className="nav-link">
-            {tagName}
-          </NavLink>
+          <NavLink to={`/filter/category/${tagSlug}`}>{tagName}</NavLink>
         </Nav.Item>
       ))}
     </Nav>
@@ -87,7 +95,7 @@ const Footer = ({ students }: FooterProps) => {
   }, [students]);
 
   return (
-    <Navbar fixed="bottom" bg="white">
+    <Navbar fixed="bottom" bg="white" className="footer">
       <Switch>
         <Route exact path="/">
           <FooterMain />
