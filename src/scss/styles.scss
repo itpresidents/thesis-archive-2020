@@ -237,6 +237,9 @@ $footer-padding: 24px;
 .footer {
   height: $nav-size;
 
+  border-top: $black 1px solid;
+  border-bottom: $black 1px solid;
+
   .navbar-nav {
     float: left;
   }
@@ -265,12 +268,23 @@ $footer-padding: 24px;
   .navbar-nav.left {
     // border-right: $black 1px solid;
     padding: 0 $footer-padding;
-    width: 400px;
-    border-right: $black 1px solid;
+    background-color: $white;
 
     position: fixed;
-    bottom: 0;
+
     left: 0;
+
+    bottom: $nav-size;
+    width: 100%;
+    border-top: $black 1px solid;
+
+    @include media-breakpoint-up(lg) {
+      bottom: 0;
+      width: 400px;
+      border-top: $black 1px solid;
+      border-right: $black 1px solid;
+      border-bottom: $black 1px solid;
+    }
 
     height: $nav-size;
 
@@ -282,11 +296,18 @@ $footer-padding: 24px;
 
   .navbar-nav.right {
     position: fixed;
-    left: 400px;
-    padding: 0 $footer-padding;
+    bottom: 0;
+    padding: 0;
+
+    border-bottom: $black 1px solid;
+
+    @include media-breakpoint-up(lg) {
+      left: 400px;
+      padding: 0 $footer-padding;
+      border-top: $black 1px solid;
+    }
     width: 5000px;
     height: $nav-size;
-    bottom: 0;
     overflow-x: scroll;
 
     .nav-item {
