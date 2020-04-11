@@ -203,11 +203,7 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
 
   return (
     <>
-      <div
-        {...bind()}
-        ref={scrollDivRef}
-        className="position-relative vw-100 vh-100 overflow-hidden"
-      >
+      <div {...bind()} ref={scrollDivRef} id="projects-canvas">
         <animated.div style={{ ...position }}>
           {/* Since Cards are wrapped in React.memo - they will only be re-rendered when matrixXy values change */}
           <Cards
@@ -240,7 +236,7 @@ const Cards = React.memo(
   ({ students, matrixX, matrixY, width, height }: ICardsProps) => {
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
 
-    const config = SpringConfig.gentle;
+    const config = SpringConfig.default;
     const cardKey = (card: CardToShow): string =>
       `${card.student.student_id}_${card.matrixX}_${card.matrixY}`;
 

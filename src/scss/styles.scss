@@ -83,18 +83,14 @@ a {
   pointer-events: none;
 }
 
-#canvas-container {
-  z-index: 1;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0vh;
-  left: 0vw;
-}
-
 #projects-canvas {
   width: 100vw;
-  cursor: -webkit-grab;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  &:active {
+    @include custom-cursor-activated;
+  }
 }
 
 .student-card {
@@ -140,6 +136,7 @@ $image-top-margin: 60px;
 #details {
   .full-on-mobile {
     padding: 0;
+
     .col {
       padding: 0;
     }
@@ -203,6 +200,7 @@ $image-top-margin: 60px;
 
   figure {
     margin-top: $image-top-margin;
+
     img {
       margin: 0;
     }
@@ -225,6 +223,7 @@ $image-top-margin: 60px;
     font-size: 1.125rem;
     margin-left: 1px;
     margin-right: 1px;
+
     &,
     &:hover {
       text-decoration: none;
@@ -258,6 +257,7 @@ $footer-padding: 24px;
 
     &:not(:last-child) {
       margin-right: 28px;
+
       @include media-breakpoint-up(lg) {
         margin-right: 32px;
       }
@@ -265,6 +265,7 @@ $footer-padding: 24px;
 
     svg {
       margin-right: 2px;
+
       @include media-breakpoint-up(lg) {
         margin-right: 10px;
       }
@@ -320,6 +321,7 @@ $footer-padding: 24px;
       padding: 0 $footer-padding;
       border-top: $black 1px solid;
     }
+
     width: 5000px;
     height: $nav-size;
     overflow-x: scroll;
