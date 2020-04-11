@@ -105,8 +105,7 @@ h4 {
 }
 
 .navbar-nav .nav-link {
-  @include font-size-spec(2, 37, 2, 37);
-  text-transform: uppercase;
+  @extend h4;
   text-decoration: none;
   color: $black;
   letter-spacing: 0;
