@@ -1,6 +1,12 @@
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import { IStudentSummary, CardToShow } from "../types";
-import { useSpring, animated } from "react-spring";
+import {
+  config as SpringConfig,
+  useSpring,
+  animated,
+  useTransition,
+  to,
+} from "react-spring";
 import { useDrag } from "react-use-gesture";
 import {
   addVector,
@@ -225,9 +231,34 @@ interface ICardsProps {
   height: IDraggableCardsProps["height"];
 }
 
+const DEBUG = false;
+
+const getOffset = (xy: number[], cardSize: number[]): number[] =>
+  scaleVector(multiplyElementWise(xy, cardSize), -1);
+
 const Cards = React.memo(
   ({ students, matrixX, matrixY, width, height }: ICardsProps) => {
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
+
+    const config = SpringConfig.gentle;
+    const cardKey = (card: CardToShow): string =>
+      `${card.student.student_id}_${card.matrixX}_${card.matrixY}`;
+
+    const transition = useTransition(inViewPortList, {
+      key: (card) => cardKey(card),
+      from: { opacity: 0.5, rotateY: 90, dead: 1 },
+      enter: (card) => async (next, stop) => {
+        if (DEBUG) console.log(`  Entering:`, cardKey(card));
+        await next({ opacity: 1, rotateY: 0, config });
+      },
+      leave: (card) => async (next) => {
+        if (DEBUG) console.log(`  Leaving:`, cardKey(card));
+        await next({ opacity: 0, rotateY: -90, config });
+        await next({ dead: 0, config });
+      },
+      trail: 15,
+    });
+
     useEffect(() => {
       if (!students) return;
       setInViewportList((prevState) =>
@@ -246,15 +277,22 @@ const Cards = React.memo(
 
     return (
       <>
-        {inViewPortList.map(({ student, matrixX: x, matrixY: y }) => {
-          /* Since Each Student Card is wrapped in React.memo - it will only be re-rendered when matrixXy values change */
-          return (
-            <StudentCard
-              key={`${student.student_id}_${x}_${y}`}
-              student={student}
-              matrixX={x}
-              matrixY={y}
-            />
+        {transition(({ dead, rotateY, ...style }, item, key) => {
+          const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
+          return dead.get() === 0 ? null : (
+            <animated.div
+              style={{
+                position: "absolute",
+                width: `${cardSize[0] * 0.75}px`,
+                transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
+                left: `${offsets[0]}px`,
+                top: `${offsets[1]}px`,
+                ...style,
+              }}
+              key={cardKey(item)}
+            >
+              <StudentCard student={item.student} />
+            </animated.div>
           );
         })}
       </>
