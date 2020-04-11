@@ -29,7 +29,7 @@ const FeaturedImage = ({ image }: { image: IFeaturedImage | undefined }) => {
       src={image.src}
       alt={image.alt}
       title={image.title}
-      className="mx-auto"
+      className="mx-auto img-fluid"
     ></img>
   );
 };
@@ -66,8 +66,8 @@ const TextSection = ({ children }: { children: React.ReactNode }) => (
 
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
-    <>
-      <Container>
+    <div id="details">
+      <Container className="full-on-mobile">
         <Col>
           <FeaturedImage image={student.thumbnail_image} />
         </Col>
@@ -167,7 +167,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
           <TextBlock text={student.further_reading} />
         </TextSection>
       </Container>
-    </>
+    </div>
   );
 };
 

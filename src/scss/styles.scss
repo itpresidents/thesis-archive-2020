@@ -137,6 +137,13 @@ $text-block-bottom-margin: 40px;
 $image-top-margin: 60px;
 
 #details {
+  .full-on-mobile {
+    padding: 0;
+    .col {
+      padding: 0;
+    }
+  }
+
   h2 {
     @include media-breakpoint-up(md) {
       margin-top: 67px;
