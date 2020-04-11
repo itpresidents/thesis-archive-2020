@@ -37,7 +37,7 @@ const HeaderBG = () => {
           height: `${windowHeight * magicNumber}px`,
         }}
       >
-        ITP Thesis Archive
+        Thesis Archive
       </h1>
     </div>
   );
