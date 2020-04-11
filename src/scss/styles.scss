@@ -249,11 +249,17 @@ $footer-padding: 24px;
     color: $black;
 
     &:not(:last-child) {
-      margin-right: 32px;
+      margin-right: 28px;
+      @include media-breakpoint-up(lg) {
+        margin-right: 32px;
+      }
     }
 
     svg {
-      margin-right: 10px;
+      margin-right: 2px;
+      @include media-breakpoint-up(lg) {
+        margin-right: 10px;
+      }
     }
 
     a {
