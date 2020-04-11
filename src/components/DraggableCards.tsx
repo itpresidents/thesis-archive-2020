@@ -5,7 +5,6 @@ import {
   useSpring,
   animated,
   useTransition,
-  interpolate,
   to,
 } from "react-spring";
 import { useDrag } from "react-use-gesture";
@@ -257,6 +256,7 @@ const Cards = React.memo(
         await next({ opacity: 0, rotateY: -90, config });
         await next({ dead: 0, config });
       },
+      trail: 15,
     });
 
     useEffect(() => {
@@ -284,21 +284,14 @@ const Cards = React.memo(
               style={{
                 position: "absolute",
                 width: `${cardSize[0] * 0.75}px`,
-                transform: rotateY.interpolate(
-                  (a) => `rotate3d(0.6, 1, 0, ${a}deg)`
-                ),
+                transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
                 left: `${offsets[0]}px`,
                 top: `${offsets[1]}px`,
                 ...style,
               }}
               key={cardKey(item)}
             >
-              <StudentCard
-                key={`${item.student.student_id}_${item.matrixX}_${item.matrixY}`}
-                student={item.student}
-                matrixX={item.matrixX}
-                matrixY={item.matrixY}
-              />
+              <StudentCard student={item.student} />
             </animated.div>
           );
         })}
