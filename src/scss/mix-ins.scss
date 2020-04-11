@@ -36,3 +36,29 @@ $cursor-activated-hi: "../images/cursors/cursor-activated@2x.png";
       14.5 14.5,
     pointer;
 }
+
+@mixin break($length) {
+  @media (min-width: $length) {
+    @content;
+  }
+}
+
+@mixin clearFix() {
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    display: block;
+    clear: both;
+    height: 1px;
+    margin-top: -1px;
+    visibility: hidden;
+  }
+
+  & {
+    *zoom: 1;
+  }
+}
