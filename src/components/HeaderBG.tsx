@@ -1,40 +1,65 @@
-import React, { useState, useCallback, useEffect } from "react";
-
+import React, { useState, useCallback, useEffect, useContext } from "react";
+import { useLocation } from "react-router-dom";
+import { useSpring, to, animated } from "react-spring";
+import { Context } from "../util/contexts";
 const magicNumber = 0.22;
 
+const testHomePage = (location: any): boolean => {
+  // it's at home page if the first match is not in ["students", "video", "about"]
+  const notHomeRegex = /\b(students|videos|about|)\b/;
+  return !notHomeRegex.test(location.pathname);
+};
+
 const HeaderBG = () => {
-  const [windowHeight, setWindowHeight] = useState<number>(window.innerHeight);
-  const [height, setHeight] = useState<number>(windowHeight * magicNumber);
+  const { windowSize } = useContext(Context);
+  const windowHeight = windowSize[1];
+  const [spring, setSpring] = useSpring(() => ({
+    height: windowHeight * magicNumber,
+    immediate: true,
+  }));
+  const location = useLocation();
+
+  const [isAtHomePage, setIsAtHome] = useState(testHomePage(location));
+
+  const onScroll = useCallback(
+    (e: any) => {
+      setSpring({
+        height: windowHeight * magicNumber - document.body.scrollTop,
+        immediate: true,
+      });
+    },
+    [isAtHomePage]
+  );
 
   useEffect(() => {
-    const handleResize = () => {
-      console.log("resize");
-      setWindowHeight(window.innerHeight);
-      setHeight(window.innerHeight * magicNumber - document.body.scrollTop);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    document.body.addEventListener("scroll", onScroll);
+    console.log("scrolling listenner added");
   }, []);
 
-  const onScroll = useCallback((e: any) => {
-    setHeight(windowHeight * magicNumber - e.target.scrollTop);
-  }, []);
-  document.body.addEventListener("scroll", onScroll);
-  return (
-    <div id="header2020-bg">
-      <div
+  useEffect(() => {
+    setIsAtHome(testHomePage(location));
+  }, [location]);
+
+  useEffect(() => {
+    setSpring({
+      height: windowHeight * magicNumber - document.body.scrollTop,
+      immediate: true,
+    });
+  }, [windowHeight]);
+
+  return !isAtHomePage ? null : (
+    <div id="header2020-bg" style={{}}>
+      <animated.div
         id="header2020-bg-animation"
         style={{
-          backgroundSize: `25vh ${height}px`,
-          height: `${height + 4}px`,
+          backgroundSize: to(spring.height, (height) => `25vh ${height}px`),
+          height: to(spring.height, (height) => `${height + 4}px`),
         }}
       />
       <h1
         className=""
         style={{
-          height: `${windowHeight * magicNumber}px`,
+          height: `${windowHeight * magicNumber + 4}px`,
         }}
       >
         Thesis Archive

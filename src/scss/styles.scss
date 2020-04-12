@@ -60,6 +60,8 @@ a {
   position: relative;
   width: 100vw;
   background-color: white;
+  top: 0;
+  left: 0;
 
   h1 {
     font-size: 4em;
@@ -69,7 +71,7 @@ a {
 #header2020-bg-animation {
   position: fixed;
   left: 0;
-  top: 5px;
+  top: 0px;
   width: 100vw;
   background: url("../images/20.svg") repeat-x;
   animation: move_background $scrollSpeed infinite linear;
@@ -88,6 +90,7 @@ a {
   height: 100vh;
   overflow: hidden;
   position: relative;
+
   &:active {
     @include custom-cursor-activated;
   }
