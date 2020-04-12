@@ -4,6 +4,7 @@
 @import "./bootstrap-overrides.scss";
 @import "~bootstrap/scss/bootstrap.scss";
 @import "./typography.scss";
+@import "./canvasAndCards.scss";
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -75,58 +76,6 @@ a {
   width: 100vw;
   background: url("../images/20.svg") repeat-x;
   animation: move_background $scrollSpeed infinite linear;
-}
-
-#canvas-invisible-height {
-  z-index: 10;
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-}
-
-#projects-canvas {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-
-  &:active {
-    @include custom-cursor-activated;
-  }
-}
-
-.student-card {
-  position: absolute;
-  margin: 10px;
-  width: 200px;
-  height: 300px;
-  background-size: cover;
-  background-position: center center;
-  display: inline-block;
-  box-shadow: gray;
-
-  .card-info {
-    h3 {
-      @extend .subtitle;
-      max-height: 2.2em;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    h5 {
-      @extend .body2;
-    }
-
-    p {
-      font-size: 0.4em;
-      color: $tertiary-color;
-      font-weight: 300;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
 }
 
 /**** Student Details ****/

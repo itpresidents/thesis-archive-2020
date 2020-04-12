@@ -1,0 +1,62 @@
+#canvas-invisible-height {
+  z-index: 10;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+#projects-canvas {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+
+  &:active {
+    @include custom-cursor-activated;
+  }
+}
+
+.student-card {
+  position: absolute;
+  margin: 10px;
+  width: 200px;
+  height: 300px;
+  background-size: cover;
+  background-position: center center;
+  display: inline-block;
+  box-shadow: gray;
+  // https://github.com/oveddan/thesis-archive-2020/issues/31
+  border-style: solid;
+  border-width: 0.05px;
+  border-color: #000;
+
+  .card-info {
+    h3 {
+      @extend .subtitle;
+      max-height: 2.2em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      //7% margin top Font-weight: 600  https://github.com/oveddan/thesis-archive-2020/issues/31
+      margin-top: 7%;
+      font-weight: 600;
+    }
+
+    h5 {
+      @extend .body2;
+      // overriding it. https://github.com/oveddan/thesis-archive-2020/issues/31
+      font-size: 0.9em;
+      font-weight: 600;
+      margin-bottom: -0.2em;
+    }
+
+    p {
+      font-size: 0.7em;
+      color: $tertiary-color;
+      font-weight: 300;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
