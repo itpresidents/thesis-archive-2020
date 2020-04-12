@@ -309,9 +309,10 @@ const Cards = React.memo(
 
     return (
       <>
-        {transition(({ dead, rotateY, ...style }, item, key) => {
+        {transition(({ dead, rotateY, ...style }, item) => {
+          if (dead.get() === 0) return null;
           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
-          return dead.get() === 0 ? null : (
+          return (
             <animated.div
               style={{
                 position: "absolute",
