@@ -172,7 +172,7 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
   const onBodyScroll = useCallback(() => {
     if (!scrollDivRef.current) return;
     if (
-      scrollDivRef.current?.getBoundingClientRect().top < 100 &&
+      scrollDivRef.current?.getBoundingClientRect().top < 180 &&
       !sentDraggingTip
     ) {
       setSentDraggingTip(true);
