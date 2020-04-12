@@ -33,15 +33,54 @@ body {
 
 /**** navbar ****/
 
+$ipad-and-up-nav-height: 63px;
+$mobile-nav-link-size: 72px;
+
 .navbar {
   border-top: 1px solid $black;
   border-bottom: 1px solid $black;
 
   .navbar-brand {
     @extend .body2;
+    padding-left: 31px;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: $ipad-and-up-nav-height;
+    line-height: $ipad-and-up-nav-height;
   }
 
-  padding: #{(60-42) / 2}px 31px;
+  padding: 0px;
+
+  .navbar-collapse {
+    .nav-item {
+      border-top: $black 1px solid;
+      height: $mobile-nav-link-size;
+      a {
+        line-height: $mobile-nav-link-size;
+        padding: 0;
+        margin: 0 20px;
+      }
+
+      @include media-breakpoint-up(md) {
+        border: 0;
+        height: $ipad-and-up-nav-height;
+
+        a {
+          line-height: $ipad-and-up-nav-height;
+        }
+      }
+    }
+  }
+  .navbar-toggler {
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2228%22%20viewBox%3D%220%200%2030%2028%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cline%20x1%3D%222.69502%22%20y1%3D%221.28101%22%20x2%3D%2228.695%22%20y2%3D%2226.4143%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3Cline%20x1%3D%221.30498%22%20y1%3D%2226.4143%22%20x2%3D%2227.305%22%20y2%3D%221.28098%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E");
+    }
+    &.collapsed {
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2235%22%20height%3D%2219%22%20viewBox%3D%220%200%2035%2019%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cline%20y1%3D%221%22%20x2%3D%2235%22%20y2%3D%221%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3Cline%20y1%3D%229.5%22%20x2%3D%2235%22%20y2%3D%229.5%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3Cline%20y1%3D%2218%22%20x2%3D%2235%22%20y2%3D%2218%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3C%2Fsvg%3E");
+      }
+    }
+  }
 }
 
 /**** home ****/
@@ -62,7 +101,7 @@ a {
   background-color: white;
 
   h1 {
-    font-size: 4em;
+    margin-left: 10px;
   }
 }
 
