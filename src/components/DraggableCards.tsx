@@ -35,7 +35,8 @@ const getCardsInMatrixToShow = (
   prevCards: CardToShow[],
   filteredStudents: IStudentSummary[],
   width: number,
-  height: number
+  height: number,
+  dropOldCards: boolean = false
 ): CardToShow[] => {
   // responsive matrix
   const windowSizeInCards = [
@@ -47,46 +48,65 @@ const getCardsInMatrixToShow = (
   const endX = matrixX + 2;
   const startY = matrixY - windowSizeInCards[1];
   const endY = matrixY + 2;
+
+  // Create a map to remember students that're in previous viewport.
   const studentsInPrevView: Record<
     number,
     Record<number, IStudentSummary>
   > = {};
+  // Create a map to store updated students that will appear in new viewport.
   const studentsInNewView: Record<number, Record<number, IStudentSummary>> = {};
+  // following arrays are created becars array.include() is so handy.
+  // Use array to rememer ids of those cards added in studentsInNewView;
   const studentsIdsInNewView: string[] = [];
-  let studentsNotInNewView: IStudentSummary[] = shuffle(
-    filteredStudents.filter(
-      (student) => !studentsIdsInNewView.includes(student.student_id)
-    )
-  );
+
+  // Use array to track studens that's not in the map studentsInNewView yet,
+  let studentsNotInNewView: IStudentSummary[] = [];
+
+  // Use array to store ids of the student pool.
   const filteredStudentsIds: string[] = filteredStudents.map(
     (student) => student.student_id
   );
 
+  // The array to be returned
   const result: CardToShow[] = [];
 
-  // prepare a matrix to remember previous cards;
-  for (let card of prevCards) {
-    if (studentsInPrevView[card.matrixX] === undefined)
-      studentsInPrevView[card.matrixX] = {};
-    studentsInPrevView[card.matrixX][card.matrixY] = card.student;
-  }
+  if (!dropOldCards) {
+    // prepare a matrix, studentsInPrevView, to remember previous cards;
+    // using their matrix XY as key to store data.
+    for (let card of prevCards) {
+      if (studentsInPrevView[card.matrixX] === undefined)
+        studentsInPrevView[card.matrixX] = {};
+      studentsInPrevView[card.matrixX][card.matrixY] = card.student;
+    }
 
-  //add previous existed cards to a matrix;
-  for (let x = startX; x < endX; x++) {
-    for (let y = startY; y < endY; y++) {
-      if (
-        studentsInPrevView[x] !== undefined &&
-        studentsInPrevView[x][y] !== undefined &&
-        filteredStudentsIds.includes(studentsInPrevView[x][y].student_id)
-      ) {
-        if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
-        studentsInNewView[x][y] = studentsInPrevView[x][y];
-        studentsIdsInNewView.push(studentsInPrevView[x][y].student_id);
+    // if a card was in the overlapping area of previous viewport and new viewport,
+    // and exist in the new filtered students list.
+    // add it to the new viewport.
+    for (let x = startX; x < endX; x++) {
+      for (let y = startY; y < endY; y++) {
+        if (
+          studentsInPrevView[x] !== undefined &&
+          studentsInPrevView[x][y] !== undefined &&
+          filteredStudentsIds.includes(studentsInPrevView[x][y].student_id)
+        ) {
+          if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
+          studentsInNewView[x][y] = studentsInPrevView[x][y];
+          // keep tracking who has been added to the new viewport.
+          studentsIdsInNewView.push(studentsInPrevView[x][y].student_id);
+        }
       }
     }
   }
 
-  // add new card
+  // findout who is in the filtered student list but not added in the new viewport yet.
+  studentsNotInNewView = shuffle(
+    filteredStudents.filter(
+      (student) => !studentsIdsInNewView.includes(student.student_id)
+    )
+  );
+
+  // if there's an empty slot in the new viewport, get a student in studentsNotInNewView and put it there.
   for (let x = startX; x < endX; x++) {
     for (let y = startY; y < endY; y++) {
       if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
@@ -267,7 +287,23 @@ const Cards = React.memo(
           height
         )
       );
-    }, [matrixX, matrixY, students, width, height]);
+    }, [matrixX, matrixY, width, height]);
+
+    useEffect(() => {
+      if (!students) return;
+      const dropOldCards = true;
+      setInViewportList((prevState) =>
+        getCardsInMatrixToShow(
+          matrixX,
+          matrixY,
+          prevState,
+          students,
+          width,
+          height,
+          dropOldCards
+        )
+      );
+    }, [students]);
 
     if (!students) return null;
 
