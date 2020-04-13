@@ -1,19 +1,36 @@
 // {"name":"Performance","slug":"performance"},{"name":"Society","slug":"society"}]
 import { IStudentSummary, TopicDict } from "types";
 
-export const getTags = (students: IStudentSummary[]): TopicDict => {
-  const result: TopicDict = {};
+const toLowerSnakeCase = (name: string) => {
+  return name.toLowerCase().replace(/ /g, "_");
+};
 
-  for (let { tags } of students) {
-    for (let topic of tags) {
-      const { slug, name } = topic;
-      if (!result[slug]) {
-        result[slug] = name;
+export const getTagsAndAdvisors = (
+  students: IStudentSummary[]
+): {
+  tags: TopicDict;
+  advisors: TopicDict;
+} => {
+  const allTags: TopicDict = {};
+  const allAdvisors: TopicDict = {};
+
+  for (let { tags, advisor_name } of students) {
+    for (let tag of tags) {
+      const { slug: tagSlug, name: tagName } = tag;
+      if (!allTags[tagSlug]) {
+        allTags[tagSlug] = tagName;
       }
+    }
+    const advisorSlug = toLowerSnakeCase(advisor_name);
+    if (!allAdvisors[advisorSlug]) {
+      allAdvisors[advisorSlug] = advisor_name;
     }
   }
 
-  return result;
+  return {
+    tags: allTags,
+    advisors: allAdvisors,
+  };
 };
 
 export const filterByTag = (
@@ -22,6 +39,15 @@ export const filterByTag = (
 ): IStudentSummary[] => {
   return students.filter(({ tags }) =>
     tags.map(({ slug }) => slug).includes(tagSlug)
+  );
+};
+
+export const filterByAdvisorName = (
+  students: IStudentSummary[],
+  advisorSlug: string
+): IStudentSummary[] => {
+  return students.filter(
+    ({ advisor_name }) => toLowerSnakeCase(advisor_name) === advisorSlug
   );
 };
 

@@ -62,9 +62,21 @@ interface OptionallyHasStudents {
 const TagFilters = ({ tags }: { tags: TopicDict }) => {
   return (
     <Nav className="right">
-      {Object.entries(tags).map(([tagSlug, tagName]) => (
-        <Nav.Item key={tagSlug}>
-          <NavLink to={`/filter/category/${tagSlug}`}>{tagName}</NavLink>
+      {Object.entries(tags).map(([slug, name]) => (
+        <Nav.Item key={slug}>
+          <NavLink to={`/filter/category/${slug}`}>{name}</NavLink>
+        </Nav.Item>
+      ))}
+    </Nav>
+  );
+};
+
+const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
+  return (
+    <Nav className="right">
+      {Object.entries(advisors).map(([slug, name]) => (
+        <Nav.Item key={slug}>
+          <NavLink to={`/filter/advisor/${slug}`}>{name}</NavLink>
         </Nav.Item>
       ))}
     </Nav>
@@ -73,15 +85,19 @@ const TagFilters = ({ tags }: { tags: TopicDict }) => {
 
 interface FilterMainProps {
   tags?: TopicDict;
+  advisors?: TopicDict;
 }
 
-const FilterMain = ({ tags }: FilterMainProps) => {
+const FilterMain = ({ tags, advisors }: FilterMainProps) => {
   return (
     <>
       <FilterLeft />
       <Switch>
         <Route path="/filter/category">
           {tags && <TagFilters tags={tags} />}
+        </Route>
+        <Route path="/filter/advisor">
+          {advisors && <AdvisorFilters advisors={advisors} />}
         </Route>
       </Switch>
     </>
@@ -90,12 +106,17 @@ const FilterMain = ({ tags }: FilterMainProps) => {
 
 interface FooterProps extends OptionallyHasStudents {}
 
+interface FilterOptions {
+  tags?: TopicDict;
+  advisors?: TopicDict;
+}
+
 const Footer = ({ students }: FooterProps) => {
-  const [tags, setTags] = useState<TopicDict | undefined>();
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({});
 
   useEffect(() => {
     if (students) {
-      setTags(queries.getTags(students));
+      setFilterOptions(queries.getTagsAndAdvisors(students));
     }
   }, [students]);
 
@@ -106,7 +127,10 @@ const Footer = ({ students }: FooterProps) => {
           <FooterMain />
         </Route>
         <Route path="/filter">
-          <FilterMain tags={tags} />
+          <FilterMain
+            tags={filterOptions.tags}
+            advisors={filterOptions.advisors}
+          />
         </Route>
       </Switch>
     </Navbar>

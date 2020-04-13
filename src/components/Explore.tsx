@@ -18,19 +18,29 @@ const Explore = ({ students }: IHomeProps) => {
   >();
 
   const tagMatch = useRouteMatch<{ tag: string }>("/filter/category/:tag");
+  const advisorMatch = useRouteMatch<{ advisor: string }>(
+    "/filter/advisor/:advisor"
+  );
 
   const tag = tagMatch && tagMatch.params.tag;
+  const advisor = advisorMatch && advisorMatch.params.advisor;
 
   useEffect(() => {
     if (!students) return;
 
-    if (!tag) {
-      setFilteredStudents(students);
-    } else {
+    if (tag) {
       const studentsWithTag = queries.filterByTag(students, tag);
       setFilteredStudents(studentsWithTag);
+    } else if (advisor) {
+      const studentsWithAdvisor = queries.filterByAdvisorName(
+        students,
+        advisor
+      );
+      setFilteredStudents(studentsWithAdvisor);
+    } else {
+      setFilteredStudents(students);
     }
-  }, [students, tag]);
+  }, [students, tag, advisor]);
 
   if (!filteredStudents) return <h2>loading...</h2>;
 
