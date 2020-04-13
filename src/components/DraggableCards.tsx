@@ -260,6 +260,9 @@ const Cards = React.memo(
     const cardKey = (card: CardToShow): string =>
       `${card.student.student_id}_${card.matrixX}_${card.matrixY}`;
 
+    // if set to true, the transition will not play.
+    const [springImmediate, setImmediate] = useState<boolean>(false);
+
     const transition = useTransition(inViewPortList, {
       key: (card) => cardKey(card),
       from: { opacity: 0.5, rotateY: 90, dead: 1 },
@@ -272,11 +275,12 @@ const Cards = React.memo(
         await next({ opacity: 0, rotateY: -90, config });
         await next({ dead: 0, config });
       },
-      trail: 15,
+      trail: 10,
     });
 
     useEffect(() => {
       if (!students) return;
+      setImmediate(true);
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
           matrixX,
@@ -291,6 +295,7 @@ const Cards = React.memo(
 
     useEffect(() => {
       if (!students) return;
+      setImmediate(false);
       const dropOldCards = true;
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
@@ -309,18 +314,24 @@ const Cards = React.memo(
 
     return (
       <>
-        {transition(({ dead, rotateY, ...style }, item) => {
+        {transition(({ dead, rotateY, ...style }, item, transition) => {
           if (dead.get() === 0) return null;
           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
+          // if springImmediate == true, remove transition.
+          const anim = springImmediate
+            ? {}
+            : {
+                transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
+                ...style,
+              };
           return (
             <animated.div
               style={{
                 position: "absolute",
                 width: `${cardSize[0] * 0.75}px`,
-                transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
                 left: `${offsets[0]}px`,
                 top: `${offsets[1]}px`,
-                ...style,
+                ...anim,
               }}
               key={cardKey(item)}
             >
