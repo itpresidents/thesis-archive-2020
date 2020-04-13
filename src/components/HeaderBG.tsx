@@ -1,8 +1,16 @@
-import React, { useState, useCallback, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useContext,
+} from "react";
 import { useLocation } from "react-router-dom";
 import { useSpring, to, animated } from "react-spring";
 import { Context } from "../util/contexts";
-const magicNumber = 0.22;
+import { AddMessage } from "./MessageHub";
+
+const headerHeightRatio = 0.22;
 
 const testHomePage = (location: any): boolean => {
   // it's at home page if the first match is not in ["students", "video", "about"]
@@ -14,27 +22,47 @@ const HeaderBG = () => {
   const { windowSize } = useContext(Context);
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
-    height: windowHeight * magicNumber,
-    immediate: true,
+    height: windowHeight * headerHeightRatio,
+    // immediate: true,
   }));
+  const [listenersAdded, setListenersAdded] = useState(false);
+  const [didFistClick, setdidFistClick] = useState(false);
+  const listenToFistClick = useRef(() => {
+    !didFistClick && setdidFistClick(true);
+    window.removeEventListener("wheel", listenToFistClick.current);
+    window.removeEventListener("click", listenToFistClick.current);
+    console.log("tried removing");
+  });
   const location = useLocation();
-
   const [isAtHomePage, setIsAtHome] = useState(testHomePage(location));
 
-  const onScroll = useCallback(
-    (e: any) => {
-      setSpring({
-        height: windowHeight * magicNumber - document.body.scrollTop,
-        immediate: true,
-      });
-    },
-    [isAtHomePage]
-  );
+  // const onScroll = useCallback(
+  //   (e: any) => {
+  //     setSpring({
+  //       height: windowHeight * headerHeightRatio - document.body.scrollTop,
+  //       immediate: true,
+  //     });
+  //   },
+  //   [isAtHomePage]
+  // );
 
   useEffect(() => {
-    document.body.addEventListener("scroll", onScroll);
-    console.log("scrolling listenner added");
-  }, []);
+    if (spring.height.get() !== 0) {
+      setSpring({ height: 0 });
+    }
+    isAtHomePage && AddMessage("Drag to explore, click to Read More.", false);
+  }, [didFistClick]);
+
+  // useEffect(() => {
+  //   // document.body.addEventListener("scroll", onScroll);
+  //   console.log("scrolling listenner added");
+  // }, []);
+
+  if (!listenersAdded) {
+    window.addEventListener("click", listenToFistClick.current);
+    window.addEventListener("wheel", listenToFistClick.current);
+    setListenersAdded(true);
+  }
 
   useEffect(() => {
     setIsAtHome(testHomePage(location));
@@ -42,29 +70,34 @@ const HeaderBG = () => {
 
   useEffect(() => {
     setSpring({
-      height: windowHeight * magicNumber - document.body.scrollTop,
+      height: windowHeight * headerHeightRatio - document.body.scrollTop,
       immediate: true,
     });
   }, [windowHeight]);
 
-  return !isAtHomePage ? null : (
-    <div id="header2020-bg" style={{}}>
+  return (
+    <animated.div
+      id="header2020-bg"
+      style={{
+        height: to(spring.height, (height) => `${height}px`),
+      }}
+    >
       <animated.div
         id="header2020-bg-animation"
         style={{
           backgroundSize: to(spring.height, (height) => `25vh ${height}px`),
-          height: to(spring.height, (height) => `${height + 4}px`),
+          height: to(spring.height, (height) => `${height}px`),
         }}
       />
-      <h1
-        className=""
+      <animated.h1
+        className="position-absolute"
         style={{
-          height: `${windowHeight * magicNumber + 4}px`,
+          height: to(spring.height, (height) => `${height}px`),
         }}
       >
         Thesis Archive
-      </h1>
-    </div>
+      </animated.h1>
+    </animated.div>
   );
 };
 

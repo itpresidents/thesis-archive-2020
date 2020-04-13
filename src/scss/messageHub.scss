@@ -6,74 +6,74 @@
   width: 100%;
   top: 0;
   height: 0;
-}
 
-#Container {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  justify-content: center;
-}
+  .message-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    justify-content: center;
+  }
 
-#Message {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  text-align: center;
-  background-color: $primary-color;
+  .message {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+    background-color: $primary-color;
 
-  @for $i from 2 to 8 {
-    &:nth-child(#{$i}) {
-      background-color: lighten($color: $primary-color, $amount: $i * 5%);
+    @for $i from 2 to 8 {
+      &:nth-child(#{$i}) {
+        background-color: lighten($color: $primary-color, $amount: $i * 5%);
+      }
+    }
+
+    .message-content {
+      color: white;
+      opacity: 0.96;
+      padding: 0.3em, 0.3em;
+      display: flex;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+
+      p {
+        font-size: 1.5em;
+        line-height: 1.5em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline;
+        margin-block-start: 0em;
+        margin-block-end: 0em;
+      }
+
+      .messageLife {
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        background-image: linear-gradient(130deg, #48c7ffa3, #aaddf0);
+        height: 5px;
+      }
+
+      .clear-message-btn {
+        cursor: pointer;
+        pointer-events: all;
+        outline: 0;
+        border: none;
+        background: transparent;
+        display: block;
+        align-self: flex-end;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 60px;
+        color: rgba(255, 255, 255, 0.5);
+
+        :hover {
+          color: rgba(255, 255, 255, 0.6);
+        }
+      }
     }
   }
-}
-
-#Content {
-  color: white;
-  opacity: 0.96;
-  padding: 0.3em, 0.3em;
-  display: flex;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto;
-
-  p {
-    font-size: 1.5em;
-    line-height: 1.5em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline;
-    margin-block-start: 0em;
-    margin-block-end: 0em;
-  }
-}
-
-#Button {
-  cursor: pointer;
-  pointer-events: all;
-  outline: 0;
-  border: none;
-  background: transparent;
-  display: block;
-  align-self: flex-end;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 60px;
-  color: rgba(255, 255, 255, 0.5);
-
-  :hover {
-    color: rgba(255, 255, 255, 0.6);
-  }
-}
-
-#messageLife {
-  position: absolute;
-  left: 0px;
-  bottom: 0px;
-  background-image: linear-gradient(130deg, #48c7ffa3, #aaddf0);
-  height: 5px;
 }

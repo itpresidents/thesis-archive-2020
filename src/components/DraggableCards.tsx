@@ -1,4 +1,10 @@
-import React, { useRef, useCallback, useEffect, useState } from "react";
+import React, {
+  useRef,
+  useCallback,
+  useEffect,
+  useState,
+  useContext,
+} from "react";
 import { IStudentSummary, CardToShow } from "../types";
 import {
   config as SpringConfig,
@@ -18,12 +24,11 @@ import shuffle from "lodash.shuffle";
 import { cardSize } from "config";
 import StudentCard from "./StudentCard";
 import { usePrevious } from "util/usePrevious";
-import { AddMessage } from "./MessageHub";
+import { Context } from "../util/contexts";
+import { clearMessageHub } from "./MessageHub";
 
 interface IDraggableCardsProps {
   students?: IStudentSummary[];
-  width: number;
-  height: number;
 }
 
 const matrixShape: number[] = [800, 800];
@@ -148,7 +153,10 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
   return [Math.ceil(centerX / cardWidth), Math.ceil(centerY / cardHeight)];
 };
 
-const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
+const DraggableCards = ({ students }: IDraggableCardsProps) => {
+  const { windowSize } = useContext(Context);
+  const [width, height] = windowSize;
+
   const canvasSize = multiplyElementWise(matrixShape, cardSize) as [
     number,
     number
@@ -167,23 +175,29 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
   const prevHeight = usePrevious(height);
 
   const scrollDivRef = useRef<HTMLDivElement>(null);
-  const [sentDraggingTip, setSentDraggingTip] = useState<boolean>(false);
-
-  const onBodyScroll = useCallback(() => {
-    if (!scrollDivRef.current) return;
-    if (
-      scrollDivRef.current?.getBoundingClientRect().top < 180 &&
-      !sentDraggingTip
-    ) {
-      setSentDraggingTip(true);
+  const [clearedDraggingTip, setClearedDraggingTip] = useState<number>(0);
+  const clearDraggineTipTwice = () => {
+    if (clearedDraggingTip <= 2) {
+      clearMessageHub();
+      setClearedDraggingTip((prev) => (prev += 1));
     }
-  }, [sentDraggingTip]);
+  };
 
-  document.body.addEventListener("scroll", onBodyScroll);
+  // const onBodyScroll = useCallback(() => {
+  //   if (!scrollDivRef.current) return;
+  //   if (
+  //     scrollDivRef.current?.getBoundingClientRect().top < 180 &&
+  //     !sentDraggingTip
+  //   ) {
+  //     setSentDraggingTip(true);
+  //   }
+  // }, [sentDraggingTip]);
 
-  useEffect(() => {
-    if (sentDraggingTip) AddMessage("Drag to explore, click to Read More.");
-  }, [sentDraggingTip]);
+  // document.body.addEventListener("scroll", onBodyScroll);
+
+  // useEffect(() => {
+  //   if (sentDraggingTip)
+  // }, [sentDraggingTip]);
 
   useEffect(() => {
     const xy = [
@@ -201,7 +215,7 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
 
   const bind = useDrag(
     ({ down, movement: xy, velocity, direction }) => {
-      //smooth the direction
+      if (!down) clearDraggineTipTwice();
       direction = smoother.smooth(direction, 8) as typeof direction;
       // if mouse is up, use the momentum and direction of last several frame to send the destination further away.
       xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
@@ -243,8 +257,8 @@ interface ICardsProps {
   students: IStudentSummary[];
   matrixX: number;
   matrixY: number;
-  width: IDraggableCardsProps["width"];
-  height: IDraggableCardsProps["height"];
+  width: number;
+  height: number;
 }
 
 const DEBUG = false;

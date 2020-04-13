@@ -37,15 +37,7 @@ const Explore = ({ students }: IHomeProps) => {
   return (
     <Container fluid>
       <div className="row">
-        <ContainerDimensions>
-          {({ width, height }) => (
-            <DraggableCards
-              students={filteredStudents}
-              width={width}
-              height={height}
-            />
-          )}
-        </ContainerDimensions>
+        <DraggableCards students={filteredStudents} />
       </div>
       <Footer students={students} />
     </Container>

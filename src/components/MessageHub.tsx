@@ -2,23 +2,21 @@ import React, { useRef, useState, useEffect } from "react";
 import { useTransition, animated } from "react-spring";
 import { FiX } from "react-icons/fi";
 import "../scss/messageHub.scss";
+import { values } from "lodash-es";
 
 const DEBUG = false;
 
 interface IMessage {
   key: number;
   msg: string;
+  autoDisappear: boolean;
 }
 
 const MessageHub = () => {
   const config = { tension: 125, friction: 20, precision: 0.1 };
   const timeout = 3000;
-  const [refMap] = useState<WeakMap<IMessage, HTMLDivElement>>(
-    () => new WeakMap()
-  );
-  const [cancelMap] = useState<WeakMap<IMessage, Function>>(
-    () => new WeakMap()
-  );
+  const [refMap] = useState<Map<IMessage, HTMLDivElement>>(() => new Map());
+  const [cancelMap] = useState<Map<IMessage, Function>>(() => new Map());
   const [items, setItems] = useState<IMessage[]>([]);
   const [listenerAdded, setListenerAdded] = useState(false);
   const [key, setKey] = useState<number>(0);
@@ -39,7 +37,7 @@ const MessageHub = () => {
         config,
       });
       await next({ life: "0%", config: { duration: timeout } });
-      cancelMap.get(item)!();
+      item.autoDisappear && cancelMap.get(item)!();
     },
     leave: (item) => async (next) => {
       if (DEBUG) console.log(`  Leaving:`, item.key);
@@ -50,7 +48,15 @@ const MessageHub = () => {
 
   const handleMessage = (e: CustomEvent) => {
     setKey((key) => key++);
-    setItems((state) => [...state, { key, msg: e.detail.message }]);
+    const { message: msg, autoDisappear } = e.detail;
+    setItems((state) => [...state, { key, msg, autoDisappear }]);
+  };
+
+  const clearMessageHub = () => {
+    document.querySelectorAll(".clear-message-btn").forEach((btn) => {
+      const btnRef = btn as HTMLElement;
+      btnRef.click();
+    });
   };
 
   useEffect(() => {
@@ -59,22 +65,33 @@ const MessageHub = () => {
       document.addEventListener("toMessageHub", ((e: CustomEvent) => {
         handleMessage(e);
       }) as EventListener);
-      console.log("added");
+      document.addEventListener("clearMessageHub", (() => {
+        clearMessageHub();
+      }) as EventListener);
+      // console.log("added");
       setListenerAdded(true);
     }
   }, []);
 
   return (
     <div id="message-hub-positioner" ref={listenerRef}>
-      <div id="Container">
+      <div className="message-container">
         {transition(({ life, dead, ...style }, item) => {
           return dead.get() === 0 ? null : (
-            <animated.div id="Message" key={item.key} style={style}>
-              <div id="Content" ref={(ref) => ref && refMap.set(item, ref)}>
-                <animated.div id="messageLife" style={{ right: life }} />
+            <animated.div className="message" key={item.key} style={style}>
+              <div
+                className="message-content"
+                ref={(ref) => ref && refMap.set(item, ref)}
+              >
+                {item.autoDisappear && (
+                  <animated.div
+                    className="messageLife"
+                    style={{ right: life }}
+                  />
+                )}
                 <p>{item.msg}</p>
                 <button
-                  id="Button"
+                  className="clear-message-btn"
                   onClick={(e) => {
                     e.stopPropagation();
                     cancelMap.has(item) && cancelMap.get(item)!();
@@ -91,33 +108,25 @@ const MessageHub = () => {
   );
 };
 
-export const AddMessage = (message: string) => {
+export const AddMessage = (message: string, autoDisappear: boolean = true) => {
   console.log("Adding message: ", message);
   document.dispatchEvent(
     new CustomEvent("toMessageHub", {
       detail: {
         message: message,
+        autoDisappear: autoDisappear,
       },
     })
   );
 };
 
-// const CreateTestMessages = () => {
-//   const testMessage = () => {
-//     AddMessage(Math.random().toString());
-//   };
-//   return (
-//     <>
-//       <MessageHub />
-//       <div
-//         className="w-100 fixed-top text-center"
-//         style={{ zIndex: 9999999 }}
-//         onClick={testMessage}
-//       >
-//         Click here to create test notifications
-//       </div>
-//     </>
-//   );
-// };
+export const clearMessageHub = () => {
+  console.log("clearing message hub");
+  document.dispatchEvent(
+    new CustomEvent("clearMessageHub", {
+      detail: {},
+    })
+  );
+};
 
 export default MessageHub;
