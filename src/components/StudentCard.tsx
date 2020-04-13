@@ -37,9 +37,6 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
       style={{
         width: width,
         height: height,
-        backgroundImage: `url(${
-          student.thumbnail_image && student.thumbnail_image.src
-        })`,
       }}
     >
       <Link
@@ -49,11 +46,16 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
         onMouseUp={onMouseUp}
         onClick={onClick}
       >
-        <div
-          style={{
-            height: height,
-          }}
-        ></div>
+        <div className="card-bg-frame">
+          <div
+            className="card-bg"
+            style={{
+              backgroundImage: `url(${
+                student.thumbnail_image && student.thumbnail_image.src
+              })`,
+            }}
+          />
+        </div>
         <div
           className="card-info mt-2"
           style={{ height: `${cardSize[0] * 0.4}px` }}
