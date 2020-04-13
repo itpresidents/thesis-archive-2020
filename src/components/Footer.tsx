@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 
 import "scss/footer.scss";
 import { Navbar, Nav } from "react-bootstrap";
-import { NavLink, Link, useRouteMatch, Route, Switch } from "react-router-dom";
-import { IStudentSummary, TopicDict, IStudentFilter } from "types";
+import { NavLink, Link, Route, Switch } from "react-router-dom";
+import { IStudentSummary, TopicDict } from "types";
 import * as queries from "util/queries";
 import { Filter, Search, CloseBlack, Random } from "./Svg";
+import { useDrag } from "react-use-gesture";
+import { animated } from "react-spring";
 
 type mode = "filter" | "search" | null;
 
@@ -59,27 +61,51 @@ interface OptionallyHasStudents {
   students: IStudentSummary[] | undefined;
 }
 
+// todo: automatically determine
+const tagFiltersWidth = 2000;
+
 const TagFilters = ({ tags }: { tags: TopicDict }) => {
+  const [x, setX] = useState<number>(0);
+  const bind = useDrag(({ offset: [x] }) => setX(x), {
+    bounds: {
+      left: -tagFiltersWidth,
+      bottom: 0,
+      top: 0,
+      right: 0,
+    },
+  });
+
   return (
-    <Nav className="right">
+    <animated.div {...bind()} style={{ x }} className="right navbar-nav">
       {Object.entries(tags).map(([slug, name]) => (
         <Nav.Item key={slug}>
           <NavLink to={`/filter/category/${slug}`}>{name}</NavLink>
         </Nav.Item>
       ))}
-    </Nav>
+    </animated.div>
   );
 };
 
+const advisorFiltersWidth = 500;
+
 const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
+  const [x, setX] = useState<number>(0);
+  const bind = useDrag(({ offset: [x] }) => setX(x), {
+    bounds: {
+      left: -advisorFiltersWidth,
+      bottom: 0,
+      top: 0,
+      right: 0,
+    },
+  });
   return (
-    <Nav className="right">
+    <animated.div {...bind()} style={{ x }} className="right navbar-nav">
       {Object.entries(advisors).map(([slug, name]) => (
         <Nav.Item key={slug}>
           <NavLink to={`/filter/advisor/${slug}`}>{name}</NavLink>
         </Nav.Item>
       ))}
-    </Nav>
+    </animated.div>
   );
 };
 
