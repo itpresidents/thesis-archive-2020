@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import "scss/footer.scss";
 import { Navbar, Nav } from "react-bootstrap";
@@ -8,7 +8,6 @@ import * as queries from "util/queries";
 import { Filter, Search, CloseBlack, Random } from "./Svg";
 import { useDrag } from "react-use-gesture";
 import { animated } from "react-spring";
-import ContainerDimensions from "react-container-dimensions";
 
 type mode = "filter" | "search" | null;
 
