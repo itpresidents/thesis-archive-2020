@@ -1,4 +1,5 @@
 @import "./variables.scss";
+@import "./svg-url.scss";
 @import "./keyframes.scss";
 @import "./mix-ins.scss";
 @import "./bootstrap-overrides.scss";
@@ -73,11 +74,15 @@ $mobile-nav-link-size: 72px;
   }
   .navbar-toggler {
     .navbar-toggler-icon {
-      background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2230%22%20height%3D%2228%22%20viewBox%3D%220%200%2030%2028%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cline%20x1%3D%222.69502%22%20y1%3D%221.28101%22%20x2%3D%2228.695%22%20y2%3D%2226.4143%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3Cline%20x1%3D%221.30498%22%20y1%3D%2226.4143%22%20x2%3D%2227.305%22%20y2%3D%221.28098%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%2F%3E%3C%2Fsvg%3E");
+      background-image: svg-uri(
+        '<svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2.69502" y1="1.28101" x2="28.695" y2="26.4143" stroke="#E859FF" stroke-width="2"/><line x1="1.30498" y1="26.4143" x2="27.305" y2="1.28098" stroke="#E859FF" stroke-width="2"/></svg>'
+      );
     }
     &.collapsed {
       .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2235%22%20height%3D%2219%22%20viewBox%3D%220%200%2035%2019%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cline%20y1%3D%221%22%20x2%3D%2235%22%20y2%3D%221%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3Cline%20y1%3D%229.5%22%20x2%3D%2235%22%20y2%3D%229.5%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3Cline%20y1%3D%2218%22%20x2%3D%2235%22%20y2%3D%2218%22%20stroke%3D%22%23E859FF%22%20stroke-width%3D%222%22%20%2F%3E%3C%2Fsvg%3E");
+        background-image: svg-uri(
+          '<svg width="35" height="19" viewBox="0 0 35 19" fill="none" xmlns="http://www.w3.org/2000/svg"><line y1="1" x2="35" y2="1" stroke="#E859FF" stroke-width="2" /><line y1="9.5" x2="35" y2="9.5" stroke="#E859FF" stroke-width="2" /><line y1="18" x2="35" y2="18" stroke="#E859FF" stroke-width="2" /></svg>'
+        );
       }
     }
   }
