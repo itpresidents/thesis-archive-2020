@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import "scss/footer.scss";
 import { Navbar, Nav } from "react-bootstrap";
@@ -8,6 +8,7 @@ import * as queries from "util/queries";
 import { Filter, Search, CloseBlack, Random } from "./Svg";
 import { useDrag } from "react-use-gesture";
 import { animated } from "react-spring";
+import ContainerDimensions from "react-container-dimensions";
 
 type mode = "filter" | "search" | null;
 
@@ -62,50 +63,67 @@ interface OptionallyHasStudents {
 }
 
 // todo: automatically determine
-const tagFiltersWidth = 2000;
 
-const TagFilters = ({ tags }: { tags: TopicDict }) => {
+const HorizontalDraggable = ({
+  children,
+  maxWidth,
+}: {
+  children: React.ReactNode;
+  maxWidth: number;
+}) => {
   const [x, setX] = useState<number>(0);
-  const bind = useDrag(({ offset: [x] }) => setX(x), {
-    bounds: {
-      left: -tagFiltersWidth,
-      bottom: 0,
-      top: 0,
-      right: 0,
+
+  const bind = useDrag(
+    ({ offset: [x] }) => {
+      setX(x);
     },
-  });
+    {
+      bounds: {
+        left: -maxWidth,
+        bottom: 0,
+        top: 0,
+        right: 0,
+      },
+      axis: "x",
+    }
+  );
 
   return (
-    <animated.div {...bind()} style={{ x }} className="right navbar-nav">
-      {Object.entries(tags).map(([slug, name]) => (
-        <Nav.Item key={slug}>
-          <NavLink to={`/filter/category/${slug}`}>{name}</NavLink>
-        </Nav.Item>
-      ))}
+    <animated.div {...bind()} style={{ x }} className="inner">
+      {children}
     </animated.div>
+  );
+};
+
+const tagFiltersWidth = 3000;
+
+const TagFilters = ({ tags }: { tags: TopicDict }) => {
+  return (
+    <div className="right navbar-nav">
+      <HorizontalDraggable maxWidth={tagFiltersWidth}>
+        {Object.entries(tags).map(([slug, name]) => (
+          <Nav.Item key={slug}>
+            <NavLink to={`/filter/category/${slug}`}>{name}</NavLink>
+          </Nav.Item>
+        ))}
+      </HorizontalDraggable>
+    </div>
   );
 };
 
 const advisorFiltersWidth = 500;
 
 const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
-  const [x, setX] = useState<number>(0);
-  const bind = useDrag(({ offset: [x] }) => setX(x), {
-    bounds: {
-      left: -advisorFiltersWidth,
-      bottom: 0,
-      top: 0,
-      right: 0,
-    },
-  });
   return (
-    <animated.div {...bind()} style={{ x }} className="right navbar-nav">
-      {Object.entries(advisors).map(([slug, name]) => (
-        <Nav.Item key={slug}>
-          <NavLink to={`/filter/advisor/${slug}`}>{name}</NavLink>
-        </Nav.Item>
-      ))}
-    </animated.div>
+    <div className="right navbar-nav">
+      <HorizontalDraggable maxWidth={advisorFiltersWidth}>
+        {Object.entries(advisors).map(([slug, name]) => (
+          <Nav.Item key={slug}>
+            <NavLink to={`/filter/advisor/${slug}`}>{name}</NavLink>
+          </Nav.Item>
+        ))}
+      </HorizontalDraggable>
+    </div>
   );
 };
 
