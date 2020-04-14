@@ -60,8 +60,11 @@ const getMatrixEdges = (
 
 class CardMatrix {
   data: Record<number, Record<number, number>>;
+  dataArray: number[];
+
   constructor() {
     this.data = {};
+    this.dataArray = [];
   }
   get(x: number, y: number) {
     if (this.data[x] && this.data[x][y]) return this.data[x][y];
@@ -69,21 +72,7 @@ class CardMatrix {
   set(x: number, y: number, student: number) {
     if (this.data[x] === undefined) this.data[x] = {};
     this.data[x][y] = student;
-  }
-  deleteX(x: number) {
-    delete this.data[x];
-    return this.data;
-  }
-  deleteY(y: number) {
-    for (let x in this.data) {
-      delete this.data[x][y];
-    }
-    return this.data;
-  }
-  delete(x: number, y: number) {
-    this.deleteX(x);
-    this.deleteY(y);
-    return this.data;
+    this.dataArray.push(student);
   }
   getArrayOfCardToShow(): CardToShow[] {
     const result: CardToShow[] = [];
@@ -99,6 +88,21 @@ class CardMatrix {
     }
     return result;
   }
+  // deleteX(x: number) {
+  //   delete this.data[x];
+  //   return this.data;
+  // }
+  // deleteY(y: number) {
+  //   for (let x in this.data) {
+  //     delete this.data[x][y];
+  //   }
+  //   return this.data;
+  // }
+  // delete(x: number, y: number) {
+  //   this.deleteX(x);
+  //   this.deleteY(y);
+  //   return this.data;
+  // }
 }
 
 const getCardsInMatrixToShow = (
@@ -126,31 +130,29 @@ const getCardsInMatrixToShow = (
   //for scrolling, we will keep most old cards
   // if not adding back cards {
   if (!dropOldCards) {
-    // if a card was in the overlapping area of previous viewport and new viewport,
-    // and exist in the new filtered students list.
-    // add it to the new viewport.
     for (let card of prevCards) {
-      // add card to new view if:
+      // add card to new view if: card was in the overlapping area, and exist in the new filtered students list.
       // xStart <= card.matrixX <= xEnd
       // yStart <= card.matrixY <= yEnd
       // studentId is in the new student list
+      const { matrixX: x, matrixY: y } = card;
       if (
-        card.matrixY >= yStart &&
-        card.matrixY <= yEnd &&
-        card.matrixX <= xEnd &&
-        card.matrixX >= xStart &&
+
+        y >= yStart &&
+        y <= yEnd &&
+        x >= xStart &&
+        x <= xEnd &&
         filteredStudents[card.studentIndex] &&
         filteredStudents[card.studentIndex].show
       ) {
-        cardsInNewView.set(card.matrixX, card.matrixY, card.studentIndex);
+        cardsInNewView.set(x, y, card.studentIndex);
         // keep tracking who has been added to the new viewport.
         studentsIndecesInNewView.push(card.studentIndex);
       }
+
     }
   }
 
-  // if it's not scrolling, cardsInNewView is empty at this point;
-  // Use array to track studens that's not in the map studentsInNewView yet,
   // findout who is in the filtered student list but not added in the new viewport yet.
   const studentsShowAndIndeces = filteredStudents.map(({ show }, index) => ({
     show,
@@ -205,10 +207,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
   const { windowSize } = useContext(Context);
   const [width, height] = windowSize;
 
-  const canvasSize = multiplyElementWise(matrixShape, cardSize) as [
-    number,
-    number
-  ];
+  const canvasSize = multiplyElementWise(matrixShape, cardSize) as number[];
   const [startX, startY] = scaleVector(canvasSize, 0.5);
   const [position, setSpring] = useSpring<Position>(() => ({
     x: startX,
@@ -268,9 +267,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
       xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
       setSpringAndMatrixCenterXY(xy, down);
     },
-    {
-      initial: () => [position.x.get(), position.y.get()],
-    }
+    { initial: () => [position.x.get(), position.y.get()] }
   );
 
   if (!filteredStudents) return null;
@@ -420,9 +417,9 @@ const Cards = React.memo(
           const anim = skipAnimation
             ? {}
             : {
-                // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
-                ...style,
-              };
+              // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
+              ...style,
+            };
           return (
             <animated.div
               style={{
