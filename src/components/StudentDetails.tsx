@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Container, Row, Col, Figure, Nav } from "react-bootstrap";
+import { Container, Row, Col, Figure } from "react-bootstrap";
 
 import * as api from "util/api";
 import {

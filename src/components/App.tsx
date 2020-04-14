@@ -7,7 +7,6 @@ import { Switch, Route } from "react-router-dom";
 import { IStudentSummary } from "types";
 import Header from "./Header";
 import Videos from "./Videos";
-import NotFound from "./NotFound";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;

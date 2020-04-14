@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Link,
-  Switch,
-  Route,
-  useRouteMatch,
-  useParams,
-} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 
 import { schedule } from "scrapedSchedules/schedule-2019.json";
