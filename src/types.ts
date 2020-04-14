@@ -69,3 +69,11 @@ export interface CardToShow {
 export declare type IStudentFilter = (
   students: IStudentSummary[]
 ) => IStudentSummary[];
+
+type FilterStatus = "add" | "remove" | "nochange";
+
+export interface IFilteredStudent {
+  status: FilterStatus;
+  show: boolean;
+  student: IStudentSummary;
+}
