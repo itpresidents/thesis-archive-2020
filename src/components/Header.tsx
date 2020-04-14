@@ -5,10 +5,6 @@ import HeaderBG from "./HeaderBG";
 // import cx from "classnames";
 import MessageHub from "./MessageHub";
 
-const NavIgLink = <TState extends {}>(props: LinkProps<TState>) => {
-  return <NavLink to={props.to}>{props.children}</NavLink>;
-};
-
 const Header = () => (
   <>
     <div className="fixed-top">

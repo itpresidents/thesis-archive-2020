@@ -1,4 +1,5 @@
 @import "./variables.scss";
+@import "./svg-url.scss";
 @import "./keyframes.scss";
 @import "./mix-ins.scss";
 @import "./bootstrap-overrides.scss";
@@ -34,15 +35,58 @@ body {
 
 /**** navbar ****/
 
+$ipad-and-up-nav-height: 63px;
+$mobile-nav-link-size: 72px;
+
 .navbar {
   border-top: 1px solid $black;
   border-bottom: 1px solid $black;
 
   .navbar-brand {
     @extend .body2;
+    padding-left: 31px;
+    padding-top: 0;
+    padding-bottom: 0;
+    height: $ipad-and-up-nav-height;
+    line-height: $ipad-and-up-nav-height;
   }
 
-  padding: #{(60-42) / 2}px 31px;
+  padding: 0px;
+
+  .navbar-collapse {
+    .nav-item {
+      border-top: $black 1px solid;
+      height: $mobile-nav-link-size;
+      a {
+        line-height: $mobile-nav-link-size;
+        padding: 0;
+        margin: 0 20px;
+      }
+
+      @include media-breakpoint-up(md) {
+        border: 0;
+        height: $ipad-and-up-nav-height;
+
+        a {
+          line-height: $ipad-and-up-nav-height;
+        }
+      }
+    }
+  }
+  .navbar-toggler {
+    .navbar-toggler-icon {
+      background-image: svg-uri(
+        '<svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2.69502" y1="1.28101" x2="28.695" y2="26.4143" stroke="#E859FF" stroke-width="2"/><line x1="1.30498" y1="26.4143" x2="27.305" y2="1.28098" stroke="#E859FF" stroke-width="2"/></svg>'
+      );
+    }
+    &.collapsed {
+      .navbar-toggler-icon {
+        background-image: svg-uri(
+          '<svg width="35" height="19" viewBox="0 0 35 19" fill="none" xmlns="http://www.w3.org/2000/svg"><line y1="1" x2="35" y2="1" stroke="#E859FF" stroke-width="2" /><line y1="9.5" x2="35" y2="9.5" stroke="#E859FF" stroke-width="2" /><line y1="18" x2="35" y2="18" stroke="#E859FF" stroke-width="2" /></svg>'
+        );
+      }
+    }
+  }
 }
 
 /**** home ****/
@@ -66,7 +110,7 @@ a {
   left: 0;
 
   h1 {
-    font-size: 4em;
+    margin-left: 10px;
   }
 }
 

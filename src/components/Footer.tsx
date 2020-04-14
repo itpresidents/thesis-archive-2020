@@ -36,7 +36,7 @@ const FilterLeft = () => {
   return (
     <Nav className="left">
       <Nav.Item>
-        <Link to="/">
+        <Link to="/" replace>
           <CloseBlack />
         </Link>{" "}
         Filter By:
