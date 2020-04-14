@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 
 import "scss/footer.scss";
 import { Navbar, Nav } from "react-bootstrap";
-import { NavLink, Link, useRouteMatch, Route, Switch } from "react-router-dom";
-import { IStudentSummary, TopicDict, IStudentFilter } from "types";
+import { NavLink, Link, Route, Switch } from "react-router-dom";
+import { IStudentSummary, TopicDict } from "types";
 import * as queries from "util/queries";
 import { Filter, Search, CloseBlack, Random } from "./Svg";
+import { useDrag } from "react-use-gesture";
+import { animated } from "react-spring";
 
 type mode = "filter" | "search" | null;
 
@@ -59,29 +61,86 @@ interface OptionallyHasStudents {
   students: IStudentSummary[] | undefined;
 }
 
+// todo: automatically determine
+
+const HorizontalDraggable = ({
+  children,
+  maxWidth,
+}: {
+  children: React.ReactNode;
+  maxWidth: number;
+}) => {
+  const [x, setX] = useState<number>(0);
+
+  const bind = useDrag(
+    ({ offset: [x] }) => {
+      setX(x);
+    },
+    {
+      bounds: {
+        left: -maxWidth,
+        bottom: 0,
+        top: 0,
+        right: 0,
+      },
+      axis: "x",
+    }
+  );
+
+  return (
+    <animated.div {...bind()} style={{ x }} className="inner">
+      {children}
+    </animated.div>
+  );
+};
+
+const tagFiltersWidth = 3000;
+
 const TagFilters = ({ tags }: { tags: TopicDict }) => {
   return (
-    <Nav className="right">
-      {Object.entries(tags).map(([tagSlug, tagName]) => (
-        <Nav.Item key={tagSlug}>
-          <NavLink to={`/filter/category/${tagSlug}`}>{tagName}</NavLink>
-        </Nav.Item>
-      ))}
-    </Nav>
+    <div className="right navbar-nav">
+      <HorizontalDraggable maxWidth={tagFiltersWidth}>
+        {Object.entries(tags).map(([slug, name]) => (
+          <Nav.Item key={slug}>
+            <NavLink to={`/filter/category/${slug}`}>{name}</NavLink>
+          </Nav.Item>
+        ))}
+      </HorizontalDraggable>
+    </div>
+  );
+};
+
+const advisorFiltersWidth = 500;
+
+const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
+  return (
+    <div className="right navbar-nav">
+      <HorizontalDraggable maxWidth={advisorFiltersWidth}>
+        {Object.entries(advisors).map(([slug, name]) => (
+          <Nav.Item key={slug}>
+            <NavLink to={`/filter/advisor/${slug}`}>{name}</NavLink>
+          </Nav.Item>
+        ))}
+      </HorizontalDraggable>
+    </div>
   );
 };
 
 interface FilterMainProps {
   tags?: TopicDict;
+  advisors?: TopicDict;
 }
 
-const FilterMain = ({ tags }: FilterMainProps) => {
+const FilterMain = ({ tags, advisors }: FilterMainProps) => {
   return (
     <>
       <FilterLeft />
       <Switch>
         <Route path="/filter/category">
           {tags && <TagFilters tags={tags} />}
+        </Route>
+        <Route path="/filter/advisor">
+          {advisors && <AdvisorFilters advisors={advisors} />}
         </Route>
       </Switch>
     </>
@@ -90,12 +149,17 @@ const FilterMain = ({ tags }: FilterMainProps) => {
 
 interface FooterProps extends OptionallyHasStudents {}
 
+interface FilterOptions {
+  tags?: TopicDict;
+  advisors?: TopicDict;
+}
+
 const Footer = ({ students }: FooterProps) => {
-  const [tags, setTags] = useState<TopicDict | undefined>();
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({});
 
   useEffect(() => {
     if (students) {
-      setTags(queries.getTags(students));
+      setFilterOptions(queries.getTagsAndAdvisors(students));
     }
   }, [students]);
 
@@ -106,7 +170,10 @@ const Footer = ({ students }: FooterProps) => {
           <FooterMain />
         </Route>
         <Route path="/filter">
-          <FilterMain tags={tags} />
+          <FilterMain
+            tags={filterOptions.tags}
+            advisors={filterOptions.advisors}
+          />
         </Route>
       </Switch>
     </Navbar>

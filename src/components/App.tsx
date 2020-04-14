@@ -7,7 +7,6 @@ import { Switch, Route } from "react-router-dom";
 import { IStudentSummary } from "types";
 import Header from "./Header";
 import Videos from "./Videos";
-// import NotFound from "./NotFound";
 import { Context } from "../util/contexts";
 import useWindowSize from "../util/useWindowSize";
 

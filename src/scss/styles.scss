@@ -277,51 +277,55 @@ $footer-padding: 24px;
     }
   }
 
-  .navbar-nav.left {
-    // border-right: $black 1px solid;
-    padding: 0 $footer-padding;
-    background-color: $white;
+  .navbar-nav {
+    &.left,
+    &.right {
+      position: fixed;
+      height: $nav-size;
+      background-color: $white;
 
-    position: fixed;
-
-    left: 0;
-
-    bottom: $nav-size;
-    width: 100%;
-    border-top: $black 1px solid;
-
-    @include media-breakpoint-up(lg) {
-      bottom: 0;
-      width: 400px;
-      border-top: $black 1px solid;
-      border-right: $black 1px solid;
-      border-bottom: $black 1px solid;
+      @include media-breakpoint-up(lg) {
+        position: static;
+        float: left;
+        bottom: 0;
+      }
     }
 
-    height: $nav-size;
-
-    .nav-item {
-      height: 100%;
-      line-height: $nav-size;
-    }
-  }
-
-  .navbar-nav.right {
-    position: fixed;
-    bottom: 0;
-    padding: 0;
-
-    border-bottom: $black 1px solid;
-
-    @include media-breakpoint-up(lg) {
-      left: 400px;
+    &.left {
+      z-index: 2000;
+      bottom: $nav-size;
       padding: 0 $footer-padding;
       border-top: $black 1px solid;
+      width: 100%;
+      border-bottom: $black 1px solid;
+
+      @include media-breakpoint-up(lg) {
+        bottom: 0;
+        width: 400px;
+        border-top: $black 1px solid;
+        border-right: $black 1px solid;
+      }
     }
 
-    width: 5000px;
-    height: $nav-size;
-    overflow-x: scroll;
+    &.right {
+      z-index: 1900;
+      bottom: 0;
+      border-bottom: $black 1px solid;
+
+      .inner {
+        height: $nav-size;
+        float: left;
+        display: flex;
+        flex-direction: row;
+      }
+
+      @include media-breakpoint-up(lg) {
+        left: 400px;
+        width: 100%;
+        padding: 0 $footer-padding;
+        border-top: $black 1px solid;
+      }
+    }
 
     .nav-item {
       height: 100%;
