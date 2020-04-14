@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import StudentCards from "./StudentCards";
-import { IStudentSummary, IFilteredStudent, IStudentFilter } from "types";
+import { IStudentSummary, IFilteredStudent } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import Footer from "./Footer";
@@ -10,23 +10,6 @@ import * as queries from "util/queries";
 interface IHomeProps {
   students: IStudentSummary[] | undefined;
 }
-
-const updateChangeStatus = (
-  filteredStudents: IFilteredStudent[] | null,
-  show: boolean,
-  index: number
-) => {
-  if (!filteredStudents || !filteredStudents[index]) {
-    return "nochange";
-  } else {
-    const lastShow = filteredStudents[index].show;
-
-    if (lastShow === show) return "nochange";
-    if (show) return "add";
-    return "remove";
-  }
-};
-
 const updateFilteredStudents = (
   students: IStudentSummary[],
   filter: (student: IStudentSummary) => boolean
