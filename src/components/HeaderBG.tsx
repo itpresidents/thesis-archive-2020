@@ -14,7 +14,7 @@ const headerHeightRatio = 0.22;
 
 const testHomePage = (location: any): boolean => {
   // it's at home page if the first match is not in ["students", "video", "about"]
-  const notHomeRegex = /\b(students|videos|about|)\b/;
+  const notHomeRegex = /\b(students|videos|about)\b/;
   return !notHomeRegex.test(location.pathname);
 };
 
