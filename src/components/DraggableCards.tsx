@@ -1,4 +1,10 @@
-import React, { useRef, useCallback, useEffect, useState } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
 import { IStudentSummary, CardToShow } from "../types";
 import {
   config as SpringConfig,
@@ -18,12 +24,11 @@ import shuffle from "lodash.shuffle";
 import { cardSize } from "config";
 import StudentCard from "./StudentCard";
 import { usePrevious } from "util/usePrevious";
-import { AddMessage } from "./MessageHub";
+import { Context } from "../util/contexts";
+import { clearMessageHub } from "./MessageHub";
 
 interface IDraggableCardsProps {
   students?: IStudentSummary[];
-  width: number;
-  height: number;
 }
 
 const matrixShape: number[] = [800, 800];
@@ -35,7 +40,8 @@ const getCardsInMatrixToShow = (
   prevCards: CardToShow[],
   filteredStudents: IStudentSummary[],
   width: number,
-  height: number
+  height: number,
+  dropOldCards: boolean = false
 ): CardToShow[] => {
   // responsive matrix
   const windowSizeInCards = [
@@ -47,46 +53,65 @@ const getCardsInMatrixToShow = (
   const endX = matrixX + 2;
   const startY = matrixY - windowSizeInCards[1];
   const endY = matrixY + 2;
+
+  // Create a map to remember students that're in previous viewport.
   const studentsInPrevView: Record<
     number,
     Record<number, IStudentSummary>
   > = {};
+  // Create a map to store updated students that will appear in new viewport.
   const studentsInNewView: Record<number, Record<number, IStudentSummary>> = {};
+  // following arrays are created becars array.include() is so handy.
+  // Use array to rememer ids of those cards added in studentsInNewView;
   const studentsIdsInNewView: string[] = [];
-  let studentsNotInNewView: IStudentSummary[] = shuffle(
-    filteredStudents.filter(
-      (student) => !studentsIdsInNewView.includes(student.student_id)
-    )
-  );
+
+  // Use array to track studens that's not in the map studentsInNewView yet,
+  let studentsNotInNewView: IStudentSummary[] = [];
+
+  // Use array to store ids of the student pool.
   const filteredStudentsIds: string[] = filteredStudents.map(
     (student) => student.student_id
   );
 
+  // The array to be returned
   const result: CardToShow[] = [];
 
-  // prepare a matrix to remember previous cards;
-  for (let card of prevCards) {
-    if (studentsInPrevView[card.matrixX] === undefined)
-      studentsInPrevView[card.matrixX] = {};
-    studentsInPrevView[card.matrixX][card.matrixY] = card.student;
-  }
+  if (!dropOldCards) {
+    // prepare a matrix, studentsInPrevView, to remember previous cards;
+    // using their matrix XY as key to store data.
+    for (let card of prevCards) {
+      if (studentsInPrevView[card.matrixX] === undefined)
+        studentsInPrevView[card.matrixX] = {};
+      studentsInPrevView[card.matrixX][card.matrixY] = card.student;
+    }
 
-  //add previous existed cards to a matrix;
-  for (let x = startX; x < endX; x++) {
-    for (let y = startY; y < endY; y++) {
-      if (
-        studentsInPrevView[x] !== undefined &&
-        studentsInPrevView[x][y] !== undefined &&
-        filteredStudentsIds.includes(studentsInPrevView[x][y].student_id)
-      ) {
-        if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
-        studentsInNewView[x][y] = studentsInPrevView[x][y];
-        studentsIdsInNewView.push(studentsInPrevView[x][y].student_id);
+    // if a card was in the overlapping area of previous viewport and new viewport,
+    // and exist in the new filtered students list.
+    // add it to the new viewport.
+    for (let x = startX; x < endX; x++) {
+      for (let y = startY; y < endY; y++) {
+        if (
+          studentsInPrevView[x] !== undefined &&
+          studentsInPrevView[x][y] !== undefined &&
+          filteredStudentsIds.includes(studentsInPrevView[x][y].student_id)
+        ) {
+          if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
+          studentsInNewView[x][y] = studentsInPrevView[x][y];
+          // keep tracking who has been added to the new viewport.
+          studentsIdsInNewView.push(studentsInPrevView[x][y].student_id);
+        }
       }
     }
   }
 
-  // add new card
+  // findout who is in the filtered student list but not added in the new viewport yet.
+  studentsNotInNewView = shuffle(
+    filteredStudents.filter(
+      (student) => !studentsIdsInNewView.includes(student.student_id)
+    )
+  );
+
+  // if there's an empty slot in the new viewport, get a student in studentsNotInNewView and put it there.
   for (let x = startX; x < endX; x++) {
     for (let y = startY; y < endY; y++) {
       if (studentsInNewView[x] === undefined) studentsInNewView[x] = {};
@@ -128,7 +153,10 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
   return [Math.ceil(centerX / cardWidth), Math.ceil(centerY / cardHeight)];
 };
 
-const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
+const DraggableCards = ({ students }: IDraggableCardsProps) => {
+  const { windowSize } = useContext(Context);
+  const [width, height] = windowSize;
+
   const canvasSize = multiplyElementWise(matrixShape, cardSize) as [
     number,
     number
@@ -147,52 +175,68 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
   const prevHeight = usePrevious(height);
 
   const scrollDivRef = useRef<HTMLDivElement>(null);
-  const [sentDraggingTip, setSentDraggingTip] = useState<boolean>(false);
-
-  const onBodyScroll = useCallback(() => {
-    if (!scrollDivRef.current) return;
-    if (
-      scrollDivRef.current?.getBoundingClientRect().top < 100 &&
-      !sentDraggingTip
-    ) {
-      setSentDraggingTip(true);
+  const [clearedDraggingTip, setClearedDraggingTip] = useState<number>(0);
+  const clearDraggineTipTwice = () => {
+    if (clearedDraggingTip <= 2) {
+      clearMessageHub();
+      setClearedDraggingTip((prev) => (prev += 1));
     }
-  }, [sentDraggingTip]);
+  };
 
-  document.body.addEventListener("scroll", onBodyScroll);
+  // const onBodyScroll = useCallback(() => {
+  //   if (!scrollDivRef.current) return;
+  //   if (
+  //     scrollDivRef.current?.getBoundingClientRect().top < 180 &&
+  //     !sentDraggingTip
+  //   ) {
+  //     setSentDraggingTip(true);
+  //   }
+  // }, [sentDraggingTip]);
 
-  useEffect(() => {
-    if (sentDraggingTip) AddMessage("Drag to explore, click to Read More.");
-  }, [sentDraggingTip]);
+  // document.body.addEventListener("scroll", onBodyScroll);
 
-  useEffect(() => {
-    const xy = [
-      position.x.get() + (width - prevWidth!) / 2,
-      position.y.get() + (height - prevHeight!) / 2,
-    ];
-    setSpring({
-      x: xy[0],
-      y: xy[1],
-      onChange: (xy) => {
-        setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
-      },
-    });
-  }, [width, height]);
+  // useEffect(() => {
+  //   if (sentDraggingTip)
+  // }, [sentDraggingTip]);
 
-  const bind = useDrag(
-    ({ down, movement: xy, velocity, direction }) => {
-      //smooth the direction
-      direction = smoother.smooth(direction, 8) as typeof direction;
-      // if mouse is up, use the momentum and direction of last several frame to send the destination further away.
-      xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
+  const setSpringAndMatrixCenterXY = useCallback(
+    (xy: number[] | undefined = undefined, immediate: boolean = false) => {
+      if (!xy)
+        xy = [
+          position.x.get() + (width - prevWidth!) / 2,
+          position.y.get() + (height - prevHeight!) / 2,
+        ];
       setSpring({
         x: xy[0],
         y: xy[1],
-        immediate: down,
+        immediate,
         onChange: (xy) => {
           setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
         },
       });
+    },
+    [
+      width,
+      height,
+      position,
+      setSpring,
+      setMatrixCenterXy,
+      prevWidth,
+      prevHeight,
+    ]
+  );
+
+  useEffect(() => {
+    setSpringAndMatrixCenterXY();
+  }, [width, height, setSpringAndMatrixCenterXY]);
+
+  const bind = useDrag(
+    ({ down, movement: xy, velocity, direction }) => {
+      if (!down) clearDraggineTipTwice();
+      direction = smoother.smooth(direction, 8) as typeof direction;
+      // if mouse is up, use the momentum and direction of last several frame to send the destination further away.
+      xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
+      setSpringAndMatrixCenterXY(xy, down);
     },
     {
       initial: () => [position.x.get(), position.y.get()],
@@ -203,11 +247,7 @@ const DraggableCards = ({ students, width, height }: IDraggableCardsProps) => {
 
   return (
     <>
-      <div
-        {...bind()}
-        ref={scrollDivRef}
-        className="position-relative vw-100 vh-100 overflow-hidden"
-      >
+      <div {...bind()} ref={scrollDivRef} id="projects-canvas">
         <animated.div style={{ ...position }}>
           {/* Since Cards are wrapped in React.memo - they will only be re-rendered when matrixXy values change */}
           <Cards
@@ -227,8 +267,8 @@ interface ICardsProps {
   students: IStudentSummary[];
   matrixX: number;
   matrixY: number;
-  width: IDraggableCardsProps["width"];
-  height: IDraggableCardsProps["height"];
+  width: number;
+  height: number;
 }
 
 const DEBUG = false;
@@ -240,9 +280,12 @@ const Cards = React.memo(
   ({ students, matrixX, matrixY, width, height }: ICardsProps) => {
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
 
-    const config = SpringConfig.gentle;
+    const config = SpringConfig.default;
     const cardKey = (card: CardToShow): string =>
       `${card.student.student_id}_${card.matrixX}_${card.matrixY}`;
+
+    // if set to true, the transition will not play.
+    const [skilAnimation, setSkipAnimation] = useState<boolean>(false);
 
     const transition = useTransition(inViewPortList, {
       key: (card) => cardKey(card),
@@ -256,38 +299,60 @@ const Cards = React.memo(
         await next({ opacity: 0, rotateY: -90, config });
         await next({ dead: 0, config });
       },
-      trail: 15,
+      trail: 10,
     });
 
+    const setInViewportListCallBack = useCallback(
+      (dropOldCards: boolean = false) => {
+        if (!students) return;
+        setInViewportList((prevState) =>
+          getCardsInMatrixToShow(
+            matrixX,
+            matrixY,
+            prevState,
+            students,
+            width,
+            height,
+            dropOldCards
+          )
+        );
+      },
+      [matrixX, matrixY, students, width, height]
+    );
+
     useEffect(() => {
-      if (!students) return;
-      setInViewportList((prevState) =>
-        getCardsInMatrixToShow(
-          matrixX,
-          matrixY,
-          prevState,
-          students,
-          width,
-          height
-        )
-      );
-    }, [matrixX, matrixY, students, width, height]);
+      setSkipAnimation(true);
+      setInViewportListCallBack();
+    }, [matrixX, matrixY, width, height, setInViewportListCallBack]);
+
+    useEffect(() => {
+      setSkipAnimation(false);
+      const dropOldCards = true;
+      setInViewportListCallBack(dropOldCards);
+    }, [students, setInViewportListCallBack]);
 
     if (!students) return null;
 
     return (
       <>
-        {transition(({ dead, rotateY, ...style }, item, key) => {
+        {transition(({ dead, rotateY, ...style }, item, transition) => {
+          if (dead.get() === 0) return null;
           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
-          return dead.get() === 0 ? null : (
+          // if springImmediate == true, remove transition.
+          const anim = skilAnimation
+            ? {}
+            : {
+                transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
+                ...style,
+              };
+          return (
             <animated.div
               style={{
                 position: "absolute",
                 width: `${cardSize[0] * 0.75}px`,
-                transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
                 left: `${offsets[0]}px`,
                 top: `${offsets[1]}px`,
-                ...style,
+                ...anim,
               }}
               key={cardKey(item)}
             >
