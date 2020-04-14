@@ -8,32 +8,32 @@ $cursor-activated-lo: "../images/cursors/cursor-activated.svg";
 $cursor-activated-hi: "../images/cursors/cursor-activated@2x.png";
 
 @mixin custom-cursor-default {
-  cursor: url($cursor-default-lo) 32 32, default;
+  cursor: url($cursor-default-lo) 16 16, default;
   cursor: -webkit-image-set(
         url($cursor-default-lo) 1x,
         url($cursor-default-hi) 2x
       )
-      32 32,
+      16 16,
     default;
 }
 
 @mixin custom-cursor-hover-clickable-item {
-  cursor: url($cursor-hover-clickable-item-lo) 24 24, pointer;
+  cursor: url($cursor-hover-clickable-item-lo) 12 12, pointer;
   cursor: -webkit-image-set(
         url($cursor-hover-clickable-item-lo) 1x,
         url($cursor-hover-clickable-item-hi) 2x
       )
-      24 24,
+      12 12,
     pointer;
 }
 
 @mixin custom-cursor-activated {
-  cursor: url($cursor-activated-lo) 14.5 14.5, pointer;
+  cursor: url($cursor-activated-lo) 7.25 7.25, pointer;
   cursor: -webkit-image-set(
         url($cursor-activated-lo) 1x,
         url($cursor-activated-hi) 2x
       )
-      14.5 14.5,
+      7.25 7.25,
     pointer;
 }
 
