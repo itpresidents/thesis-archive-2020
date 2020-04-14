@@ -330,7 +330,7 @@ const Cards = React.memo(
       setSkipAnimation(false);
       const dropOldCards = true;
       setInViewportListCallBack(dropOldCards);
-    }, [students]);
+    }, [students, setInViewportListCallBack]);
 
     if (!students) return null;
 
@@ -343,7 +343,7 @@ const Cards = React.memo(
           const anim = skilAnimation
             ? {}
             : {
-                transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
+                // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
                 ...style,
               };
           return (
