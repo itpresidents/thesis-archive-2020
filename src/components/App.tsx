@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState } from "react";
 import * as api from "util/api";
 import "scss/styles.scss";
 import Explore from "./Explore";
@@ -7,7 +7,7 @@ import { Switch, Route } from "react-router-dom";
 import { IStudentSummary } from "types";
 import Header from "./Header";
 import Videos from "./Videos";
-import NotFound from "./NotFound";
+// import NotFound from "./NotFound";
 import { Context } from "../util/contexts";
 import useWindowSize from "../util/useWindowSize";
 

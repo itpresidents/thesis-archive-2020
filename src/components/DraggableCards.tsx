@@ -1,9 +1,9 @@
 import React, {
   useRef,
-  useCallback,
   useEffect,
   useState,
   useContext,
+  useCallback,
 } from "react";
 import { IStudentSummary, CardToShow } from "../types";
 import {
@@ -199,19 +199,36 @@ const DraggableCards = ({ students }: IDraggableCardsProps) => {
   //   if (sentDraggingTip)
   // }, [sentDraggingTip]);
 
+  const setSpringAndMatrixCenterXY = useCallback(
+    (xy: number[] | undefined = undefined, immediate: boolean = false) => {
+      if (!xy)
+        xy = [
+          position.x.get() + (width - prevWidth!) / 2,
+          position.y.get() + (height - prevHeight!) / 2,
+        ];
+      setSpring({
+        x: xy[0],
+        y: xy[1],
+        immediate,
+        onChange: (xy) => {
+          setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
+        },
+      });
+    },
+    [
+      width,
+      height,
+      position,
+      setSpring,
+      setMatrixCenterXy,
+      prevWidth,
+      prevHeight,
+    ]
+  );
+
   useEffect(() => {
-    const xy = [
-      position.x.get() + (width - prevWidth!) / 2,
-      position.y.get() + (height - prevHeight!) / 2,
-    ];
-    setSpring({
-      x: xy[0],
-      y: xy[1],
-      onChange: (xy) => {
-        setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
-      },
-    });
-  }, [width, height]);
+    setSpringAndMatrixCenterXY();
+  }, [width, height, setSpringAndMatrixCenterXY]);
 
   const bind = useDrag(
     ({ down, movement: xy, velocity, direction }) => {
@@ -219,14 +236,7 @@ const DraggableCards = ({ students }: IDraggableCardsProps) => {
       direction = smoother.smooth(direction, 8) as typeof direction;
       // if mouse is up, use the momentum and direction of last several frame to send the destination further away.
       xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
-      setSpring({
-        x: xy[0],
-        y: xy[1],
-        immediate: down,
-        onChange: (xy) => {
-          setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
-        },
-      });
+      setSpringAndMatrixCenterXY(xy, down);
     },
     {
       initial: () => [position.x.get(), position.y.get()],
@@ -275,7 +285,7 @@ const Cards = React.memo(
       `${card.student.student_id}_${card.matrixX}_${card.matrixY}`;
 
     // if set to true, the transition will not play.
-    const [springImmediate, setImmediate] = useState<boolean>(false);
+    const [skilAnimation, setSkipAnimation] = useState<boolean>(false);
 
     const transition = useTransition(inViewPortList, {
       key: (card) => cardKey(card),
@@ -292,37 +302,34 @@ const Cards = React.memo(
       trail: 10,
     });
 
-    useEffect(() => {
-      if (!students) return;
-      setImmediate(true);
-      setInViewportList((prevState) =>
-        getCardsInMatrixToShow(
-          matrixX,
-          matrixY,
-          prevState,
-          students,
-          width,
-          height
-        )
-      );
-    }, [matrixX, matrixY, width, height]);
+    const setInViewportListCallBack = useCallback(
+      (dropOldCards: boolean = false) => {
+        if (!students) return;
+        setInViewportList((prevState) =>
+          getCardsInMatrixToShow(
+            matrixX,
+            matrixY,
+            prevState,
+            students,
+            width,
+            height,
+            dropOldCards
+          )
+        );
+      },
+      [matrixX, matrixY, students, width, height]
+    );
 
     useEffect(() => {
-      if (!students) return;
-      setImmediate(false);
+      setSkipAnimation(true);
+      setInViewportListCallBack();
+    }, [matrixX, matrixY, width, height, setInViewportListCallBack]);
+
+    useEffect(() => {
+      setSkipAnimation(false);
       const dropOldCards = true;
-      setInViewportList((prevState) =>
-        getCardsInMatrixToShow(
-          matrixX,
-          matrixY,
-          prevState,
-          students,
-          width,
-          height,
-          dropOldCards
-        )
-      );
-    }, [students]);
+      setInViewportListCallBack(dropOldCards);
+    }, [students, setInViewportListCallBack]);
 
     if (!students) return null;
 
@@ -332,7 +339,7 @@ const Cards = React.memo(
           if (dead.get() === 0) return null;
           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
           // if springImmediate == true, remove transition.
-          const anim = springImmediate
+          const anim = skilAnimation
             ? {}
             : {
                 transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),

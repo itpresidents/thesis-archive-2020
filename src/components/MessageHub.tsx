@@ -1,8 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useTransition, animated } from "react-spring";
 import { FiX } from "react-icons/fi";
 import "../scss/messageHub.scss";
-import { values } from "lodash-es";
 
 const DEBUG = false;
 
@@ -46,11 +45,14 @@ const MessageHub = () => {
     },
   });
 
-  const handleMessage = (e: CustomEvent) => {
-    setKey((key) => key++);
-    const { message: msg, autoDisappear } = e.detail;
-    setItems((state) => [...state, { key, msg, autoDisappear }]);
-  };
+  const handleMessage = useCallback(
+    (e: CustomEvent) => {
+      setKey((key) => key++);
+      const { message: msg, autoDisappear } = e.detail;
+      setItems((state) => [...state, { key, msg, autoDisappear }]);
+    },
+    [key, setKey, setItems]
+  );
 
   const clearMessageHub = () => {
     document.querySelectorAll(".clear-message-btn").forEach((btn) => {
@@ -71,7 +73,7 @@ const MessageHub = () => {
       // console.log("added");
       setListenerAdded(true);
     }
-  }, []);
+  }, [listenerAdded, handleMessage]);
 
   return (
     <div id="message-hub-positioner" ref={listenerRef}>

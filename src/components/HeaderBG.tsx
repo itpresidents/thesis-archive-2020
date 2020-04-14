@@ -33,30 +33,18 @@ const HeaderBG = () => {
     window.removeEventListener("click", listenToFistClick.current);
     console.log("tried removing");
   });
+
   const location = useLocation();
   const [isAtHomePage, setIsAtHome] = useState(testHomePage(location));
 
-  // const onScroll = useCallback(
-  //   (e: any) => {
-  //     setSpring({
-  //       height: windowHeight * headerHeightRatio - document.body.scrollTop,
-  //       immediate: true,
-  //     });
-  //   },
-  //   [isAtHomePage]
-  // );
+  const collapseHeaderAndShowMessage = useCallback(() => {
+    setSpring({ height: 0 });
+    isAtHomePage && AddMessage("Drag to explore, click to Read More.", false);
+  }, [setSpring, isAtHomePage]);
 
   useEffect(() => {
-    if (spring.height.get() !== 0) {
-      setSpring({ height: 0 });
-    }
-    isAtHomePage && AddMessage("Drag to explore, click to Read More.", false);
-  }, [didFistClick]);
-
-  // useEffect(() => {
-  //   // document.body.addEventListener("scroll", onScroll);
-  //   console.log("scrolling listenner added");
-  // }, []);
+    collapseHeaderAndShowMessage();
+  }, [didFistClick, collapseHeaderAndShowMessage]);
 
   if (!listenersAdded) {
     window.addEventListener("click", listenToFistClick.current);
@@ -73,7 +61,7 @@ const HeaderBG = () => {
       height: windowHeight * headerHeightRatio - document.body.scrollTop,
       immediate: true,
     });
-  }, [windowHeight]);
+  }, [windowHeight, setSpring]);
 
   return (
     <animated.div
