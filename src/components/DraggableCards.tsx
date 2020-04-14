@@ -138,7 +138,8 @@ const getCardsInMatrixToShow = (
         card.matrixY <= yEnd &&
         card.matrixX <= xEnd &&
         card.matrixX >= xStart &&
-        filteredStudents[card.studentIndex]
+        filteredStudents[card.studentIndex] &&
+        filteredStudents[card.studentIndex].show
       ) {
         cardsInNewView.set(card.matrixX, card.matrixY, card.studentIndex);
         // keep tracking who has been added to the new viewport.
@@ -267,7 +268,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
     <>
       <div {...bind()} ref={scrollDivRef} id="projects-canvas">
         <animated.div style={{ ...position }}>
-          <CardsGrid
+          <CardsMatrix
             {...{
               filteredStudents,
               matrixX: matrixXy[0],
@@ -306,7 +307,7 @@ interface PrevValues {
   filteredStudentsChanged: boolean;
 }
 
-const CardsGrid = React.memo(
+const CardsMatrix = React.memo(
   ({ filteredStudents, matrixX, matrixY, windowX, windowY }: ICardsProps) => {
     const [prevValues, setPrevValues] = useState<PrevValues>({
       windowX,
