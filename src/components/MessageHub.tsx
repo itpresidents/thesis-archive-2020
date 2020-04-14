@@ -18,7 +18,6 @@ const MessageHub = () => {
   const [cancelMap] = useState<Map<IMessage, Function>>(() => new Map());
   const [items, setItems] = useState<IMessage[]>([]);
   const [listenerAdded, setListenerAdded] = useState(false);
-  const [key, setKey] = useState<number>(0);
   const listenerRef = useRef<null | HTMLDivElement | any>(null);
   const transition = useTransition(items, {
     key: (item) => item.key,
@@ -47,11 +46,17 @@ const MessageHub = () => {
 
   const handleMessage = useCallback(
     (e: CustomEvent) => {
-      setKey((key) => key++);
       const { message: msg, autoDisappear } = e.detail;
-      setItems((state) => [...state, { key, msg, autoDisappear }]);
+      setItems((state) => [
+        ...state,
+        {
+          key: state.map((a) => a.key).reduce((a, c) => Math.max(a, c), 0) + 1,
+          msg,
+          autoDisappear,
+        },
+      ]);
     },
-    [key, setKey, setItems]
+    [setItems]
   );
 
   const clearMessageHub = () => {
