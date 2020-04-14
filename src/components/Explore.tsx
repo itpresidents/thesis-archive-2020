@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import StudentCards from "./StudentCards";
-import { IStudentSummary, IFilteredStudent } from "types";
+import { IStudentSummary, IFilteredStudent, IStudentFilter } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import Footer from "./Footer";
@@ -28,18 +28,13 @@ const updateChangeStatus = (
 };
 
 const updateFilteredStudents = (
-  filteredStudents: IFilteredStudent[] | null,
   students: IStudentSummary[],
   filter: (student: IStudentSummary) => boolean
 ): IFilteredStudent[] => {
-  return students.map((student, i) => {
-    const passesFilter = filter(student);
-    return {
-      student: students[i],
-      status: updateChangeStatus(filteredStudents, passesFilter, i),
-      show: passesFilter,
-    };
-  });
+  return students.map((student) => ({
+    show: filter(student),
+    student,
+  }));
 };
 
 const noFilter = (student: IStudentSummary) => true;
@@ -48,10 +43,6 @@ const Explore = ({ students }: IHomeProps) => {
   const [filteredStudents, setFilteredStudents] = useState<
     IFilteredStudent[] | null
   >(null);
-
-  const [validStudents, setValidStudents] = useState<IStudentSummary[] | null>(
-    null
-  );
 
   const tagMatch = useRouteMatch<{ tag: string }>("/filter/category/:tag");
   const advisorMatch = useRouteMatch<{ advisor: string }>(
@@ -65,38 +56,24 @@ const Explore = ({ students }: IHomeProps) => {
     if (!students) return;
 
     if (tag) {
-      const tagFilter = queries.matchesTag(tag);
-
       setFilteredStudents(
-        updateFilteredStudents(filteredStudents, students, tagFilter)
+        updateFilteredStudents(students, queries.matchesTag(tag))
       );
     } else if (advisor) {
-      const advisorFilter = queries.matchesAvisor(advisor);
-
       setFilteredStudents(
-        updateFilteredStudents(filteredStudents, students, advisorFilter)
+        updateFilteredStudents(students, queries.matchesAvisor(advisor))
       );
     } else {
-      setFilteredStudents(
-        updateFilteredStudents(filteredStudents, students, noFilter)
-      );
+      setFilteredStudents(updateFilteredStudents(students, noFilter));
     }
-  }, [students, tag, advisor, filteredStudents]);
+  }, [students, tag, advisor]);
 
-  useEffect(() => {
-    if (!filteredStudents) return;
-
-    setValidStudents(
-      filteredStudents.filter(({ show }) => show).map(({ student }) => student)
-    );
-  }, [filteredStudents]);
-
-  if (!validStudents) return <h2>loading...</h2>;
+  if (!filteredStudents) return <h2>loading...</h2>;
 
   return (
     <Container fluid>
       <div className="row">
-        <DraggableCards students={validStudents} />
+        <DraggableCards filteredStudents={filteredStudents} />
       </div>
       <Footer students={students} />
     </Container>

@@ -61,19 +61,16 @@ export interface VideoScheduleRowContents {
 }
 
 export interface CardToShow {
-  student: IStudentSummary;
+  studentIndex: number;
   matrixX: number;
   matrixY: number;
 }
 
-export declare type IStudentFilter = (
-  students: IStudentSummary[]
-) => IStudentSummary[];
+export declare type IStudentFilter = (student: IStudentSummary) => boolean;
 
 type FilterStatus = "add" | "remove" | "nochange";
 
 export interface IFilteredStudent {
-  status: FilterStatus;
   show: boolean;
   student: IStudentSummary;
 }

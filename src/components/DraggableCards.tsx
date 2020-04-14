@@ -5,7 +5,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { IStudentSummary, CardToShow } from "../types";
+import { IStudentSummary, CardToShow, IFilteredStudent } from "../types";
 import {
   config as SpringConfig,
   useSpring,
@@ -28,7 +28,7 @@ import { Context } from "../util/contexts";
 import { clearMessageHub } from "./MessageHub";
 
 interface IDraggableCardsProps {
-  students?: IStudentSummary[];
+  filteredStudents: IFilteredStudent[];
 }
 
 const matrixShape: number[] = [800, 800];
@@ -59,14 +59,14 @@ const getMatrixEdges = (
 };
 
 class CardMatrix {
-  data: Record<number, Record<number, IStudentSummary>>;
+  data: Record<number, Record<number, number>>;
   constructor() {
     this.data = {};
   }
   get(x: number, y: number) {
     if (this.data[x] && this.data[x][y]) return this.data[x][y];
   }
-  set(x: number, y: number, student: IStudentSummary) {
+  set(x: number, y: number, student: number) {
     if (this.data[x] === undefined) this.data[x] = {};
     this.data[x][y] = student;
   }
@@ -91,7 +91,7 @@ class CardMatrix {
     for (let x in this.data) {
       for (let y in this.data[x]) {
         result.push({
-          student: this.get(parseInt(x), parseInt(y))!,
+          studentIndex: this.get(parseInt(x), parseInt(y))!,
           matrixX: parseInt(x),
           matrixY: parseInt(y),
         });
@@ -104,7 +104,7 @@ class CardMatrix {
 const getCardsInMatrixToShow = (
   matrixCenter: number[],
   prevCards: CardToShow[],
-  filteredStudents: IStudentSummary[],
+  filteredStudents: IFilteredStudent[],
   windowSize: number[],
   dropOldCards: boolean = false
 ): CardToShow[] => {
@@ -116,11 +116,11 @@ const getCardsInMatrixToShow = (
 
   // following arrays are created because array.include() is so handy.
   // Use array to rememer ids of those cards added in studentsInNewView;
-  const studentsIdsInNewView: string[] = [];
-  // Use array to store ids of the student pool.
-  const filteredStudentsIds: string[] = filteredStudents.map(
-    (student) => student.student_id
-  );
+  const studentsIndecesInNewView: number[] = [];
+  // // Use array to store ids of the student pool.
+  // const filteredStudentsIds: string[] = filteredStudents.map(
+  //   (student) => student.student_id
+  // );
 
   const cardsInNewView: CardMatrix = new CardMatrix();
   //for scrolling, we will keep most old cards
@@ -138,11 +138,11 @@ const getCardsInMatrixToShow = (
         card.matrixY <= yEnd &&
         card.matrixX <= xEnd &&
         card.matrixX >= xStart &&
-        filteredStudentsIds.includes(card.student.student_id)
+        filteredStudents[card.studentIndex]
       ) {
-        cardsInNewView.set(card.matrixX, card.matrixY, card.student);
+        cardsInNewView.set(card.matrixX, card.matrixY, card.studentIndex);
         // keep tracking who has been added to the new viewport.
-        studentsIdsInNewView.push(card.student.student_id);
+        studentsIndecesInNewView.push(card.studentIndex);
       }
     }
   }
@@ -150,9 +150,14 @@ const getCardsInMatrixToShow = (
   // if it's not scrolling, cardsInNewView is empty at this point;
   // Use array to track studens that's not in the map studentsInNewView yet,
   // findout who is in the filtered student list but not added in the new viewport yet.
-  let studentsNotInNewView: IStudentSummary[] = shuffle(
-    filteredStudents.filter(
-      (student) => !studentsIdsInNewView.includes(student.student_id)
+  const filteredStudentIndeces = filteredStudents
+    .map((show, index) => ({ show, index }))
+    .filter(({ show }) => show)
+    .map(({ index }) => index);
+
+  let studentsNotInNewView: number[] = shuffle(
+    filteredStudentIndeces.filter(
+      (index) => !studentsIndecesInNewView.includes(index)
     )
   );
 
@@ -162,7 +167,7 @@ const getCardsInMatrixToShow = (
       if (cardsInNewView.get(x, y) === undefined) {
         // if there's not enough data, reshuffle all students.
         if (studentsNotInNewView.length < 5)
-          studentsNotInNewView = shuffle(filteredStudents);
+          studentsNotInNewView = shuffle(filteredStudentIndeces);
         cardsInNewView.set(x, y, studentsNotInNewView.shift()!);
       }
     }
@@ -184,7 +189,7 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
   return [Math.ceil(centerX / cardWidth), Math.ceil(centerY / cardHeight)];
 };
 
-const DraggableCards = ({ students }: IDraggableCardsProps) => {
+const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
   const { windowSize } = useContext(Context);
   const [width, height] = windowSize;
 
@@ -256,13 +261,13 @@ const DraggableCards = ({ students }: IDraggableCardsProps) => {
     }
   );
 
-  if (!students) return null;
+  if (!filteredStudents) return null;
 
   return (
     <>
       <div {...bind()} ref={scrollDivRef} id="projects-canvas">
         <animated.div style={{ ...position }}>
-          <Cards {...{ students, matrixXy }} />
+          <Cards {...{ filteredStudents, matrixXy }} />
         </animated.div>
       </div>
     </>
@@ -270,7 +275,7 @@ const DraggableCards = ({ students }: IDraggableCardsProps) => {
 };
 
 interface ICardsProps {
-  students: IStudentSummary[];
+  filteredStudents: IFilteredStudent[];
   matrixXy: number[];
 }
 
@@ -279,14 +284,14 @@ const DEBUG = false;
 const getOffset = (xy: number[], cardSize: number[]): number[] =>
   scaleVector(multiplyElementWise(xy, cardSize), -1);
 
-const Cards = React.memo(({ students, matrixXy }: ICardsProps) => {
+const Cards = React.memo(({ filteredStudents, matrixXy }: ICardsProps) => {
   const { windowSize } = useContext(Context);
 
   const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
 
   const config = SpringConfig.default;
   const cardKey = (card: CardToShow): string =>
-    `${card.student.student_id}_${card.matrixX}_${card.matrixY}`;
+    `${card.studentIndex}_${card.matrixX}_${card.matrixY}`;
 
   // if set to true, the transition will not play.
   const [skilAnimation, setSkipAnimation] = useState<boolean>(false);
@@ -308,18 +313,17 @@ const Cards = React.memo(({ students, matrixXy }: ICardsProps) => {
 
   const setInViewportListCallBack = useCallback(
     (dropOldCards: boolean = false) => {
-      if (!students) return;
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
           matrixXy,
           prevState,
-          students,
+          filteredStudents,
           windowSize,
           dropOldCards
         )
       );
     },
-    [matrixXy, students, windowSize]
+    [matrixXy, filteredStudents, windowSize]
   );
 
   useEffect(() => {
@@ -333,14 +337,13 @@ const Cards = React.memo(({ students, matrixXy }: ICardsProps) => {
     const dropOldCards = true;
     setInViewportListCallBack(dropOldCards);
     // eslint-disable-next-line
-  }, [students]);
-
-  if (!students) return null;
+  }, [filteredStudents]);
 
   return (
     <>
       {transition(({ dead, rotateY, ...style }, item, transition) => {
         if (dead.get() === 0) return null;
+        if (typeof item.studentIndex === "undefined") return null;
         const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
         // if springImmediate == true, remove transition.
         const anim = skilAnimation
@@ -360,7 +363,9 @@ const Cards = React.memo(({ students, matrixXy }: ICardsProps) => {
             }}
             key={cardKey(item)}
           >
-            <StudentCard student={item.student} />
+            <StudentCard
+              student={filteredStudents[item.studentIndex].student}
+            />
           </animated.div>
         );
       })}
