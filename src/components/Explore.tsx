@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { IStudentSummary } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
-import ContainerDimensions from "react-container-dimensions";
 import Footer from "./Footer";
 import { useRouteMatch } from "react-router-dom";
 import * as queries from "util/queries";
@@ -47,15 +46,7 @@ const Explore = ({ students }: IHomeProps) => {
   return (
     <Container fluid>
       <div className="row">
-        <ContainerDimensions>
-          {({ width, height }) => (
-            <DraggableCards
-              students={filteredStudents}
-              width={width}
-              height={height}
-            />
-          )}
-        </ContainerDimensions>
+        <DraggableCards students={filteredStudents} />
       </div>
       <Footer students={students} />
     </Container>

@@ -7,26 +7,31 @@ import { Switch, Route } from "react-router-dom";
 import { IStudentSummary } from "types";
 import Header from "./Header";
 import Videos from "./Videos";
+import { Context } from "../util/contexts";
+import useWindowSize from "../util/useWindowSize";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
 }
 
 const App = ({ students }: IAppProps) => {
+  const windowSize = useWindowSize();
   return (
     <>
-      <Header />
-      <Switch>
-        <Route path="/students/:studentIdOrSlug">
-          <StudentDetails students={students} />
-        </Route>
-        <Route path="/videos/:studentSlug?">
-          <Videos students={students} />
-        </Route>
-        <Route path="/">
-          <Explore students={students} />
-        </Route>
-      </Switch>
+      <Context.Provider value={{ windowSize }}>
+        <Header />
+        <Switch>
+          <Route path="/students/:studentIdOrSlug">
+            <StudentDetails students={students} />
+          </Route>
+          <Route path="/videos/:studentSlug?">
+            <Videos students={students} />
+          </Route>
+          <Route path="/">
+            <Explore students={students} />
+          </Route>
+        </Switch>
+      </Context.Provider>
     </>
   );
 };

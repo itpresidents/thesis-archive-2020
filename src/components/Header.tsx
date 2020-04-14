@@ -6,8 +6,8 @@ import MessageHub from "./MessageHub";
 
 const Header = () => (
   <>
-    <HeaderBG />
-    <div className="sticky-top">
+    <div className="fixed-top">
+      <HeaderBG />
       <Navbar expand="md" bg="white">
         <Link to="/" className="navbar-brand">
           ITP Thesis Archive 2020
