@@ -322,14 +322,15 @@ const Cards = React.memo(
 
     useEffect(() => {
       setSkipAnimation(true);
-      setInViewportListCallBack();
+      const dropOldCards = false;
+      setInViewportListCallBack(dropOldCards);
     }, [matrixX, matrixY, width, height, setInViewportListCallBack]);
 
     useEffect(() => {
       setSkipAnimation(false);
       const dropOldCards = true;
       setInViewportListCallBack(dropOldCards);
-    }, [students, setInViewportListCallBack]);
+    }, [students]);
 
     if (!students) return null;
 
