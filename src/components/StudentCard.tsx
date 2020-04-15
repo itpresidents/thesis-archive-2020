@@ -9,7 +9,7 @@ interface IStudentCardProps {
   // matrixY: number;
 }
 
-const StudentCard = React.memo(({ student }: IStudentCardProps) => {
+const StudentCard = ({ student }: IStudentCardProps) => {
   const width = `${cardSize[0] * 0.75}px`;
   const height = `${(cardSize[0] - 70) * 1.4}px`;
   const linkRef = useRef<null | HTMLAnchorElement | any>(null);
@@ -73,7 +73,7 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
       </Link>
     </div>
   );
-});
+};
 
 // const TransitionStudentCard = React.memo(({ student }: IStudentCardProps) => {
 //   const transition = useTransition({
