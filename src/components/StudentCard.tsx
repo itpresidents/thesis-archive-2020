@@ -1,20 +1,62 @@
 import React, { useRef, useState } from "react";
 import { IStudentSummary } from "../types";
-import { cardSize } from "../config";
+import { cardSize, DEBUG } from "../config";
 import { Link } from "react-router-dom";
-import { animated as a, Transition, useTransition } from "react-spring";
+import {
+  animated as a,
+  useTransition,
+  config as SpringConfig,
+} from "react-spring";
 
 interface IStudentCardProps {
   student: IStudentSummary;
-  // matrixX: number;
-  // matrixY: number;
 }
 
 const width = `${cardSize[0] * 0.75}px`;
 const height = `${(cardSize[0] - 70) * 1.4}px`;
 
+interface ICardTransitionProps {
+  student: IStudentSummary;
+  x: number;
+  y: number;
+  skipAnimation: boolean;
+}
+export const StudentCardWithTransition = React.memo(
+  ({ student, x, y, skipAnimation }: ICardTransitionProps) => {
+    DEBUG && console.log("re-render CardTransition");
+    const transition = useTransition(student, {
+      key: student.student_id,
+      from: { opacity: 0 },
+      enter: { opacity: 1 },
+      leave: { opacity: 0 },
+      config: SpringConfig.slow,
+    });
+    return (
+      <>
+        {transition((style, student) => {
+          const anim = skipAnimation ? {} : style;
+          return (
+            <a.div
+              key={student.student_id}
+              style={{
+                ...anim,
+                position: "absolute",
+                width: width,
+                height: height,
+                left: `${x}px`,
+                top: `${y}px`,
+              }}
+            >
+              <StudentCard key={student.student_id} student={student} />
+            </a.div>
+          );
+        })}
+      </>
+    );
+  }
+);
+
 const StudentCard = React.memo(({ student }: IStudentCardProps) => {
-  console.log("rerender, ", student.student_id);
   const linkRef = useRef<null | HTMLAnchorElement | any>(null);
   const [isDragging, setDragging] = useState<boolean>(false);
   const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
@@ -54,42 +96,6 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
     </div>
   );
 });
-
-interface ICardTransitionProps {
-  children: React.ReactNode;
-  x: number;
-  y: number;
-}
-
-export const CardTransition = React.memo(
-  ({ children, x, y }: ICardTransitionProps) => {
-    const transition = useTransition(children, {
-      key: null,
-      from: { opacity: 0 },
-      enter: { opacity: 1 },
-      leave: { opacity: 0 },
-    });
-
-    return (
-      <>
-        {transition((style, item) => (
-          <a.div
-            style={{
-              ...style,
-              position: "absolute",
-              width: width,
-              height: height,
-              left: `${x}px`,
-              top: `${y}px`,
-            }}
-          >
-            {item}
-          </a.div>
-        ))}
-      </>
-    );
-  }
-);
 
 const CardContent = React.memo(({ student }: IStudentCardProps) => (
   <>

@@ -1,9 +1,8 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useTransition, animated } from "react-spring";
 import { FiX } from "react-icons/fi";
+import { DEBUG } from "../config";
 import "../scss/messageHub.scss";
-
-const DEBUG = false;
 
 interface IMessage {
   key: number;
@@ -23,9 +22,9 @@ const MessageHub = () => {
     key: (item) => item.key,
     from: { opacity: 0, height: 0, life: "100%", dead: 1 },
     enter: (item) => async (next, stop) => {
-      if (DEBUG) console.log(`  Entering:`, item.key);
+      DEBUG && console.log(`  Entering:`, item.key);
       cancelMap.set(item, () => {
-        if (DEBUG) console.log(`  Cancelled:`, item.key);
+        DEBUG && console.log(`  Cancelled:`, item.key);
         stop();
         setItems((state) => state.filter((i) => i.key !== item.key));
       });
@@ -38,7 +37,7 @@ const MessageHub = () => {
       item.autoDisappear && cancelMap.get(item)!();
     },
     leave: (item) => async (next) => {
-      if (DEBUG) console.log(`  Leaving:`, item.key);
+      DEBUG && console.log(`  Leaving:`, item.key);
       await next({ opacity: 0, height: 0, config });
       await next({ dead: 0, config });
     },
@@ -116,7 +115,7 @@ const MessageHub = () => {
 };
 
 export const AddMessage = (message: string, autoDisappear: boolean = true) => {
-  console.log("Adding message: ", message);
+  DEBUG && console.log("Adding message: ", message);
   document.dispatchEvent(
     new CustomEvent("toMessageHub", {
       detail: {
@@ -128,7 +127,7 @@ export const AddMessage = (message: string, autoDisappear: boolean = true) => {
 };
 
 export const clearMessageHub = () => {
-  console.log("clearing message hub");
+  DEBUG && console.log("clearing message hub");
   document.dispatchEvent(
     new CustomEvent("clearMessageHub", {
       detail: {},

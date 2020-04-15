@@ -6,13 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import { CardToShow, IFilteredStudent } from "../types";
-import {
-  config as SpringConfig,
-  useSpring,
-  animated,
-  useTransition,
-  // to,
-} from "react-spring";
+import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
 import {
   addVector,
@@ -21,8 +15,8 @@ import {
   multiplyElementWise,
 } from "util/vector";
 import shuffle from "lodash.shuffle";
-import { cardSize } from "config";
-import StudentCard, { CardTransition } from "./StudentCard";
+import { cardSize, DEBUG } from "config";
+import { StudentCardWithTransition } from "./StudentCard";
 import { usePrevious } from "util/usePrevious";
 import { Context } from "../util/contexts";
 import { clearMessageHub } from "./MessageHub";
@@ -49,7 +43,7 @@ const getMatrixEdges = (
     Math.ceil(windowSize[0] / cardSize[0]),
     Math.ceil(windowSize[1] / cardSize[1]),
   ];
-  // console.log(windowSizeInCards);
+  DEBUG && console.log("windowSizeInCards: ", windowSizeInCards);
   const xStart = center[0] - windowSizeInCards[0];
   const xEnd = center[0] + 2;
   const yStart = center[1] - windowSizeInCards[1];
@@ -61,7 +55,6 @@ const getMatrixEdges = (
 class CardMatrix {
   data: Record<number, Record<number, number>>;
   dataArray: number[];
-
   constructor() {
     this.data = {};
     this.dataArray = [];
@@ -102,6 +95,8 @@ const getCardsInMatrixToShow = (
     windowSize,
     matrixCenter
   );
+
+  DEBUG && console.log({ xStart, xEnd, yStart, yEnd });
 
   const cardsInNewView: CardMatrix = new CardMatrix();
   //for scrolling, we will keep most old cards
@@ -271,8 +266,6 @@ interface ICardsProps {
   windowY: number;
 }
 
-const DEBUG = false;
-
 const getOffset = (xy: number[], cardSize: number[]): number[] =>
   scaleVector(multiplyElementWise(xy, cardSize), -1);
 
@@ -289,6 +282,7 @@ interface PrevValues {
 
 const CardsMatrix = React.memo(
   ({ filteredStudents, matrixX, matrixY, windowX, windowY }: ICardsProps) => {
+    DEBUG && console.log("re-render CardsMatrix");
     const [prevValues, setPrevValues] = useState<PrevValues>({
       windowX,
       windowY,
@@ -301,7 +295,7 @@ const CardsMatrix = React.memo(
     });
 
     useEffect(() => {
-      console.log("computing");
+      DEBUG && console.log("computing");
       setPrevValues({
         windowX,
         windowY,
@@ -323,7 +317,7 @@ const CardsMatrix = React.memo(
     const dropOldCards = prevValues.filteredStudentsChanged;
 
     useEffect(() => {
-      console.log("calling getCardsInMatrixToShow");
+      DEBUG && console.log("calling getCardsInMatrixToShow");
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
           [matrixX, matrixY],
@@ -339,93 +333,52 @@ const CardsMatrix = React.memo(
       prevValues.matrixXyChanged || prevValues.windowSizeChanged;
 
     return (
-      <Cards
-        cards={inViewPortList}
-        skipAnimation={skipAnimation}
-        filteredStudents={filteredStudents}
-      />
-    );
-  }
-);
-
-const Cards = React.memo(
-  ({
-    cards,
-    filteredStudents,
-    skipAnimation,
-  }: {
-    cards: CardToShow[];
-    filteredStudents: IFilteredStudent[];
-    skipAnimation: boolean;
-  }) => {
-    const config = SpringConfig.default;
-    const cardKey = (card: CardToShow): string =>
-      `${card.studentIndex}_${card.matrixX}_${card.matrixY}`;
-
-    // if set to true, the transition will not play.
-    // const [skilAnimation, setSkipAnimation] = useState<boolean>(false);
-
-    // const transition = useTransition(cards, {
-    //   key: (card) => cardKey(card),
-    //   from: { opacity: 0.5, rotateY: 90, dead: 1 },
-    //   enter: (card) => async (next, stop) => {
-    //     if (DEBUG) console.log(`  Entering:`, cardKey(card));
-    //     await next({ opacity: 1, rotateY: 0, config });
-    //   },
-    //   leave: (card) => async (next) => {
-    //     if (DEBUG) console.log(`  Leaving:`, cardKey(card));
-    //     await next({ opacity: 0, rotateY: -90, config });
-    //     await next({ dead: 0, config });
-    //   },
-    //   trail: 10,
-    // });
-
-    return (
-      <div>
-        {cards.map((item) => {
+      <>
+        {inViewPortList.map((item) => {
           if (!item.studentIndex) return null;
           if (!filteredStudents[item.studentIndex]) return null;
           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
           return (
-            <CardTransition x={offsets[0]} y={offsets[1]}>
-              <StudentCard
-                student={filteredStudents[item.studentIndex].student}
-              />
-            </CardTransition>
+            <StudentCardWithTransition
+              x={offsets[0]}
+              y={offsets[1]}
+              key={`${item.matrixX}_${item.matrixY}`}
+              skipAnimation={skipAnimation}
+              student={filteredStudents[item.studentIndex].student}
+            />
           );
         })}
-      </div>
+      </>
     );
   }
 );
 
-export default DraggableCards;
+// const Cards = React.memo(
+//   ({
+//     cards,
+//     filteredStudents,
+//     skipAnimation,
+//   }: {
+//     cards: CardToShow[];
+//     filteredStudents: IFilteredStudent[];
+//     skipAnimation: boolean;
+//   }) => (
+//       <>
+//         {cards.map(item => {
+//           if (!item.studentIndex) return null;
+//           if (!filteredStudents[item.studentIndex]) return null;
+//           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
+//           return (
+//             <StudentCardWithTransition
+//               x={offsets[0]}
+//               y={offsets[1]}
+//               key={`${item.matrixX}_${item.matrixY}`}
+//               student={filteredStudents[item.studentIndex].student}
+//             />
+//           );
+//         })}
+//       </>
+//     )
+// );
 
-// {transition(({ dead, rotateY, ...style }, item, transition) => {
-//   if (dead.get() === 0) return null;
-//   if (typeof item.studentIndex === "undefined") return null;
-//   const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
-//   // if springImmediate == true, remove transition.
-//   const anim = skipAnimation
-//     ? {}
-//     : {
-//       // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
-//       ...style,
-//     };
-//   return (
-//     <animated.div
-//       style={{
-//         position: "absolute",
-//         width: `${cardSize[0] * 0.75}px`,
-//         left: `${offsets[0]}px`,
-//         top: `${offsets[1]}px`,
-//         ...anim,
-//       }}
-//       key={cardKey(item)}
-//     >
-//       <StudentCard
-//         student={filteredStudents[item.studentIndex].student}
-//       />
-//     </animated.div>
-//   );
-// })}
+export default DraggableCards;
