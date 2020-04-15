@@ -60,7 +60,8 @@ class CardMatrix {
     this.dataArray = [];
   }
   get(x: number, y: number) {
-    if (this.data[x] && this.data[x][y]) return this.data[x][y];
+    if (this.data[x] !== undefined && this.data[x][y] !== undefined)
+      return this.data[x][y];
   }
   set(x: number, y: number, student: number) {
     if (this.data[x] === undefined) this.data[x] = {};
@@ -335,8 +336,8 @@ const CardsMatrix = React.memo(
     return (
       <>
         {inViewPortList.map((item) => {
-          if (!item.studentIndex) return null;
-          if (!filteredStudents[item.studentIndex]) return null;
+          if (item.studentIndex === undefined) return null;
+          if (filteredStudents[item.studentIndex] === undefined) return null;
           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
           return (
             <StudentCardWithTransition
