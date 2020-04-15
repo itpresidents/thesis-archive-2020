@@ -124,29 +124,30 @@ const getCardsInMatrixToShow = (
 
   const cardsInNewView: CardMatrix = new CardMatrix();
   //for scrolling, we will keep most old cards
-  // if (!dropOldCards) {
-  // if a card was in the overlapping area of previous viewport and new viewport,
-  // and exist in the new filtered students list.
-  // add it to the new viewport.
-  for (let card of prevCards) {
-    // add card to new view if:
-    // xStart <= card.matrixX <= xEnd
-    // yStart <= card.matrixY <= yEnd
-    // studentId is in the new student list
-    if (
-      card.matrixY >= yStart &&
-      card.matrixY <= yEnd &&
-      card.matrixX <= xEnd &&
-      card.matrixX >= xStart &&
-      filteredStudents[card.studentIndex] &&
-      filteredStudents[card.studentIndex].show
-    ) {
-      cardsInNewView.set(card.matrixX, card.matrixY, card.studentIndex);
-      // keep tracking who has been added to the new viewport.
-      studentsIndecesInNewView.push(card.studentIndex);
+  // if not adding back cards {
+  if (!dropOldCards) {
+    // if a card was in the overlapping area of previous viewport and new viewport,
+    // and exist in the new filtered students list.
+    // add it to the new viewport.
+    for (let card of prevCards) {
+      // add card to new view if:
+      // xStart <= card.matrixX <= xEnd
+      // yStart <= card.matrixY <= yEnd
+      // studentId is in the new student list
+      if (
+        card.matrixY >= yStart &&
+        card.matrixY <= yEnd &&
+        card.matrixX <= xEnd &&
+        card.matrixX >= xStart &&
+        filteredStudents[card.studentIndex] &&
+        filteredStudents[card.studentIndex].show
+      ) {
+        cardsInNewView.set(card.matrixX, card.matrixY, card.studentIndex);
+        // keep tracking who has been added to the new viewport.
+        studentsIndecesInNewView.push(card.studentIndex);
+      }
     }
   }
-  // }
 
   // if it's not scrolling, cardsInNewView is empty at this point;
   // Use array to track studens that's not in the map studentsInNewView yet,
@@ -162,16 +163,24 @@ const getCardsInMatrixToShow = (
     )
     .map(({ index }) => index);
 
-  let studentsNotInNewView: number[] = shuffle(studentIndecesNotYetAdded);
+  let studentsToAdd: number[] = shuffle(studentIndecesNotYetAdded);
 
   // if there's an empty slot in the new viewport, get a student in studentsNotInNewView and add it to there.
   for (let x = xStart; x < xEnd; x++) {
     for (let y = yStart; y < yEnd; y++) {
       if (cardsInNewView.get(x, y) === undefined) {
+        // if out of data - reset students to use all students
+        if (studentsToAdd.length === 0) {
+          const studentsToShow = studentsShowAndIndeces
+            .filter(({ show }) => show)
+            .map(({ index }) => index);
+          studentsToAdd = shuffle(studentsToShow);
+        }
         // if there's not enough data, reshuffle all students.
-        if (studentsNotInNewView.length < 5)
-          studentsNotInNewView = shuffle(studentsNotInNewView);
-        cardsInNewView.set(x, y, studentsNotInNewView.shift()!);
+        else if (studentsToAdd.length < 5)
+          // else - just shuffle them some more
+          studentsToAdd = shuffle(studentsToAdd);
+        cardsInNewView.set(x, y, studentsToAdd.shift()!);
       }
     }
   }
