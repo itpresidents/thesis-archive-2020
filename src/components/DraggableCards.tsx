@@ -22,7 +22,7 @@ import {
 } from "util/vector";
 import shuffle from "lodash.shuffle";
 import { cardSize } from "config";
-import StudentCard from "./StudentCard";
+import StudentCard, { CardTransition } from "./StudentCard";
 import { usePrevious } from "util/usePrevious";
 import { Context } from "../util/contexts";
 import { clearMessageHub } from "./MessageHub";
@@ -151,10 +151,9 @@ const getCardsInMatrixToShow = (
             .map(({ index }) => index);
           studentsToAdd = shuffle(studentsToShow);
         }
-        // if there's not enough data, reshuffle all students.
-        else if (studentsToAdd.length < 5)
-          // else - just shuffle them some more
-          studentsToAdd = shuffle(studentsToAdd);
+        // else if (studentsToAdd.length < 5)
+        //   // else - just shuffle them some more
+        //   studentsToAdd = shuffle(studentsToAdd);
         cardsInNewView.set(x, y, studentsToAdd.shift()!);
       }
     }
@@ -324,6 +323,7 @@ const CardsMatrix = React.memo(
     const dropOldCards = prevValues.filteredStudentsChanged;
 
     useEffect(() => {
+      console.log("calling getCardsInMatrixToShow");
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
           [matrixX, matrixY],
@@ -380,7 +380,22 @@ const Cards = React.memo(
     //   trail: 10,
     // });
 
-    return <div></div>;
+    return (
+      <div>
+        {cards.map((item) => {
+          if (!item.studentIndex) return null;
+          if (!filteredStudents[item.studentIndex]) return null;
+          const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
+          return (
+            <CardTransition x={offsets[0]} y={offsets[1]}>
+              <StudentCard
+                student={filteredStudents[item.studentIndex].student}
+              />
+            </CardTransition>
+          );
+        })}
+      </div>
+    );
   }
 );
 
