@@ -54,10 +54,10 @@ const getMatrixEdges = (
 
 class CardMatrix {
   data: Record<number, Record<number, number>>;
-  dataArray: number[];
+  cardIndices: Record<number, number>;
   constructor() {
     this.data = {};
-    this.dataArray = [];
+    this.cardIndices = {};
   }
   get(x: number, y: number) {
     if (this.data[x] !== undefined && this.data[x][y] !== undefined)
@@ -66,7 +66,11 @@ class CardMatrix {
   set(x: number, y: number, student: number) {
     if (this.data[x] === undefined) this.data[x] = {};
     this.data[x][y] = student;
-    this.dataArray.push(student);
+    this.cardIndices[student] = student;
+  }
+  hasStudent(id: number) {
+    if (this.cardIndices[id] !== undefined) return true;
+    return false;
   }
   getArrayOfCardToShow(): CardToShow[] {
     const result: CardToShow[] = [];
@@ -129,9 +133,7 @@ const getCardsInMatrixToShow = (
   }));
 
   const studentIndecesNotYetAdded = studentsShowAndIndeces
-    .filter(
-      ({ show, index }) => show && !cardsInNewView.dataArray.includes(index)
-    )
+    .filter(({ show, index }) => show && !cardsInNewView.hasStudent(index))
     .map(({ index }) => index);
 
   let studentsToAdd: number[] = shuffle(studentIndecesNotYetAdded);
@@ -353,33 +355,5 @@ const CardsMatrix = React.memo(
     );
   }
 );
-
-// const Cards = React.memo(
-//   ({
-//     cards,
-//     filteredStudents,
-//     skipAnimation,
-//   }: {
-//     cards: CardToShow[];
-//     filteredStudents: IFilteredStudent[];
-//     skipAnimation: boolean;
-//   }) => (
-//       <>
-//         {cards.map(item => {
-//           if (!item.studentIndex) return null;
-//           if (!filteredStudents[item.studentIndex]) return null;
-//           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
-//           return (
-//             <StudentCardWithTransition
-//               x={offsets[0]}
-//               y={offsets[1]}
-//               key={`${item.matrixX}_${item.matrixY}`}
-//               student={filteredStudents[item.studentIndex].student}
-//             />
-//           );
-//         })}
-//       </>
-//     )
-// );
 
 export default DraggableCards;
