@@ -88,21 +88,6 @@ class CardMatrix {
     }
     return result;
   }
-  // deleteX(x: number) {
-  //   delete this.data[x];
-  //   return this.data;
-  // }
-  // deleteY(y: number) {
-  //   for (let x in this.data) {
-  //     delete this.data[x][y];
-  //   }
-  //   return this.data;
-  // }
-  // delete(x: number, y: number) {
-  //   this.deleteX(x);
-  //   this.deleteY(y);
-  //   return this.data;
-  // }
 }
 
 const getCardsInMatrixToShow = (
@@ -118,14 +103,6 @@ const getCardsInMatrixToShow = (
     matrixCenter
   );
 
-  // following arrays are created because array.include() is so handy.
-  // Use array to rememer ids of those cards added in studentsInNewView;
-  const studentsIndecesInNewView: number[] = [];
-  // // Use array to store ids of the student pool.
-  // const filteredStudentsIds: string[] = filteredStudents.map(
-  //   (student) => student.student_id
-  // );
-
   const cardsInNewView: CardMatrix = new CardMatrix();
   //for scrolling, we will keep most old cards
   // if not adding back cards {
@@ -137,7 +114,6 @@ const getCardsInMatrixToShow = (
       // studentId is in the new student list
       const { matrixX: x, matrixY: y } = card;
       if (
-
         y >= yStart &&
         y <= yEnd &&
         x >= xStart &&
@@ -146,10 +122,7 @@ const getCardsInMatrixToShow = (
         filteredStudents[card.studentIndex].show
       ) {
         cardsInNewView.set(x, y, card.studentIndex);
-        // keep tracking who has been added to the new viewport.
-        studentsIndecesInNewView.push(card.studentIndex);
       }
-
     }
   }
 
@@ -161,7 +134,7 @@ const getCardsInMatrixToShow = (
 
   const studentIndecesNotYetAdded = studentsShowAndIndeces
     .filter(
-      ({ show, index }) => show && !studentsIndecesInNewView.includes(index)
+      ({ show, index }) => show && !cardsInNewView.dataArray.includes(index)
     )
     .map(({ index }) => index);
 
@@ -392,54 +365,52 @@ const Cards = React.memo(
     // if set to true, the transition will not play.
     // const [skilAnimation, setSkipAnimation] = useState<boolean>(false);
 
-    const transition = useTransition(cards, {
-      key: (card) => cardKey(card),
-      from: { opacity: 0.5, rotateY: 90, dead: 1 },
-      enter: (card) => async (next, stop) => {
-        if (DEBUG) console.log(`  Entering:`, cardKey(card));
-        await next({ opacity: 1, rotateY: 0, config });
-      },
-      leave: (card) => async (next) => {
-        if (DEBUG) console.log(`  Leaving:`, cardKey(card));
-        await next({ opacity: 0, rotateY: -90, config });
-        await next({ dead: 0, config });
-      },
-      trail: 10,
-    });
+    // const transition = useTransition(cards, {
+    //   key: (card) => cardKey(card),
+    //   from: { opacity: 0.5, rotateY: 90, dead: 1 },
+    //   enter: (card) => async (next, stop) => {
+    //     if (DEBUG) console.log(`  Entering:`, cardKey(card));
+    //     await next({ opacity: 1, rotateY: 0, config });
+    //   },
+    //   leave: (card) => async (next) => {
+    //     if (DEBUG) console.log(`  Leaving:`, cardKey(card));
+    //     await next({ opacity: 0, rotateY: -90, config });
+    //     await next({ dead: 0, config });
+    //   },
+    //   trail: 10,
+    // });
 
-    return (
-      <>
-        {transition(({ dead, rotateY, ...style }, item, transition) => {
-          if (dead.get() === 0) return null;
-          if (typeof item.studentIndex === "undefined") return null;
-          const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
-          // if springImmediate == true, remove transition.
-          const anim = skipAnimation
-            ? {}
-            : {
-              // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
-              ...style,
-            };
-          return (
-            <animated.div
-              style={{
-                position: "absolute",
-                width: `${cardSize[0] * 0.75}px`,
-                left: `${offsets[0]}px`,
-                top: `${offsets[1]}px`,
-                ...anim,
-              }}
-              key={cardKey(item)}
-            >
-              <StudentCard
-                student={filteredStudents[item.studentIndex].student}
-              />
-            </animated.div>
-          );
-        })}
-      </>
-    );
+    return <div></div>;
   }
 );
 
 export default DraggableCards;
+
+// {transition(({ dead, rotateY, ...style }, item, transition) => {
+//   if (dead.get() === 0) return null;
+//   if (typeof item.studentIndex === "undefined") return null;
+//   const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
+//   // if springImmediate == true, remove transition.
+//   const anim = skipAnimation
+//     ? {}
+//     : {
+//       // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
+//       ...style,
+//     };
+//   return (
+//     <animated.div
+//       style={{
+//         position: "absolute",
+//         width: `${cardSize[0] * 0.75}px`,
+//         left: `${offsets[0]}px`,
+//         top: `${offsets[1]}px`,
+//         ...anim,
+//       }}
+//       key={cardKey(item)}
+//     >
+//       <StudentCard
+//         student={filteredStudents[item.studentIndex].student}
+//       />
+//     </animated.div>
+//   );
+// })}
