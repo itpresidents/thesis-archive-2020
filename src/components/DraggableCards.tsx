@@ -151,16 +151,18 @@ const getCardsInMatrixToShow = (
   // if it's not scrolling, cardsInNewView is empty at this point;
   // Use array to track studens that's not in the map studentsInNewView yet,
   // findout who is in the filtered student list but not added in the new viewport yet.
-  const filteredStudentIndeces = filteredStudents
-    .map((show, index) => ({ show, index }))
-    .filter(({ show }) => show)
+  const studentsShowAndIndeces = filteredStudents.map(({ show }, index) => ({
+    show,
+    index,
+  }));
+
+  const studentIndecesNotYetAdded = studentsShowAndIndeces
+    .filter(
+      ({ show, index }) => show && !studentsIndecesInNewView.includes(index)
+    )
     .map(({ index }) => index);
 
-  let studentsNotInNewView: number[] = shuffle(
-    filteredStudentIndeces.filter(
-      (index) => !studentsIndecesInNewView.includes(index)
-    )
-  );
+  let studentsNotInNewView: number[] = shuffle(studentIndecesNotYetAdded);
 
   // if there's an empty slot in the new viewport, get a student in studentsNotInNewView and add it to there.
   for (let x = xStart; x < xEnd; x++) {
@@ -168,7 +170,7 @@ const getCardsInMatrixToShow = (
       if (cardsInNewView.get(x, y) === undefined) {
         // if there's not enough data, reshuffle all students.
         if (studentsNotInNewView.length < 5)
-          studentsNotInNewView = shuffle(filteredStudentIndeces);
+          studentsNotInNewView = shuffle(studentsNotInNewView);
         cardsInNewView.set(x, y, studentsNotInNewView.shift()!);
       }
     }
@@ -321,6 +323,7 @@ const CardsMatrix = React.memo(
     });
 
     useEffect(() => {
+      console.log("computing");
       setPrevValues({
         windowX,
         windowY,
