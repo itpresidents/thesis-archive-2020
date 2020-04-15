@@ -9,7 +9,7 @@ interface IStudentCardProps {
   // matrixY: number;
 }
 
-const StudentCard = React.memo(({ student }: IStudentCardProps) => {
+const StudentCard = ({ student }: IStudentCardProps) => {
   const width = `${cardSize[0] * 0.75}px`;
   const height = `${(cardSize[0] - 70) * 1.4}px`;
   const linkRef = useRef<null | HTMLAnchorElement | any>(null);
@@ -73,6 +73,36 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
       </Link>
     </div>
   );
-});
+};
+
+// const TransitionStudentCard = React.memo(({ student }: IStudentCardProps) => {
+//   const transition = useTransition({
+//     from: { opacity: 0.5, rotateY: 90, dead: 1 },
+//     enter: () => async (next, stop) => {
+//       await next({ opacity: 1, rotateY: 0, config });
+//     },
+//     leave: () => async () => {
+//       await next({ opacity: 0, rotateY: -90, config });
+//       await next({ dead: 0, config });
+//     },
+//     trail: 10,
+//   });
+// }
+
+// const TransitionStudentCardWhenChange = React.memo(({ student }: IStudentCardProps) => {
+//   const [lastStudent, setLastStudent] = useState<IStudentSummary | null>(null);
+//   const [animateTransition, setAnimateTransition] = useState<boolean>(false);
+
+//   useEffect(() => {
+//     if (!lastStudent) setAnimateTransition(false);
+
+//     setAnimateTransition(student !== lastStudent) ;
+//     setLastStudent(student);
+//   }, [student, lastStudent]);
+
+//   if (animateTransition) return <TransitionStudentCard student={student} />;
+
+//   return <StudentCard student={student} />;
+// }
 
 export default StudentCard;

@@ -5,7 +5,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { IStudentSummary, CardToShow } from "../types";
+import { CardToShow, IFilteredStudent } from "../types";
 import {
   config as SpringConfig,
   useSpring,
@@ -28,7 +28,7 @@ import { Context } from "../util/contexts";
 import { clearMessageHub } from "./MessageHub";
 
 interface IDraggableCardsProps {
-  students?: IStudentSummary[];
+  filteredStudents: IFilteredStudent[];
 }
 
 const matrixShape: number[] = [800, 800];
@@ -59,14 +59,14 @@ const getMatrixEdges = (
 };
 
 class CardMatrix {
-  data: Record<number, Record<number, IStudentSummary>>;
+  data: Record<number, Record<number, number>>;
   constructor() {
     this.data = {};
   }
   get(x: number, y: number) {
     if (this.data[x] && this.data[x][y]) return this.data[x][y];
   }
-  set(x: number, y: number, student: IStudentSummary) {
+  set(x: number, y: number, student: number) {
     if (this.data[x] === undefined) this.data[x] = {};
     this.data[x][y] = student;
   }
@@ -91,7 +91,7 @@ class CardMatrix {
     for (let x in this.data) {
       for (let y in this.data[x]) {
         result.push({
-          student: this.get(parseInt(x), parseInt(y))!,
+          studentIndex: this.get(parseInt(x), parseInt(y))!,
           matrixX: parseInt(x),
           matrixY: parseInt(y),
         });
@@ -104,7 +104,7 @@ class CardMatrix {
 const getCardsInMatrixToShow = (
   matrixCenter: number[],
   prevCards: CardToShow[],
-  filteredStudents: IStudentSummary[],
+  filteredStudents: IFilteredStudent[],
   windowSize: number[],
   dropOldCards: boolean = false
 ): CardToShow[] => {
@@ -116,14 +116,15 @@ const getCardsInMatrixToShow = (
 
   // following arrays are created because array.include() is so handy.
   // Use array to rememer ids of those cards added in studentsInNewView;
-  const studentsIdsInNewView: string[] = [];
-  // Use array to store ids of the student pool.
-  const filteredStudentsIds: string[] = filteredStudents.map(
-    (student) => student.student_id
-  );
+  const studentsIndecesInNewView: number[] = [];
+  // // Use array to store ids of the student pool.
+  // const filteredStudentsIds: string[] = filteredStudents.map(
+  //   (student) => student.student_id
+  // );
 
   const cardsInNewView: CardMatrix = new CardMatrix();
   //for scrolling, we will keep most old cards
+  // if not adding back cards {
   if (!dropOldCards) {
     // if a card was in the overlapping area of previous viewport and new viewport,
     // and exist in the new filtered students list.
@@ -138,11 +139,12 @@ const getCardsInMatrixToShow = (
         card.matrixY <= yEnd &&
         card.matrixX <= xEnd &&
         card.matrixX >= xStart &&
-        filteredStudentsIds.includes(card.student.student_id)
+        filteredStudents[card.studentIndex] &&
+        filteredStudents[card.studentIndex].show
       ) {
-        cardsInNewView.set(card.matrixX, card.matrixY, card.student);
+        cardsInNewView.set(card.matrixX, card.matrixY, card.studentIndex);
         // keep tracking who has been added to the new viewport.
-        studentsIdsInNewView.push(card.student.student_id);
+        studentsIndecesInNewView.push(card.studentIndex);
       }
     }
   }
@@ -150,20 +152,35 @@ const getCardsInMatrixToShow = (
   // if it's not scrolling, cardsInNewView is empty at this point;
   // Use array to track studens that's not in the map studentsInNewView yet,
   // findout who is in the filtered student list but not added in the new viewport yet.
-  let studentsNotInNewView: IStudentSummary[] = shuffle(
-    filteredStudents.filter(
-      (student) => !studentsIdsInNewView.includes(student.student_id)
+  const studentsShowAndIndeces = filteredStudents.map(({ show }, index) => ({
+    show,
+    index,
+  }));
+
+  const studentIndecesNotYetAdded = studentsShowAndIndeces
+    .filter(
+      ({ show, index }) => show && !studentsIndecesInNewView.includes(index)
     )
-  );
+    .map(({ index }) => index);
+
+  let studentsToAdd: number[] = shuffle(studentIndecesNotYetAdded);
 
   // if there's an empty slot in the new viewport, get a student in studentsNotInNewView and add it to there.
   for (let x = xStart; x < xEnd; x++) {
     for (let y = yStart; y < yEnd; y++) {
       if (cardsInNewView.get(x, y) === undefined) {
+        // if out of data - reset students to use all students
+        if (studentsToAdd.length === 0) {
+          const studentsToShow = studentsShowAndIndeces
+            .filter(({ show }) => show)
+            .map(({ index }) => index);
+          studentsToAdd = shuffle(studentsToShow);
+        }
         // if there's not enough data, reshuffle all students.
-        if (studentsNotInNewView.length < 5)
-          studentsNotInNewView = shuffle(filteredStudents);
-        cardsInNewView.set(x, y, studentsNotInNewView.shift()!);
+        else if (studentsToAdd.length < 5)
+          // else - just shuffle them some more
+          studentsToAdd = shuffle(studentsToAdd);
+        cardsInNewView.set(x, y, studentsToAdd.shift()!);
       }
     }
   }
@@ -184,7 +201,7 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
   return [Math.ceil(centerX / cardWidth), Math.ceil(centerY / cardHeight)];
 };
 
-const DraggableCards = ({ students }: IDraggableCardsProps) => {
+const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
   const { windowSize } = useContext(Context);
   const [width, height] = windowSize;
 
@@ -256,13 +273,21 @@ const DraggableCards = ({ students }: IDraggableCardsProps) => {
     }
   );
 
-  if (!students) return null;
+  if (!filteredStudents) return null;
 
   return (
     <>
       <div {...bind()} ref={scrollDivRef} id="projects-canvas">
         <animated.div style={{ ...position }}>
-          <Cards {...{ students, matrixXy }} />
+          <CardsMatrix
+            {...{
+              filteredStudents,
+              matrixX: matrixXy[0],
+              matrixY: matrixXy[1],
+              windowX: windowSize[0],
+              windowY: windowSize[1],
+            }}
+          />
         </animated.div>
       </div>
     </>
@@ -270,8 +295,11 @@ const DraggableCards = ({ students }: IDraggableCardsProps) => {
 };
 
 interface ICardsProps {
-  students: IStudentSummary[];
-  matrixXy: number[];
+  filteredStudents: IFilteredStudent[];
+  matrixX: number;
+  matrixY: number;
+  windowX: number;
+  windowY: number;
 }
 
 const DEBUG = false;
@@ -279,93 +307,142 @@ const DEBUG = false;
 const getOffset = (xy: number[], cardSize: number[]): number[] =>
   scaleVector(multiplyElementWise(xy, cardSize), -1);
 
-const Cards = React.memo(({ students, matrixXy }: ICardsProps) => {
-  const { windowSize } = useContext(Context);
+interface PrevValues {
+  windowX: number;
+  windowY: number;
+  matrixX: number;
+  matrixY: number;
+  filteredStudents: IFilteredStudent[];
+  windowSizeChanged: boolean;
+  matrixXyChanged: boolean;
+  filteredStudentsChanged: boolean;
+}
 
-  const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
+const CardsMatrix = React.memo(
+  ({ filteredStudents, matrixX, matrixY, windowX, windowY }: ICardsProps) => {
+    const [prevValues, setPrevValues] = useState<PrevValues>({
+      windowX,
+      windowY,
+      matrixX,
+      matrixY,
+      filteredStudents,
+      windowSizeChanged: false,
+      matrixXyChanged: false,
+      filteredStudentsChanged: false,
+    });
 
-  const config = SpringConfig.default;
-  const cardKey = (card: CardToShow): string =>
-    `${card.student.student_id}_${card.matrixX}_${card.matrixY}`;
+    useEffect(() => {
+      console.log("computing");
+      setPrevValues({
+        windowX,
+        windowY,
+        matrixX,
+        matrixY,
+        filteredStudents,
+        windowSizeChanged:
+          windowX !== prevValues.windowX || windowY !== prevValues.windowY,
+        matrixXyChanged:
+          matrixX !== prevValues.matrixX || matrixY !== prevValues.matrixY,
+        filteredStudentsChanged:
+          prevValues.filteredStudents !== filteredStudents,
+      });
 
-  // if set to true, the transition will not play.
-  const [skilAnimation, setSkipAnimation] = useState<boolean>(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filteredStudents, matrixX, matrixY, windowX, windowY]);
 
-  const transition = useTransition(inViewPortList, {
-    key: (card) => cardKey(card),
-    from: { opacity: 0.5, rotateY: 90, dead: 1 },
-    enter: (card) => async (next, stop) => {
-      if (DEBUG) console.log(`  Entering:`, cardKey(card));
-      await next({ opacity: 1, rotateY: 0, config });
-    },
-    leave: (card) => async (next) => {
-      if (DEBUG) console.log(`  Leaving:`, cardKey(card));
-      await next({ opacity: 0, rotateY: -90, config });
-      await next({ dead: 0, config });
-    },
-    trail: 10,
-  });
+    const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
+    const dropOldCards = prevValues.filteredStudentsChanged;
 
-  const setInViewportListCallBack = useCallback(
-    (dropOldCards: boolean = false) => {
-      if (!students) return;
+    useEffect(() => {
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
-          matrixXy,
+          [matrixX, matrixY],
           prevState,
-          students,
-          windowSize,
+          filteredStudents,
+          [windowX, windowY],
           dropOldCards
         )
       );
-    },
-    [matrixXy, students, windowSize]
-  );
+    }, [matrixX, matrixY, filteredStudents, windowX, windowY, dropOldCards]);
 
-  useEffect(() => {
-    setSkipAnimation(true);
-    setInViewportListCallBack();
-    // eslint-disable-next-line
-  }, [matrixXy, windowSize]);
+    const skipAnimation =
+      prevValues.matrixXyChanged || prevValues.windowSizeChanged;
 
-  useEffect(() => {
-    setSkipAnimation(false);
-    const dropOldCards = true;
-    setInViewportListCallBack(dropOldCards);
-    // eslint-disable-next-line
-  }, [students]);
+    return (
+      <Cards
+        cards={inViewPortList}
+        skipAnimation={skipAnimation}
+        filteredStudents={filteredStudents}
+      />
+    );
+  }
+);
 
-  if (!students) return null;
+const Cards = React.memo(
+  ({
+    cards,
+    filteredStudents,
+    skipAnimation,
+  }: {
+    cards: CardToShow[];
+    filteredStudents: IFilteredStudent[];
+    skipAnimation: boolean;
+  }) => {
+    const config = SpringConfig.default;
+    const cardKey = (card: CardToShow): string =>
+      `${card.studentIndex}_${card.matrixX}_${card.matrixY}`;
 
-  return (
-    <>
-      {transition(({ dead, rotateY, ...style }, item, transition) => {
-        if (dead.get() === 0) return null;
-        const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
-        // if springImmediate == true, remove transition.
-        const anim = skilAnimation
-          ? {}
-          : {
-              // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
-              ...style,
-            };
-        return (
-          <animated.div
-            style={{
-              position: "absolute",
-              width: `${cardSize[0] * 0.75}px`,
-              left: `${offsets[0]}px`,
-              top: `${offsets[1]}px`,
-              ...anim,
-            }}
-            key={cardKey(item)}
-          >
-            <StudentCard student={item.student} />
-          </animated.div>
-        );
-      })}
-    </>
-  );
-});
+    // if set to true, the transition will not play.
+    // const [skilAnimation, setSkipAnimation] = useState<boolean>(false);
+
+    const transition = useTransition(cards, {
+      key: (card) => cardKey(card),
+      from: { opacity: 0.5, rotateY: 90, dead: 1 },
+      enter: (card) => async (next, stop) => {
+        if (DEBUG) console.log(`  Entering:`, cardKey(card));
+        await next({ opacity: 1, rotateY: 0, config });
+      },
+      leave: (card) => async (next) => {
+        if (DEBUG) console.log(`  Leaving:`, cardKey(card));
+        await next({ opacity: 0, rotateY: -90, config });
+        await next({ dead: 0, config });
+      },
+      trail: 10,
+    });
+
+    return (
+      <>
+        {transition(({ dead, rotateY, ...style }, item, transition) => {
+          if (dead.get() === 0) return null;
+          if (typeof item.studentIndex === "undefined") return null;
+          const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
+          // if springImmediate == true, remove transition.
+          const anim = skipAnimation
+            ? {}
+            : {
+                // transform: to(rotateY, (a) => `rotate3d(0.6, 1, 0, ${a}deg)`),
+                ...style,
+              };
+          return (
+            <animated.div
+              style={{
+                position: "absolute",
+                width: `${cardSize[0] * 0.75}px`,
+                left: `${offsets[0]}px`,
+                top: `${offsets[1]}px`,
+                ...anim,
+              }}
+              key={cardKey(item)}
+            >
+              <StudentCard
+                student={filteredStudents[item.studentIndex].student}
+              />
+            </animated.div>
+          );
+        })}
+      </>
+    );
+  }
+);
 
 export default DraggableCards;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import StudentCards from "./StudentCards";
-import { IStudentSummary } from "types";
+import { IStudentSummary, IFilteredStudent } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import Footer from "./Footer";
@@ -10,11 +10,22 @@ import * as queries from "util/queries";
 interface IHomeProps {
   students: IStudentSummary[] | undefined;
 }
+const updateFilteredStudents = (
+  students: IStudentSummary[],
+  filter: (student: IStudentSummary) => boolean
+): IFilteredStudent[] => {
+  return students.map((student) => ({
+    show: filter(student),
+    student,
+  }));
+};
+
+const noFilter = (student: IStudentSummary) => true;
 
 const Explore = ({ students }: IHomeProps) => {
   const [filteredStudents, setFilteredStudents] = useState<
-    IStudentSummary[] | undefined
-  >();
+    IFilteredStudent[] | null
+  >(null);
 
   const tagMatch = useRouteMatch<{ tag: string }>("/filter/category/:tag");
   const advisorMatch = useRouteMatch<{ advisor: string }>(
@@ -28,16 +39,15 @@ const Explore = ({ students }: IHomeProps) => {
     if (!students) return;
 
     if (tag) {
-      const studentsWithTag = queries.filterByTag(students, tag);
-      setFilteredStudents(studentsWithTag);
-    } else if (advisor) {
-      const studentsWithAdvisor = queries.filterByAdvisorName(
-        students,
-        advisor
+      setFilteredStudents(
+        updateFilteredStudents(students, queries.matchesTag(tag))
       );
-      setFilteredStudents(studentsWithAdvisor);
+    } else if (advisor) {
+      setFilteredStudents(
+        updateFilteredStudents(students, queries.matchesAvisor(advisor))
+      );
     } else {
-      setFilteredStudents(students);
+      setFilteredStudents(updateFilteredStudents(students, noFilter));
     }
   }, [students, tag, advisor]);
 
@@ -46,7 +56,7 @@ const Explore = ({ students }: IHomeProps) => {
   return (
     <Container fluid>
       <div className="row">
-        <DraggableCards students={filteredStudents} />
+        <DraggableCards filteredStudents={filteredStudents} />
       </div>
       <Footer students={students} />
     </Container>

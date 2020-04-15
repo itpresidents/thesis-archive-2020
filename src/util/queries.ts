@@ -33,13 +33,17 @@ export const getTagsAndAdvisors = (
   };
 };
 
+export const matchesTag = (tagSlug: string) => ({ tags }: IStudentSummary) =>
+  tags.map(({ slug }) => slug).includes(tagSlug);
+export const matchesAvisor = (advisorSlug: string) => ({
+  advisor_name,
+}: IStudentSummary) => toLowerSnakeCase(advisor_name) === advisorSlug;
+
 export const filterByTag = (
   students: IStudentSummary[],
   tagSlug: string
-): IStudentSummary[] => {
-  return students.filter(({ tags }) =>
-    tags.map(({ slug }) => slug).includes(tagSlug)
-  );
+): boolean[] => {
+  return students.map(matchesTag(tagSlug));
 };
 
 export const filterByAdvisorName = (
