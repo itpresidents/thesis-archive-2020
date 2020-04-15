@@ -1,17 +1,62 @@
 import React, { useRef, useState } from "react";
 import { IStudentSummary } from "../types";
-import { cardSize } from "../config";
+import { cardSize, DEBUG } from "../config";
 import { Link } from "react-router-dom";
+import {
+  animated as a,
+  useTransition,
+  config as SpringConfig,
+} from "react-spring";
 
 interface IStudentCardProps {
   student: IStudentSummary;
-  // matrixX: number;
-  // matrixY: number;
 }
 
-const StudentCard = ({ student }: IStudentCardProps) => {
-  const width = `${cardSize[0] * 0.75}px`;
-  const height = `${(cardSize[0] - 70) * 1.4}px`;
+const width = `${cardSize[0] * 0.75}px`;
+const height = `${(cardSize[0] - 70) * 1.4}px`;
+
+interface ICardTransitionProps {
+  student: IStudentSummary;
+  x: number;
+  y: number;
+  skipAnimation: boolean;
+}
+export const StudentCardWithTransition = React.memo(
+  ({ student, x, y, skipAnimation }: ICardTransitionProps) => {
+    DEBUG && console.log("re-render CardTransition");
+    const transition = useTransition(student, {
+      key: student.student_id,
+      from: { opacity: 0 },
+      enter: { opacity: 1 },
+      leave: { opacity: 0 },
+      config: SpringConfig.slow,
+    });
+    return (
+      <>
+        {transition((style, student) => {
+          const anim = skipAnimation ? {} : style;
+          return (
+            <a.div
+              key={student.student_id}
+              style={{
+                ...anim,
+                position: "absolute",
+                width: width,
+                height: height,
+                left: `${x}px`,
+                top: `${y}px`,
+              }}
+            >
+              <StudentCard key={student.student_id} student={student} />
+            </a.div>
+          );
+        })}
+      </>
+    );
+  }
+);
+
+const StudentCard = React.memo(({ student }: IStudentCardProps) => {
   const linkRef = useRef<null | HTMLAnchorElement | any>(null);
   const [isDragging, setDragging] = useState<boolean>(false);
   const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
@@ -46,34 +91,40 @@ const StudentCard = ({ student }: IStudentCardProps) => {
         onMouseUp={onMouseUp}
         onClick={onClick}
       >
-        <div className="card-bg-frame">
-          <div
-            className="card-bg"
-            style={{
-              backgroundImage: `url(${
-                student.thumbnail_image && student.thumbnail_image.src
-              })`,
-            }}
-          />
-        </div>
-        <div
-          className="card-info mt-2"
-          style={{ height: `${cardSize[0] * 0.4}px` }}
-        >
-          <h3>{student.title}</h3>
-          <h5>{student.student_name}</h5>
-          <p>
-            {student.tags.map((tag, index) =>
-              index === student.tags.length - 1
-                ? tag.name.toUpperCase()
-                : tag.name.toUpperCase() + ", "
-            )}
-          </p>
-        </div>
+        <CardContent student={student} />
       </Link>
     </div>
   );
-};
+});
+
+const CardContent = React.memo(({ student }: IStudentCardProps) => (
+  <>
+    <div className="card-bg-frame">
+      <div
+        className="card-bg"
+        style={{
+          backgroundImage: `url(${
+            student.thumbnail_image && student.thumbnail_image.src
+          })`,
+        }}
+      />
+    </div>
+    <div
+      className="card-info mt-2"
+      style={{ height: `${cardSize[0] * 0.4}px` }}
+    >
+      <h3>{student.title}</h3>
+      <h5>{student.student_name}</h5>
+      <p>
+        {student.tags.map((tag, index) =>
+          index === student.tags.length - 1
+            ? tag.name.toUpperCase()
+            : tag.name.toUpperCase() + ", "
+        )}
+      </p>
+    </div>
+  </>
+));
 
 // const TransitionStudentCard = React.memo(({ student }: IStudentCardProps) => {
 //   const transition = useTransition({

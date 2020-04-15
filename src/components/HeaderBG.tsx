@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { useSpring, to, animated } from "react-spring";
 import { Context } from "../util/contexts";
 import { AddMessage } from "./MessageHub";
+import { DEBUG } from "../config";
 
 const headerHeightRatio = 0.22;
 
@@ -31,7 +32,10 @@ const HeaderBG = () => {
     !didFistClick && setdidFistClick(true);
     window.removeEventListener("wheel", listenToFistClick.current);
     window.removeEventListener("click", listenToFistClick.current);
-    console.log("tried removing");
+    DEBUG &&
+      console.log(
+        `tried  window.removeEventListener("click", listenToFistClick.current);`
+      );
   });
 
   const location = useLocation();
