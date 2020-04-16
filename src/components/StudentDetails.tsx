@@ -71,7 +71,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
     <div id="details">
       <FeaturedImage image={student.thumbnail_image} />
-      <Container id="details" className="body1">
+      <Container className="body1">
         {/* <Row className={justify}> */}
         {/* <Col md={12}> */}
         {/* </Col> */}
