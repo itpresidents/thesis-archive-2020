@@ -133,6 +133,7 @@ $text-block-bottom-margin: 40px;
 $image-top-margin: 60px;
 
 #details {
+  margin-top: $ipad-and-up-nav-height;
   .full-on-mobile {
     padding: 0;
 
