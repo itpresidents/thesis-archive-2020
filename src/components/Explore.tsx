@@ -7,6 +7,17 @@ import Footer from "./Footer";
 import { useRouteMatch } from "react-router-dom";
 import * as queries from "util/queries";
 
+const generateTitle = (tag: string | null, advisor: string | null): string => {
+  const opener = "ITP Thesis Archive 2020";
+  if (tag) {
+    return `${opener} | Projects with Category ${tag}`;
+  } else if (advisor) {
+    return `${opener} | Projects under Advisor ${advisor}`;
+  }
+
+  return opener;
+};
+
 interface IHomeProps {
   students: IStudentSummary[] | undefined;
 }
@@ -34,6 +45,21 @@ const Explore = ({ students }: IHomeProps) => {
 
   const tag = tagMatch && tagMatch.params.tag;
   const advisor = advisorMatch && advisorMatch.params.advisor;
+
+  useEffect(() => {
+    document.title = generateTitle(tag, advisor);
+
+    const metaDescription = document.querySelector("meta[name='description']");
+
+    if (metaDescription)
+      metaDescription.setAttribute("description", "ITP Thesis Archive");
+
+    const metaOgImageElement = document.querySelector(
+      "meta[property='og:image']"
+    );
+
+    if (metaOgImageElement) metaOgImageElement.setAttribute("content", "");
+  }, [tag, advisor]);
 
   useEffect(() => {
     if (!students) return;

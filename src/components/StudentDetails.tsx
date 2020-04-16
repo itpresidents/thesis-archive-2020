@@ -172,6 +172,9 @@ interface IStudentProps {
   studentId: string;
 }
 
+const studentToTitle = (student: IStudentDetails) =>
+  `${student.title} by ${student.student_name} | ITP Thesis Archive 2020`;
+
 const Student = ({ studentId }: IStudentProps) => {
   const [student, setProject] = useState<IStudentDetails>();
 
@@ -182,6 +185,26 @@ const Student = ({ studentId }: IStudentProps) => {
     }
     fetchStudent();
   }, [studentId]);
+
+  useEffect(() => {
+    if (student) {
+      document.title = studentToTitle(student);
+      const metaDescription = document.querySelector(
+        "meta[name='description']"
+      );
+
+      if (metaDescription)
+        metaDescription.setAttribute("description", student.thesis_statement);
+
+      const metaOgImageElement = document.querySelector(
+        "meta[property='og:image']"
+      );
+
+      if (metaOgImageElement) {
+        metaOgImageElement.setAttribute("content", student.thumbnail_image.src);
+      }
+    }
+  }, [student]);
 
   if (!student) return <div>Loading...</div>;
 
