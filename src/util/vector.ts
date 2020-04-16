@@ -33,11 +33,6 @@ export const clampVector = (
   return a.map((e, i) => clamp(e, min[i], max[i]));
 };
 
-export interface IVector2Object {
-  x: number;
-  y: number;
-}
-
 export const searchForArray = (
   haystack: Array<any>,
   needle: Array<any>
@@ -70,5 +65,82 @@ export class SmoothVector {
       r = scaleVector(addVector(r, this.inputs[i]), 0.5);
     }
     return r;
+  }
+}
+
+interface IMyVector {
+  x: number;
+  y: number;
+  z?: number;
+}
+
+export class Vector extends Array implements IMyVector {
+  constructor(vec: number[] | Vector) {
+    super();
+    for (let i = 0; i < Math.min(3, vec.length); i++) {
+      this[i] = vec[i];
+    }
+  }
+  get x(): number {
+    return this[0];
+  }
+  get y(): number {
+    return this[1];
+  }
+  get z(): number {
+    return this[2];
+  }
+  set x(value: number) {
+    this[0] = value;
+  }
+  set y(value: number) {
+    this[1] = value;
+  }
+  set z(value: number) {
+    this[2] = value;
+  }
+
+  isEqual(vec: Vector | number[]): boolean {
+    if (vec.length !== this.length) return false;
+    for (let i in this) {
+      if (this[i] !== vec[i]) return false;
+    }
+    return true;
+  }
+
+  add(vec: Array<number>): number[];
+  add(vec: Vector): number[] {
+    for (let i in this) {
+      if (typeof vec[i] === "number") this[i] += vec[i];
+    }
+    return this.toArray();
+  }
+
+  multiplyElementWise(vec: Array<number>): number[];
+  multiplyElementWise(vec: Vector): number[] {
+    for (let i in this) {
+      if (typeof vec[i] === "number") this[i] *= vec[i];
+    }
+    return this.toArray();
+  }
+
+  devideElementWise(vec: Array<number>): number[];
+  devideElementWise(vec: Vector): number[] {
+    for (let i in this) {
+      if (typeof vec[i] === "number") this[i] /= vec[i];
+    }
+    return this.toArray();
+  }
+
+  scale(ratio: number): number[] {
+    if (typeof ratio === "number")
+      for (let i in this) {
+        this[i] *= ratio;
+      }
+    return this.toArray();
+  }
+
+  toArray(): number[] {
+    return [...this];
   }
 }

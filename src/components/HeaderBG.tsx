@@ -32,6 +32,7 @@ const HeaderBG = () => {
     !didFistClick && setdidFistClick(true);
     window.removeEventListener("wheel", listenToFistClick.current);
     window.removeEventListener("click", listenToFistClick.current);
+    window.removeEventListener("touchmove", listenToFistClick.current);
     DEBUG &&
       console.log(
         `tried  window.removeEventListener("click", listenToFistClick.current);`
@@ -53,6 +54,7 @@ const HeaderBG = () => {
   if (!listenersAdded) {
     window.addEventListener("click", listenToFistClick.current);
     window.addEventListener("wheel", listenToFistClick.current);
+    window.addEventListener("touchmove", listenToFistClick.current);
     setListenersAdded(true);
   }
 

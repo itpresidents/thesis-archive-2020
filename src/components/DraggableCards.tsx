@@ -13,6 +13,7 @@ import {
   SmoothVector,
   scaleVector,
   multiplyElementWise,
+  Vector,
 } from "util/vector";
 import shuffle from "lodash.shuffle";
 import { cardSize, DEBUG } from "config";
@@ -28,45 +29,42 @@ interface IDraggableCardsProps {
 const matrixShape: number[] = [800, 800];
 const smoother = new SmoothVector();
 interface IMatrixEdges {
-  xStart: number;
-  xEnd: number;
-  yStart: number;
-  yEnd: number;
+  start: Vector;
+  end: Vector;
 }
 
 const getMatrixEdges = (
-  cardSize: number[],
-  windowSize: number[],
-  center: number[]
+  cardSize: Vector,
+  windowSize: Vector | number[],
+  center: Vector
 ): IMatrixEdges => {
-  const windowSizeInCards = [
+  const windowSizeInCards = new Vector([
     Math.ceil(windowSize[0] / cardSize[0]),
     Math.ceil(windowSize[1] / cardSize[1]),
-  ];
-  DEBUG && console.log("windowSizeInCards: ", windowSizeInCards);
-  const xStart = center[0] - windowSizeInCards[0];
-  const xEnd = center[0] + 2;
-  const yStart = center[1] - windowSizeInCards[1];
-  const yEnd = center[1] + 2;
+  ]);
 
-  return { xStart, xEnd, yStart, yEnd };
+  const bleed = new Vector([2, 2]);
+  const start = new Vector(center);
+  start.add(new Vector(windowSizeInCards).scale(-1));
+  const end = new Vector(center);
+  end.add(bleed);
+
+  return { start, end };
 };
 
 class CardMatrix {
-  data: Record<number, Record<number, number>>;
-  cardIndices: Record<number, number>;
+  [key: number]: Record<number, number>;
+  cardIndices: Record<number, Vector>;
   constructor() {
-    this.data = {};
     this.cardIndices = {};
   }
   get(x: number, y: number) {
-    if (this.data[x] !== undefined && this.data[x][y] !== undefined)
-      return this.data[x][y];
+    if (this[x] !== undefined && this[x][y] !== undefined) return this[x][y];
   }
   set(x: number, y: number, student: number) {
-    if (this.data[x] === undefined) this.data[x] = {};
-    this.data[x][y] = student;
-    this.cardIndices[student] = student;
+    if (this[x] === undefined) this[x] = {};
+    this[x][y] = student;
+    this.cardIndices[student] = new Vector([x, y]);
   }
   hasStudent(id: number) {
     if (this.cardIndices[id] !== undefined) return true;
@@ -75,8 +73,8 @@ class CardMatrix {
   getArrayOfCardToShow(): CardToShow[] {
     const result: CardToShow[] = [];
     // put cards to show into an array as result
-    for (let x in this.data) {
-      for (let y in this.data[x]) {
+    for (let x in this) {
+      for (let y in this[x]) {
         result.push({
           studentIndex: this.get(parseInt(x), parseInt(y))!,
           matrixX: parseInt(x),
@@ -89,23 +87,15 @@ class CardMatrix {
 }
 
 const getCardsInMatrixToShow = (
-  matrixCenter: number[],
+  matrixCenter: Vector,
   prevCards: CardToShow[],
   filteredStudents: IFilteredStudent[],
-  windowSize: number[],
+  windowSize: number[] | Vector,
   dropOldCards: boolean = false
 ): CardToShow[] => {
-  const { xStart, xEnd, yStart, yEnd } = getMatrixEdges(
-    cardSize,
-    windowSize,
-    matrixCenter
-  );
-
-  DEBUG && console.log({ xStart, xEnd, yStart, yEnd });
-
+  const { start, end } = getMatrixEdges(cardSize, windowSize, matrixCenter);
   const cardsInNewView: CardMatrix = new CardMatrix();
   //for scrolling, we will keep most old cards
-  // if not adding back cards {
   if (!dropOldCards) {
     for (let card of prevCards) {
       // add card to new view if: card was in the overlapping area, and exist in the new filtered students list.
@@ -114,10 +104,10 @@ const getCardsInMatrixToShow = (
       // studentId is in the new student list
       const { matrixX: x, matrixY: y } = card;
       if (
-        y >= yStart &&
-        y <= yEnd &&
-        x >= xStart &&
-        x <= xEnd &&
+        y >= start.y &&
+        y <= end.y &&
+        x >= start.x &&
+        x <= end.x &&
         filteredStudents[card.studentIndex] &&
         filteredStudents[card.studentIndex].show
       ) {
@@ -139,8 +129,8 @@ const getCardsInMatrixToShow = (
   let studentsToAdd: number[] = shuffle(studentIndecesNotYetAdded);
 
   // if there's an empty slot in the new viewport, get a student in studentsNotInNewView and add it to there.
-  for (let x = xStart; x < xEnd; x++) {
-    for (let y = yStart; y < yEnd; y++) {
+  for (let x = start.x; x < end.x; x++) {
+    for (let y = start.y; y < end.y; y++) {
       if (cardsInNewView.get(x, y) === undefined) {
         // if out of data - reset students to use all students
         if (studentsToAdd.length === 0) {
@@ -165,16 +155,16 @@ interface Position {
   y: number;
 }
 
-const toPositionInMatrix = ([centerX, centerY]: [number, number]): [
-  number,
-  number
-] => {
+const toPositionInMatrix = ([centerX, centerY]: [number, number]): Vector => {
   const [cardWidth, cardHeight] = cardSize;
-  return [Math.ceil(centerX / cardWidth), Math.ceil(centerY / cardHeight)];
+  return new Vector([
+    Math.ceil(centerX / cardWidth),
+    Math.ceil(centerY / cardHeight),
+  ]);
 };
 
 const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
-  const { windowSize } = useContext(Context);
+  const { windowSize, navigatorPlatform } = useContext(Context);
   const [width, height] = windowSize;
 
   const canvasSize = multiplyElementWise(matrixShape, cardSize) as number[];
@@ -184,14 +174,13 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
     y: startY,
   }));
 
-  const [matrixXy, setMatrixCenterXy] = useState<[number, number]>(
+  const [matrixCenter, setMatrixCenterXy] = useState<Vector>(
     toPositionInMatrix([startX, startY])
   );
 
   const prevWidth = usePrevious(width);
   const prevHeight = usePrevious(height);
 
-  const scrollDivRef = useRef<HTMLDivElement>(null);
   const [clearedDraggingTip, setClearedDraggingTip] = useState<number>(0);
   const clearDraggineTipTwice = () => {
     if (clearedDraggingTip <= 2) {
@@ -201,8 +190,8 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
   };
 
   const setSpringAndMatrixCenterXY = useCallback(
-    (xy: number[] | undefined = undefined, immediate: boolean = false) => {
-      if (!xy)
+    (xy?: number[], immediate: boolean = false) => {
+      if (xy === undefined)
         xy = [
           position.x.get() + (width - prevWidth!) / 2,
           position.y.get() + (height - prevHeight!) / 2,
@@ -229,7 +218,17 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
 
   useEffect(setSpringAndMatrixCenterXY, [windowSize]);
 
-  const bind = useDrag(
+  const scrollDivRef = useRef<HTMLDivElement>(null);
+  const onWheelHandler = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (navigatorPlatform?.isMac) {
+      setSpringAndMatrixCenterXY(
+        [position.x.get() - e.deltaX, position.y.get() - e.deltaY],
+        true
+      );
+    }
+  };
+
+  const bindDrag = useDrag(
     ({ down, movement: xy, velocity, direction }) => {
       if (!down) clearDraggineTipTwice();
       direction = smoother.smooth(direction, 8) as typeof direction;
@@ -244,13 +243,17 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
 
   return (
     <>
-      <div {...bind()} ref={scrollDivRef} id="projects-canvas">
+      <div
+        {...bindDrag()}
+        ref={scrollDivRef}
+        onWheel={onWheelHandler}
+        id="projects-canvas"
+      >
         <animated.div style={{ ...position }}>
           <CardsMatrix
             {...{
               filteredStudents,
-              matrixX: matrixXy[0],
-              matrixY: matrixXy[1],
+              matrixCenter: matrixCenter,
               windowX: windowSize[0],
               windowY: windowSize[1],
             }}
@@ -263,8 +266,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
 
 interface ICardsProps {
   filteredStudents: IFilteredStudent[];
-  matrixX: number;
-  matrixY: number;
+  matrixCenter: Vector;
   windowX: number;
   windowY: number;
 }
@@ -275,8 +277,7 @@ const getOffset = (xy: number[], cardSize: number[]): number[] =>
 interface PrevValues {
   windowX: number;
   windowY: number;
-  matrixX: number;
-  matrixY: number;
+  matrixCenter: Vector;
   filteredStudents: IFilteredStudent[];
   windowSizeChanged: boolean;
   matrixXyChanged: boolean;
@@ -284,13 +285,12 @@ interface PrevValues {
 }
 
 const CardsMatrix = React.memo(
-  ({ filteredStudents, matrixX, matrixY, windowX, windowY }: ICardsProps) => {
+  ({ filteredStudents, matrixCenter, windowX, windowY }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
     const [prevValues, setPrevValues] = useState<PrevValues>({
       windowX,
       windowY,
-      matrixX,
-      matrixY,
+      matrixCenter,
       filteredStudents,
       windowSizeChanged: false,
       matrixXyChanged: false,
@@ -302,19 +302,17 @@ const CardsMatrix = React.memo(
       setPrevValues({
         windowX,
         windowY,
-        matrixX,
-        matrixY,
+        matrixCenter,
         filteredStudents,
         windowSizeChanged:
           windowX !== prevValues.windowX || windowY !== prevValues.windowY,
-        matrixXyChanged:
-          matrixX !== prevValues.matrixX || matrixY !== prevValues.matrixY,
+        matrixXyChanged: !matrixCenter.isEqual(prevValues.matrixCenter),
         filteredStudentsChanged:
           prevValues.filteredStudents !== filteredStudents,
       });
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredStudents, matrixX, matrixY, windowX, windowY]);
+    }, [filteredStudents, matrixCenter, windowX, windowY]);
 
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
     const dropOldCards = prevValues.filteredStudentsChanged;
@@ -323,14 +321,14 @@ const CardsMatrix = React.memo(
       DEBUG && console.log("calling getCardsInMatrixToShow");
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
-          [matrixX, matrixY],
+          matrixCenter,
           prevState,
           filteredStudents,
           [windowX, windowY],
           dropOldCards
         )
       );
-    }, [matrixX, matrixY, filteredStudents, windowX, windowY, dropOldCards]);
+    }, [matrixCenter, filteredStudents, windowX, windowY, dropOldCards]);
 
     const skipAnimation =
       prevValues.matrixXyChanged || prevValues.windowSizeChanged;

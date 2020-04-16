@@ -14,11 +14,17 @@ interface IAppProps {
   students: IStudentSummary[] | undefined;
 }
 
+const navigatorPlatform = {
+  label: window.navigator.platform,
+  isMac: window.navigator.platform.toUpperCase().indexOf("MAC") >= 0,
+  isIOS: /(iPhone|iPod|iPad)/i.test(window.navigator.platform),
+};
+
 const App = ({ students }: IAppProps) => {
   const windowSize = useWindowSize();
   return (
     <>
-      <Context.Provider value={{ windowSize }}>
+      <Context.Provider value={{ windowSize, navigatorPlatform }}>
         <Header />
         <Switch>
           <Route path="/students/:studentIdOrSlug">
