@@ -20,7 +20,7 @@ const testHomePage = (location: any): boolean => {
 };
 
 const HeaderBG = () => {
-  const { windowSize } = useContext(Context);
+  const { windowSize, navigatorPlatform } = useContext(Context);
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
     height: windowHeight * headerHeightRatio,
@@ -44,7 +44,13 @@ const HeaderBG = () => {
 
   const collapseHeaderAndShowMessage = useCallback(() => {
     setSpring({ height: 0 });
-    isAtHomePage && AddMessage("Drag to explore, click to Read More.", false);
+    isAtHomePage &&
+      AddMessage(
+        `Drag ${
+          navigatorPlatform?.isMac ? "or scroll " : ""
+        }to explore, click to Read More.`,
+        false
+      );
   }, [setSpring, isAtHomePage]);
 
   useEffect(() => {
