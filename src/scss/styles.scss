@@ -187,7 +187,7 @@ $image-top-margin: 60px;
       padding-top: 40px;
 
       @include media-breakpoint-up(md) {
-        margin-top: 0;
+        padding-top: 0;
       }
     }
 
