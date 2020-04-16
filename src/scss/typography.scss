@@ -94,8 +94,9 @@ h4 {
 }
 
 .description {
-  @include font-size-spec(1, 42, 0.875, 24);
+  @include font-size-spec(0.9, 19.2, 0.875, 24);
   color: $dark-gray;
+  font-style: italic;
   letter-spacing: -0.03rem;
 }
 

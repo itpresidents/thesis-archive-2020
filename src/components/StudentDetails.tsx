@@ -59,6 +59,8 @@ const MAIN_COLS_LG = 8;
 
 const TEXT_SECTION_MD = MAIN_COLS_LG;
 
+const IMAGE_COLS_LG = 10;
+
 const TextSection = ({ children }: { children: React.ReactNode }) => (
   <Row className={cx(justify, justifyText)}>
     <Col lg={TEXT_SECTION_MD}>{children}</Col>
@@ -137,7 +139,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
           </a>
         </TextSection>
         <Row className={justify}>
-          <Col lg={10}>
+          <Col lg={IMAGE_COLS_LG}>
             <ImageWithCaption image={student.slide_show[0]} />
           </Col>
         </Row>
@@ -150,7 +152,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         </TextSection>
 
         <Row className={justify}>
-          <Col lg={MAIN_COLS_LG}>
+          <Col lg={IMAGE_COLS_LG}>
             {student.slide_show
               .slice(1, student.slide_show.length - 2)
               .map((image) => (
