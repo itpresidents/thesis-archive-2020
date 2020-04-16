@@ -26,7 +26,6 @@ interface IDraggableCardsProps {
   filteredStudents: IFilteredStudent[];
 }
 
-const matrixShape: number[] = [800, 800];
 const smoother = new SmoothVector();
 interface IMatrixEdges {
   start: Vector;
@@ -166,16 +165,13 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): Vector => {
 const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
   const { windowSize, navigatorPlatform } = useContext(Context);
   const [width, height] = windowSize;
-
-  const canvasSize = multiplyElementWise(matrixShape, cardSize) as number[];
-  const [startX, startY] = scaleVector(canvasSize, 0.5);
   const [position, setSpring] = useSpring<Position>(() => ({
-    x: startX,
-    y: startY,
+    x: 0,
+    y: 0,
   }));
 
   const [matrixCenter, setMatrixCenterXy] = useState<Vector>(
-    toPositionInMatrix([startX, startY])
+    toPositionInMatrix([0, 0])
   );
 
   const prevWidth = usePrevious(width);

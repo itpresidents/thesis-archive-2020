@@ -51,7 +51,7 @@ const HeaderBG = () => {
         }to explore, click to Read More.`,
         false
       );
-  }, [setSpring, isAtHomePage]);
+  }, [setSpring, isAtHomePage, navigatorPlatform]);
 
   useEffect(() => {
     collapseHeaderAndShowMessage();
