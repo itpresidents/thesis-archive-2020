@@ -29,7 +29,8 @@ const FeaturedImage = ({ image }: { image: IFeaturedImage | undefined }) => {
       src={image.src}
       alt={image.alt}
       title={image.title}
-      className="mx-auto img-fluid"
+      className="img-fluid"
+      style={{ width: "100%" }}
     ></img>
   );
 };
@@ -67,11 +68,7 @@ const TextSection = ({ children }: { children: React.ReactNode }) => (
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
     <div id="details">
-      <Container className="full-on-mobile">
-        <Col>
-          <FeaturedImage image={student.thumbnail_image} />
-        </Col>
-      </Container>
+      <FeaturedImage image={student.thumbnail_image} />
       <Container id="details" className="body1">
         {/* <Row className={justify}> */}
         {/* <Col md={12}> */}
