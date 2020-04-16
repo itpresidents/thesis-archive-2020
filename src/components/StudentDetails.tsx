@@ -189,6 +189,20 @@ const Student = ({ studentId }: IStudentProps) => {
   useEffect(() => {
     if (student) {
       document.title = studentToTitle(student);
+      const metaDescription = document.querySelector(
+        "meta[name='description']"
+      );
+
+      if (metaDescription)
+        metaDescription.setAttribute("description", student.thesis_statement);
+
+      const metaOgImageElement = document.querySelector(
+        "meta[property='og:image']"
+      );
+
+      if (metaOgImageElement) {
+        metaOgImageElement.setAttribute("content", student.thumbnail_image.src);
+      }
     }
   }, [student]);
 

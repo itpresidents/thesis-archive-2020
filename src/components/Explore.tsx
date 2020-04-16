@@ -48,6 +48,17 @@ const Explore = ({ students }: IHomeProps) => {
 
   useEffect(() => {
     document.title = generateTitle(tag, advisor);
+
+    const metaDescription = document.querySelector("meta[name='description']");
+
+    if (metaDescription)
+      metaDescription.setAttribute("description", "ITP Thesis Archive");
+
+    const metaOgImageElement = document.querySelector(
+      "meta[property='og:image']"
+    );
+
+    if (metaOgImageElement) metaOgImageElement.setAttribute("content", "");
   }, [tag, advisor]);
 
   useEffect(() => {
