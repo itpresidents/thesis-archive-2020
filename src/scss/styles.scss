@@ -125,8 +125,10 @@ a {
 
 /**** Student Details ****/
 
-$section-top-margin: 120px;
-$header-bottom-margin: 34px;
+$section-top-margin-mobile: 110px;
+$section-top-margin-desktop: 120px;
+$header-bottom-margin-mobile: 54px;
+$header-bottom-margin-desktop: 34px;
 $text-block-bottom-margin: 40px;
 $image-top-margin: 60px;
 
@@ -140,8 +142,10 @@ $image-top-margin: 60px;
   }
 
   h2 {
+    margin-top: 67px;
+    margin-bottom: 28px;
+
     @include media-breakpoint-up(md) {
-      margin-top: 67px;
       margin-bottom: 38px;
     }
   }
@@ -152,15 +156,15 @@ $image-top-margin: 60px;
       @extend .subtitle;
     }
 
+    margin-bottom: 31px;
+
     @include media-breakpoint-up(md) {
       margin-bottom: 31px;
     }
   }
 
   .summary {
-    @include media-breakpoint-up(md) {
-      margin-bottom: 56px;
-    }
+    margin-bottom: 56px;
   }
 
   hr {
@@ -178,17 +182,31 @@ $image-top-margin: 60px;
       margin-bottom: 27px;
     }
 
+    .linkHolder:not(.first) {
+      padding-top: 40px;
+
+      @include media-breakpoint-up(md) {
+        margin-top: 0;
+      }
+    }
+
     span,
     a {
       @include font-size-spec(1.3, 21, 1.3, 21);
       color: $black;
+
       margin-bottom: 0;
     }
   }
 
   h3 {
-    margin-top: $section-top-margin;
-    margin-bottom: $header-bottom-margin;
+    margin-top: $section-top-margin-mobile;
+    margin-bottom: $header-bottom-margin-mobile;
+
+    @include media-breakpoint-up(lg) {
+      margin-top: $section-top-margin-desktop;
+      margin-bottom: $header-bottom-margin-desktop;
+    }
   }
 
   .textblock {

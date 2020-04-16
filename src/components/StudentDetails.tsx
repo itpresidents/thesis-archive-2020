@@ -108,21 +108,21 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
               <Col sm={12}>
                 <hr />
               </Col>
-              <Col sm={12} md={3}>
+              <Col sm={12} md={3} className="linkHolder first">
                 <h4>Student</h4>
                 <span>{student.student_name}</span>
               </Col>
-              <Col sm={12} md={3}>
+              <Col sm={12} md={3} className="linkHolder">
                 <h4>Portfolio</h4>
                 <a href="//www.example.com">www.example.com</a>
               </Col>
-              <Col sm={12} md={3}>
+              <Col sm={12} md={3} className="linkHolder">
                 <h4>Advisor</h4>
                 <Link to={`/filter/advisor/${student.advisor_name}`}>
                   {student.advisor_name}
                 </Link>
               </Col>
-              <Col sm={12} md={3}>
+              <Col sm={12} md={3} className="linkHolder">
                 <h4>Watch</h4>
                 <Link to={`/videos/${student.student_slug}`}>
                   <VideoSign />
