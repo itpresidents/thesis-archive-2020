@@ -267,6 +267,7 @@ $image-top-margin: 60px;
 
 $nav-size: 60px;
 $footer-padding: 24px;
+$desktop-footer-left-size: 400px;
 
 .footer {
   height: $nav-size;
@@ -331,9 +332,23 @@ $footer-padding: 24px;
 
       @include media-breakpoint-up(lg) {
         bottom: 0;
-        width: 400px;
+        width: $desktop-footer-left-size;
         border-top: $black 1px solid;
         border-right: $black 1px solid;
+      }
+
+      input.search {
+        border: none;
+
+        margin-top: 2px;
+        height: $nav-size - 4;
+        line-height: $nav-size;
+        @extend .subtitle;
+
+        @include media-breakpoint-up(lg) {
+          margin-left: -30px;
+          width: $desktop-footer-left-size - 55;
+        }
       }
     }
 
