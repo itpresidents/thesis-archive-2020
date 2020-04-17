@@ -134,6 +134,13 @@ $image-top-margin: 60px;
 
 #details {
   margin-top: $ipad-and-up-nav-height;
+
+  .row {
+    @include media-breakpoint-down(md) {
+      padding: 0 15px;
+    }
+  }
+
   .full-on-mobile {
     padding: 0;
 
@@ -227,7 +234,11 @@ $image-top-margin: 60px;
   }
 
   .project {
-    width: 323px;
+    width: 100%;
+    @include media-breakpoint-up(md) {
+      width: 323px;
+    }
+
     height: 46px;
     line-height: 46px;
     color: $black;

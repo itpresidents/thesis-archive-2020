@@ -37,7 +37,6 @@ const FeaturedImage = ({ image }: { image: IFeaturedImage | undefined }) => {
 
 const justify = "justify-content-md-center";
 const centerText = "text-center";
-const justifyText = "text-justify";
 
 const ImageWithCaption = ({ image }: { image: IImage | undefined }) => {
   if (!image) return null;
