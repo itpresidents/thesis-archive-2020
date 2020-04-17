@@ -62,7 +62,7 @@ const TEXT_SECTION_MD = MAIN_COLS_LG;
 const IMAGE_COLS_LG = 10;
 
 const TextSection = ({ children }: { children: React.ReactNode }) => (
-  <Row className={cx(justify, justifyText)}>
+  <Row className={cx(justify)}>
     <Col lg={TEXT_SECTION_MD}>{children}</Col>
   </Row>
 );
