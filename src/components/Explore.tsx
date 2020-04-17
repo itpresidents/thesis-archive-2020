@@ -73,6 +73,7 @@ const Explore = ({ students }: IHomeProps) => {
   const [{ search }, setSearch] = useState<{ search?: ISearch }>({});
 
   useEffect(() => {
+    // load search if it hasn't been loaded and search text has been entered
     if (students && !search && searchText && searchText !== "") {
       setSearch({ search: buildSearch(students) });
     }
