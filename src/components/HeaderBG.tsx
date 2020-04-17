@@ -1,15 +1,10 @@
-import React, {
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
+import React, { useState, useCallback, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useSpring, to, animated } from "react-spring";
 import { Context } from "../util/contexts";
 import { AddMessage } from "./MessageHub";
 import { DEBUG } from "../config";
+import { useFirstClick } from "../util/useFirstClick";
 
 const headerHeightRatio = 0.22;
 
@@ -24,20 +19,7 @@ const HeaderBG = () => {
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
     height: windowHeight * headerHeightRatio,
-    // immediate: true,
   }));
-  const [listenersAdded, setListenersAdded] = useState(false);
-  const [didFistClick, setdidFistClick] = useState(false);
-  const listenToFistClick = useRef(() => {
-    !didFistClick && setdidFistClick(true);
-    window.removeEventListener("wheel", listenToFistClick.current);
-    window.removeEventListener("click", listenToFistClick.current);
-    window.removeEventListener("touchmove", listenToFistClick.current);
-    DEBUG &&
-      console.log(
-        `tried  window.removeEventListener("click", listenToFistClick.current);`
-      );
-  });
 
   const location = useLocation();
   const [isAtHomePage, setIsAtHome] = useState(testHomePage(location));
@@ -53,16 +35,10 @@ const HeaderBG = () => {
       );
   }, [setSpring, isAtHomePage, navigatorPlatform]);
 
-  useEffect(() => {
-    collapseHeaderAndShowMessage();
-  }, [didFistClick, collapseHeaderAndShowMessage]);
+  const didFirstClick = useFirstClick();
+  DEBUG && console.log(didFirstClick);
 
-  if (!listenersAdded) {
-    window.addEventListener("click", listenToFistClick.current);
-    window.addEventListener("wheel", listenToFistClick.current);
-    window.addEventListener("touchmove", listenToFistClick.current);
-    setListenersAdded(true);
-  }
+  useEffect(collapseHeaderAndShowMessage, [didFirstClick]);
 
   useEffect(() => {
     setIsAtHome(testHomePage(location));
