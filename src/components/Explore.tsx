@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { IStudentSummary, IFilteredStudent } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
-import Footer from "./Footer";
+import Footer from "./Footer/index";
 import { useRouteMatch } from "react-router-dom";
 import * as queries from "util/queries";
 
