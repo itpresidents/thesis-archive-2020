@@ -20,7 +20,7 @@ const testHomePage = (location: any): boolean => {
 };
 
 const HeaderBG = () => {
-  const { windowSize } = useContext(Context);
+  const { windowSize, navigatorPlatform } = useContext(Context);
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
     height: windowHeight * headerHeightRatio,
@@ -32,6 +32,7 @@ const HeaderBG = () => {
     !didFistClick && setdidFistClick(true);
     window.removeEventListener("wheel", listenToFistClick.current);
     window.removeEventListener("click", listenToFistClick.current);
+    window.removeEventListener("touchmove", listenToFistClick.current);
     DEBUG &&
       console.log(
         `tried  window.removeEventListener("click", listenToFistClick.current);`
@@ -43,8 +44,14 @@ const HeaderBG = () => {
 
   const collapseHeaderAndShowMessage = useCallback(() => {
     setSpring({ height: 0 });
-    isAtHomePage && AddMessage("Drag to explore, click to Read More.", false);
-  }, [setSpring, isAtHomePage]);
+    isAtHomePage &&
+      AddMessage(
+        `Drag ${
+          navigatorPlatform?.isMac ? "or scroll " : ""
+        }to explore, click to Read More.`,
+        false
+      );
+  }, [setSpring, isAtHomePage, navigatorPlatform]);
 
   useEffect(() => {
     collapseHeaderAndShowMessage();
@@ -53,6 +60,7 @@ const HeaderBG = () => {
   if (!listenersAdded) {
     window.addEventListener("click", listenToFistClick.current);
     window.addEventListener("wheel", listenToFistClick.current);
+    window.addEventListener("touchmove", listenToFistClick.current);
     setListenersAdded(true);
   }
 
