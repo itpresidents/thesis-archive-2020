@@ -68,9 +68,16 @@ const HeaderBG = () => {
 
   useEffect(collapseHeaderAndShowMessage, [didFirstClick]);
 
-  // useEffect(() => {
-  //   if (!isAtHomePage) setSpring({ height: 0 });
-  // });
+  useEffect(() => {
+    if (isAtHomePage)
+      document
+        .getElementsByTagName("html")[0]
+        .setAttribute("style", "overscroll-behavior-x:none");
+    else
+      document
+        .getElementsByTagName("html")[0]
+        .setAttribute("style", "overscroll-behavior-x:auto");
+  }, [isAtHomePage]);
 
   useEffect(() => {
     setIsAtHome(testHomePage(location));
