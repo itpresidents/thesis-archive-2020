@@ -114,13 +114,12 @@ a {
   }
 }
 
-#header2020-bg-animation {
+.header2020-bg-animation {
   position: fixed;
   left: 0;
   top: 0px;
   width: 100vw;
   background: url("../images/20.svg") repeat-x;
-  animation: move_background $scrollSpeed infinite linear;
 }
 
 /**** Student Details ****/

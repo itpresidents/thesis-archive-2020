@@ -6,7 +6,33 @@ import { AddMessage } from "./MessageHub";
 import { DEBUG } from "../config";
 import { useFirstClick } from "../util/useFirstClick";
 
-const headerHeightRatio = 0.22;
+const headerHeightRatio = 0.7;
+const bgScrollSpeed = 4;
+const bgLayerCount = 3;
+
+const injectStyle = (style: string) => {
+  const styleElement = document.createElement("style");
+  document.head.appendChild(styleElement);
+  const styleSheet = styleElement.sheet! as CSSStyleSheet;
+  styleSheet.insertRule(style, styleSheet.cssRules.length);
+};
+
+const rollingBG = (reverse: boolean = false) => `
+@keyframes move_background${reverse ? "_reverse" : ""} {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: ${
+      (((reverse ? -1 : 1) * headerHeightRatio) / bgLayerCount) * 100
+    }vh 0;
+  }
+}
+`;
+
+injectStyle(rollingBG());
+injectStyle(rollingBG(true));
 
 const testHomePage = (location: any): boolean => {
   // it's at home page if the first match is not in ["students", "video", "about"]
@@ -27,6 +53,7 @@ const HeaderBG = () => {
   const collapseHeaderAndShowMessage = useCallback(() => {
     setSpring({ height: 0 });
     isAtHomePage &&
+      !navigatorPlatform?.isMobile &&
       AddMessage(
         `Drag ${
           navigatorPlatform?.isMac ? "or scroll " : ""
@@ -40,6 +67,10 @@ const HeaderBG = () => {
 
   useEffect(collapseHeaderAndShowMessage, [didFirstClick]);
 
+  // useEffect(() => {
+  //   if (!isAtHomePage) setSpring({ height: 0 });
+  // });
+
   useEffect(() => {
     setIsAtHome(testHomePage(location));
   }, [location]);
@@ -51,20 +82,37 @@ const HeaderBG = () => {
     });
   }, [windowHeight, setSpring]);
 
-  return (
+  return !isAtHomePage ? null : (
     <animated.div
       id="header2020-bg"
       style={{
         height: to(spring.height, (height) => `${height}px`),
       }}
     >
-      <animated.div
-        id="header2020-bg-animation"
-        style={{
-          backgroundSize: to(spring.height, (height) => `25vh ${height}px`),
-          height: to(spring.height, (height) => `${height}px`),
-        }}
-      />
+      {[0, 1, 2].map((i) => (
+        <animated.div
+          className="header2020-bg-animation"
+          key={i}
+          style={{
+            top: to(
+              spring.height,
+              (height) => `${(i * height) / bgLayerCount}px`
+            ),
+            backgroundSize: to(
+              spring.height,
+              (height) =>
+                `${(headerHeightRatio / bgLayerCount) * 100}vh ${
+                  height / bgLayerCount
+                }px`
+            ),
+            height: to(spring.height, (height) => `${height / bgLayerCount}px`),
+            animation: `move_background${
+              i === 1 ? "_reverse" : ""
+            } ${bgScrollSpeed}s infinite linear`,
+          }}
+        />
+      ))}
+
       <animated.h1
         className="position-absolute"
         style={{
