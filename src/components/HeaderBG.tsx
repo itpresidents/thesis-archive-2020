@@ -7,7 +7,8 @@ import { DEBUG } from "../config";
 import { useFirstClick } from "../util/useFirstClick";
 
 const headerHeightRatio = 0.7;
-const bgScrollSpeed = 4;
+const bgScrollSpeed = 6;
+const svgWhRatio = 1.17;
 const bgLayerCount = 3;
 
 const injectStyle = (style: string) => {
@@ -22,10 +23,10 @@ const rollingBG = (reverse: boolean = false) => `
   from {
     background-position: 0 0;
   }
-
   to {
     background-position: ${
-      (((reverse ? -1 : 1) * headerHeightRatio) / bgLayerCount) * 100
+      (((reverse ? -1 : 1) * headerHeightRatio * svgWhRatio) / bgLayerCount) *
+      100
     }vh 0;
   }
 }
@@ -101,7 +102,7 @@ const HeaderBG = () => {
             backgroundSize: to(
               spring.height,
               (height) =>
-                `${(headerHeightRatio / bgLayerCount) * 100}vh ${
+                `${(headerHeightRatio / bgLayerCount) * 100 * svgWhRatio}vh ${
                   height / bgLayerCount
                 }px`
             ),
