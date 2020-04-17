@@ -49,7 +49,7 @@ export const Chevron = () => (
   </svg>
 );
 
-export const Search = () => (
+export const SearchIcon = () => (
   <svg
     width="17"
     height="17"

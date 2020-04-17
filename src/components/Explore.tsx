@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 // import StudentCards from "./StudentCards";
-import { IStudentSummary, IFilteredStudent } from "types";
+import { IStudentSummary, IFilteredStudent, TopicDict, ISearch } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
-import Footer from "./Footer";
+import Footer from "./Footer/index";
 import { useRouteMatch } from "react-router-dom";
 import * as queries from "util/queries";
+import { buildSearch } from "util/search";
 
 const generateTitle = (tag: string | null, advisor: string | null): string => {
   const opener = "ITP Thesis Archive 2020";
@@ -31,12 +32,18 @@ const updateFilteredStudents = (
   }));
 };
 
+interface FilterOptions {
+  tags?: TopicDict;
+  advisors?: TopicDict;
+}
+
 const noFilter = (student: IStudentSummary) => true;
 
 const Explore = ({ students }: IHomeProps) => {
   const [filteredStudents, setFilteredStudents] = useState<
     IFilteredStudent[] | null
   >(null);
+  const [searchText, setSearchText] = useState<string>("");
 
   const tagMatch = useRouteMatch<{ tag: string }>("/filter/category/:tag");
   const advisorMatch = useRouteMatch<{ advisor: string }>(
@@ -47,8 +54,6 @@ const Explore = ({ students }: IHomeProps) => {
   const advisor = advisorMatch && advisorMatch.params.advisor;
 
   useEffect(() => {
-    document.title = generateTitle(tag, advisor);
-
     const metaDescription = document.querySelector("meta[name='description']");
 
     if (metaDescription)
@@ -59,12 +64,29 @@ const Explore = ({ students }: IHomeProps) => {
     );
 
     if (metaOgImageElement) metaOgImageElement.setAttribute("content", "");
+  });
+
+  useEffect(() => {
+    document.title = generateTitle(tag, advisor);
   }, [tag, advisor]);
+
+  const [{ search }, setSearch] = useState<{ search?: ISearch }>({});
+
+  useEffect(() => {
+    // load search if it hasn't been loaded and search text has been entered
+    if (students && !search && searchText && searchText !== "") {
+      setSearch({ search: buildSearch(students) });
+    }
+  }, [students, search, searchText]);
 
   useEffect(() => {
     if (!students) return;
 
-    if (tag) {
+    if (searchText && searchText !== "") {
+      if (search) {
+        setFilteredStudents(search(searchText));
+      }
+    } else if (tag) {
       setFilteredStudents(
         updateFilteredStudents(students, queries.matchesTag(tag))
       );
@@ -75,7 +97,15 @@ const Explore = ({ students }: IHomeProps) => {
     } else {
       setFilteredStudents(updateFilteredStudents(students, noFilter));
     }
-  }, [students, tag, advisor]);
+  }, [students, tag, advisor, searchText, search]);
+
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({});
+
+  useEffect(() => {
+    if (students) {
+      setFilterOptions(queries.getTagsAndAdvisors(students));
+    }
+  }, [students]);
 
   if (!filteredStudents) return <h2>loading...</h2>;
 
@@ -84,7 +114,12 @@ const Explore = ({ students }: IHomeProps) => {
       <div className="row">
         <DraggableCards filteredStudents={filteredStudents} />
       </div>
-      <Footer students={students} />
+      <Footer
+        {...filterOptions}
+        searchText={searchText}
+        searchTextChanged={setSearchText}
+        filteredStudents={filteredStudents}
+      />
     </Container>
   );
 };

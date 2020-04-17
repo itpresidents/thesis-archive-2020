@@ -74,3 +74,10 @@ export interface IFilteredStudent {
   show: boolean;
   student: IStudentSummary;
 }
+
+export interface ISearchResult {
+  student_id: string;
+  student_name: string;
+}
+
+export declare type ISearch = (search: string) => IFilteredStudent[];
