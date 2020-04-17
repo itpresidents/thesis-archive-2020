@@ -1,22 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { TopicDict, IStudentSummary } from "types";
-import * as queries from "util/queries";
+import React from "react";
+import { TopicDict, IFilteredStudent } from "types";
 import { Navbar, Nav } from "react-bootstrap";
 import { Route, Switch, Link } from "react-router-dom";
 import { SearchIcon, Random, Filter } from "components/Svg";
 import FilterMain from "./Filter";
 import SearchMain from "./Search";
-
-interface OptionallyHasStudents {
-  students: IStudentSummary[] | undefined;
-}
-
-interface FooterProps extends OptionallyHasStudents {}
-
-interface FilterOptions {
-  tags?: TopicDict;
-  advisors?: TopicDict;
-}
 
 const FooterMain = () => (
   <Nav className="d-flex justify-content-center w-100 main">
@@ -38,15 +26,21 @@ const FooterMain = () => (
   </Nav>
 );
 
-const Footer = ({ students }: FooterProps) => {
-  const [filterOptions, setFilterOptions] = useState<FilterOptions>({});
+interface FooterProps {
+  tags?: TopicDict;
+  advisors?: TopicDict;
+  searchText: string;
+  searchTextChanged: (searchText: string) => void;
+  filteredStudents: IFilteredStudent[];
+}
 
-  useEffect(() => {
-    if (students) {
-      setFilterOptions(queries.getTagsAndAdvisors(students));
-    }
-  }, [students]);
-
+const Footer = ({
+  tags,
+  advisors,
+  searchText,
+  searchTextChanged,
+  filteredStudents,
+}: FooterProps) => {
   return (
     <Navbar fixed="bottom" bg="white" className="footer">
       <Switch>
@@ -54,13 +48,14 @@ const Footer = ({ students }: FooterProps) => {
           <FooterMain />
         </Route>
         <Route path="/filter">
-          <FilterMain
-            tags={filterOptions.tags}
-            advisors={filterOptions.advisors}
-          />
+          <FilterMain tags={tags} advisors={advisors} />
         </Route>
         <Route path="/search">
-          <SearchMain />
+          <SearchMain
+            text={searchText}
+            textChanged={searchTextChanged}
+            searchResults={filteredStudents}
+          />
         </Route>
       </Switch>
     </Navbar>
