@@ -42,7 +42,7 @@ const getMatrixEdges = (
     Math.ceil(windowSize[1] / cardSize[1]),
   ]);
 
-  const bleed = new Vector([2, 2]);
+  const bleed = [2, 2];
   const start = new Vector(center);
   start.add(new Vector(windowSizeInCards).scale(-1));
   const end = new Vector(center);
@@ -308,13 +308,13 @@ const CardsMatrix = React.memo(
       });
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredStudents, matrixCenter, windowX, windowY]);
+    }, [filteredStudents, matrixCenter.x, matrixCenter.y, windowX, windowY]);
 
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
     const dropOldCards = prevValues.filteredStudentsChanged;
 
     useEffect(() => {
-      DEBUG && console.log("calling getCardsInMatrixToShow");
+      console.log("calling getCardsInMatrixToShow");
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
           matrixCenter,
@@ -324,7 +324,8 @@ const CardsMatrix = React.memo(
           dropOldCards
         )
       );
-    }, [matrixCenter, filteredStudents, windowX, windowY, dropOldCards]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [...matrixCenter, filteredStudents, windowX, windowY, dropOldCards]);
 
     const skipAnimation =
       prevValues.matrixXyChanged || prevValues.windowSizeChanged;
