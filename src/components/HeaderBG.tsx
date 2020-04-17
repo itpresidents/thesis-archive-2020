@@ -119,7 +119,8 @@ const HeaderBG = () => {
           height: to(spring.height, (height) => `${height}px`),
         }}
       >
-        Thesis Archive
+        Thesis <br />
+        Archive
       </animated.h1>
     </animated.div>
   );
