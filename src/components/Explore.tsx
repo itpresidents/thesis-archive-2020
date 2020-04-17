@@ -73,10 +73,10 @@ const Explore = ({ students }: IHomeProps) => {
   const [{ search }, setSearch] = useState<{ search?: ISearch }>({});
 
   useEffect(() => {
-    if (students && !search) {
+    if (students && !search && searchText && searchText !== "") {
       setSearch({ search: buildSearch(students) });
     }
-  }, [students, search]);
+  }, [students, search, searchText]);
 
   useEffect(() => {
     if (!students) return;
