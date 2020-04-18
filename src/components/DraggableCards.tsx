@@ -86,13 +86,11 @@ class CardMatrix {
 }
 
 const getCardsInMatrixToShow = (
-  matrixCenter: Vector,
+  { start, end }: IMatrixEdges,
   prevCards: CardToShow[],
   filteredStudents: IFilteredStudent[],
-  windowSize: number[] | Vector,
   dropOldCards: boolean = false
 ): CardToShow[] => {
-  const { start, end } = getMatrixEdges(cardSize, windowSize, matrixCenter);
   const cardsInNewView: CardMatrix = new CardMatrix();
   //for scrolling, we will keep most old cards
   if (!dropOldCards) {
@@ -293,6 +291,16 @@ const CardsMatrix = React.memo(
       filteredStudentsChanged: false,
     });
 
+    const [matrixEdges, setMatrixEdges] = useState<IMatrixEdges>(
+      getMatrixEdges(cardSize, [windowX, windowY], matrixCenter)
+    );
+
+    useEffect(() => {
+      setMatrixEdges(
+        getMatrixEdges(cardSize, [windowX, windowY], matrixCenter)
+      );
+    }, [windowX, windowY, matrixCenter]);
+
     useEffect(() => {
       DEBUG && console.log("computing");
       setPrevValues({
@@ -317,15 +325,13 @@ const CardsMatrix = React.memo(
       console.log("calling getCardsInMatrixToShow");
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
-          matrixCenter,
+          matrixEdges,
           prevState,
           filteredStudents,
-          [windowX, windowY],
           dropOldCards
         )
       );
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [...matrixCenter, filteredStudents, windowX, windowY, dropOldCards]);
+    }, [matrixEdges, filteredStudents, dropOldCards]);
 
     const skipAnimation =
       prevValues.matrixXyChanged || prevValues.windowSizeChanged;
