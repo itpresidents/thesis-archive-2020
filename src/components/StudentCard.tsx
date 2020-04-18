@@ -26,7 +26,7 @@ export const StudentCardWithTransition = React.memo(
     DEBUG && console.log("re-render CardTransition");
     const transition = useTransition(student, {
       key: student.student_id,
-      from: { opacity: 0 },
+      from: { opacity: 1 },
       enter: { opacity: 1 },
       leave: { opacity: 0 },
       config: SpringConfig.slow,
