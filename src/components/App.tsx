@@ -9,6 +9,7 @@ import Header from "./Header";
 import Videos from "./Videos";
 import { Context } from "../util/contexts";
 import useWindowSize from "../util/useWindowSize";
+import { isMobile } from "react-device-detect";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -18,6 +19,7 @@ const navigatorPlatform = {
   label: window.navigator.platform,
   isMac: window.navigator.platform.toUpperCase().indexOf("MAC") >= 0,
   isIOS: /(iPhone|iPod|iPad)/i.test(window.navigator.platform),
+  isMobile: isMobile,
 };
 
 const App = ({ students }: IAppProps) => {

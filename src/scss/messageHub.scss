@@ -35,16 +35,20 @@
       width: 100%;
       display: grid;
       grid-template-columns: 1fr auto;
+      height: 40px;
 
       p {
-        font-size: 1.5em;
-        line-height: 1.5em;
+        // font-size: 1.5em;
+        // line-height: 1.5em;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        display: inline;
+        // display: inline;
         margin-block-start: 0em;
         margin-block-end: 0em;
+        font-size: 1em;
+        margin-top: 7px;
+        font-weight: 600;
       }
 
       .messageLife {

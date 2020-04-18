@@ -5,6 +5,7 @@ interface IPlatform {
   label: string;
   isMac: boolean;
   isIOS: boolean;
+  isMobile: boolean;
 }
 
 // I put this in context since we will probably optimize our app for mobile soon,
