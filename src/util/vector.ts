@@ -74,7 +74,7 @@ interface IMyVector {
   z?: number;
 }
 
-export class Vector extends Array implements IMyVector {
+export class Vector extends Array<number> implements IMyVector {
   constructor(vec: number[] | Vector) {
     super();
     for (let i = 0; i < Math.min(3, vec.length); i++) {
@@ -90,15 +90,6 @@ export class Vector extends Array implements IMyVector {
   get z(): number {
     return this[2];
   }
-  set x(value: number) {
-    this[0] = value;
-  }
-  set y(value: number) {
-    this[1] = value;
-  }
-  set z(value: number) {
-    this[2] = value;
-  }
 
   isEqual(vec: Vector | number[]): boolean {
     if (vec.length !== this.length) return false;
@@ -110,37 +101,24 @@ export class Vector extends Array implements IMyVector {
 
   add(vec: Array<number>): number[];
   add(vec: Vector): number[] {
-    for (let i in this) {
-      if (typeof vec[i] === "number") this[i] += vec[i];
-    }
-    return this.toArray();
+    return addVector(this, vec);
   }
 
   multiplyElementWise(vec: Array<number>): number[];
   multiplyElementWise(vec: Vector): number[] {
-    for (let i in this) {
-      if (typeof vec[i] === "number") this[i] *= vec[i];
-    }
-    return this.toArray();
-  }
-
-  devideElementWise(vec: Array<number>): number[];
-  devideElementWise(vec: Vector): number[] {
-    for (let i in this) {
-      if (typeof vec[i] === "number") this[i] /= vec[i];
-    }
-    return this.toArray();
+    return multiplyElementWise(this, vec);
   }
 
   scale(ratio: number): number[] {
-    if (typeof ratio === "number")
-      for (let i in this) {
-        this[i] *= ratio;
-      }
-    return this.toArray();
+    return scaleVector(this, ratio);
   }
 
   toArray(): number[] {
     return [...this];
   }
+}
+
+export interface IMatrixEdges {
+  start: Vector;
+  end: Vector;
 }

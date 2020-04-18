@@ -8,7 +8,13 @@ import React, {
 import { IFilteredStudent } from "../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
-import { addVector, SmoothVector, scaleVector, Vector } from "util/vector";
+import {
+  addVector,
+  SmoothVector,
+  scaleVector,
+  Vector,
+  IMatrixEdges,
+} from "util/vector";
 import { cardSize } from "config";
 import { usePrevious } from "util/usePrevious";
 import { Context } from "../util/contexts";
@@ -34,20 +40,37 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): Vector => {
   ]);
 };
 
+const getMatrixEdges = (
+  windowSizeInCards: Vector,
+  center: [number, number]
+): IMatrixEdges => {
+  const bleed = [2, 2];
+  const start = new Vector(center).add(new Vector(windowSizeInCards).scale(-1));
+  const end = new Vector(center).add(bleed);
+
+  return { start: new Vector(start), end: new Vector(end) };
+};
+
+const getWindowSizeInCards = (windowSize: [number, number], cardSize: Vector) =>
+  new Vector([
+    Math.ceil(windowSize[0] / cardSize[0]),
+    Math.ceil(windowSize[1] / cardSize[1]),
+  ]);
+
 const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
   const { windowSize, navigatorPlatform } = useContext(Context);
-  const [width, height] = windowSize;
+  const [windowWidth, windowHeight] = windowSize;
   const [position, setSpring] = useSpring<Position>(() => ({
     x: 0,
     y: 0,
   }));
 
-  const [matrixCenter, setMatrixCenterXy] = useState<Vector>(
+  const [[matrixCenterX, matrixCenterY], setMatrixCenterXy] = useState<Vector>(
     toPositionInMatrix([0, 0])
   );
 
-  const prevWidth = usePrevious(width);
-  const prevHeight = usePrevious(height);
+  const prevWidth = usePrevious(windowWidth);
+  const prevHeight = usePrevious(windowHeight);
 
   const [clearedDraggingTip, setClearedDraggingTip] = useState<number>(0);
   const clearDraggineTipTwice = () => {
@@ -61,8 +84,8 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
     (xy?: number[], immediate: boolean = false) => {
       if (xy === undefined)
         xy = [
-          position.x.get() + (width - prevWidth!) / 2,
-          position.y.get() + (height - prevHeight!) / 2,
+          position.x.get() + (windowWidth - prevWidth!) / 2,
+          position.y.get() + (windowHeight - prevHeight!) / 2,
         ];
       setSpring({
         x: xy[0],
@@ -74,8 +97,8 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
       });
     },
     [
-      width,
-      height,
+      windowWidth,
+      windowHeight,
       position,
       setSpring,
       setMatrixCenterXy,
@@ -107,6 +130,26 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
     { initial: () => [position.x.get(), position.y.get()] }
   );
 
+  const [windowSizeInCards, setWindowSizeInCards] = useState<Vector>(
+    getWindowSizeInCards([windowWidth, windowHeight], cardSize)
+  );
+
+  useEffect(() => {
+    setWindowSizeInCards(
+      getWindowSizeInCards([windowWidth, windowHeight], cardSize)
+    );
+  }, [windowWidth, windowHeight]);
+
+  const [matrixEdges, setMatrixEdges] = useState<IMatrixEdges>(
+    getMatrixEdges(windowSizeInCards, [matrixCenterX, matrixCenterY])
+  );
+
+  useEffect(() => {
+    setMatrixEdges(
+      getMatrixEdges(windowSizeInCards, [matrixCenterX, matrixCenterY])
+    );
+  }, [windowSizeInCards, matrixCenterX, matrixCenterY]);
+
   if (!filteredStudents) return null;
 
   return (
@@ -121,9 +164,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
           <CardsMatrix
             {...{
               filteredStudents,
-              matrixCenter: matrixCenter,
-              windowX: windowSize[0],
-              windowY: windowSize[1],
+              matrixEdges,
             }}
           />
         </animated.div>

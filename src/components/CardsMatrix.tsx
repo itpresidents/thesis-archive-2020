@@ -1,34 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Vector, multiplyElementWise, scaleVector } from "util/vector";
+import {
+  Vector,
+  multiplyElementWise,
+  scaleVector,
+  IMatrixEdges,
+} from "util/vector";
 import { IFilteredStudent, CardToShow } from "types";
 import shuffle from "lodash.shuffle";
 import { DEBUG, cardSize } from "config";
 
 import { StudentCardWithTransition } from "./StudentCard";
-
-interface IMatrixEdges {
-  start: Vector;
-  end: Vector;
-}
-
-const getMatrixEdges = (
-  cardSize: Vector,
-  windowSize: [number, number],
-  center: [number, number]
-): IMatrixEdges => {
-  const windowSizeInCards = new Vector([
-    Math.ceil(windowSize[0] / cardSize[0]),
-    Math.ceil(windowSize[1] / cardSize[1]),
-  ]);
-
-  const bleed = [2, 2];
-  const start = new Vector(center);
-  start.add(new Vector(windowSizeInCards).scale(-1));
-  const end = new Vector(center);
-  end.add(bleed);
-
-  return { start, end };
-};
 
 class CardMatrix {
   [key: number]: Record<number, number>;
@@ -138,9 +119,7 @@ interface PrevValues {
 
 interface ICardsProps {
   filteredStudents: IFilteredStudent[];
-  matrixCenter: Vector;
-  windowX: number;
-  windowY: number;
+  matrixEdges: IMatrixEdges;
 }
 
 const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
@@ -150,20 +129,8 @@ const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
 };
 
 const CardsMatrix = React.memo(
-  ({
-    filteredStudents,
-    matrixCenter: [matrixCenterX, matrixCenterY],
-    windowX,
-    windowY,
-  }: ICardsProps) => {
+  ({ filteredStudents, matrixEdges }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
-    const [matrixEdges, setMatrixEdges] = useState<IMatrixEdges>(
-      getMatrixEdges(
-        cardSize,
-        [windowX, windowY],
-        [matrixCenterX, matrixCenterY]
-      )
-    );
 
     const [prevValues, setPrevValues] = useState<PrevValues>({
       matrixEdges,
@@ -171,16 +138,6 @@ const CardsMatrix = React.memo(
       matrixEdgesChanged: false,
       filteredStudentsChanged: false,
     });
-
-    useEffect(() => {
-      setMatrixEdges(
-        getMatrixEdges(
-          cardSize,
-          [windowX, windowY],
-          [matrixCenterX, matrixCenterY]
-        )
-      );
-    }, [windowX, windowY, matrixCenterX, matrixCenterY]);
 
     useEffect(() => {
       DEBUG && console.log("computing");
