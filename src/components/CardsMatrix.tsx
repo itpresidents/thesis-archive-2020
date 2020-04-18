@@ -199,7 +199,7 @@ const CardsMatrix = React.memo(
     const dropOldCards = prevValues.filteredStudentsChanged;
 
     useEffect(() => {
-      console.log("calling getCardsInMatrixToShow");
+      DEBUG && console.log("calling getCardsInMatrixToShow");
       setInViewportList((prevState) =>
         getCardsInMatrixToShow(
           matrixEdges,
