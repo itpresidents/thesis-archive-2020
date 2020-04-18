@@ -130,12 +130,9 @@ const getOffset = (xy: number[], cardSize: number[]): number[] =>
   scaleVector(multiplyElementWise(xy, cardSize), -1);
 
 interface PrevValues {
-  windowX: number;
-  windowY: number;
-  matrixCenter: Vector;
+  matrixEdges: IMatrixEdges;
   filteredStudents: IFilteredStudent[];
-  windowSizeChanged: boolean;
-  matrixXyChanged: boolean;
+  matrixEdgesChanged: boolean;
   filteredStudentsChanged: boolean;
 }
 
@@ -146,22 +143,25 @@ interface ICardsProps {
   windowY: number;
 }
 
+const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
+  const isSame = a.start.isEqual(b.start) && a.end.isEqual(b.end);
+
+  return !isSame;
+};
+
 const CardsMatrix = React.memo(
   ({ filteredStudents, matrixCenter, windowX, windowY }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
-    const [prevValues, setPrevValues] = useState<PrevValues>({
-      windowX,
-      windowY,
-      matrixCenter,
-      filteredStudents,
-      windowSizeChanged: false,
-      matrixXyChanged: false,
-      filteredStudentsChanged: false,
-    });
-
     const [matrixEdges, setMatrixEdges] = useState<IMatrixEdges>(
       getMatrixEdges(cardSize, [windowX, windowY], matrixCenter)
     );
+
+    const [prevValues, setPrevValues] = useState<PrevValues>({
+      matrixEdges,
+      filteredStudents,
+      matrixEdgesChanged: false,
+      filteredStudentsChanged: false,
+    });
 
     useEffect(() => {
       setMatrixEdges(
@@ -172,13 +172,9 @@ const CardsMatrix = React.memo(
     useEffect(() => {
       DEBUG && console.log("computing");
       setPrevValues({
-        windowX,
-        windowY,
-        matrixCenter,
         filteredStudents,
-        windowSizeChanged:
-          windowX !== prevValues.windowX || windowY !== prevValues.windowY,
-        matrixXyChanged: !matrixCenter.isEqual(prevValues.matrixCenter),
+        matrixEdges,
+        matrixEdgesChanged: matrixChanged(matrixEdges, prevValues.matrixEdges),
         filteredStudentsChanged:
           prevValues.filteredStudents !== filteredStudents,
       });
@@ -201,8 +197,7 @@ const CardsMatrix = React.memo(
       );
     }, [matrixEdges, filteredStudents, dropOldCards]);
 
-    const skipAnimation =
-      prevValues.matrixXyChanged || prevValues.windowSizeChanged;
+    const skipAnimation = prevValues.matrixEdgesChanged;
 
     return (
       <>
