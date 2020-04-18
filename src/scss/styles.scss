@@ -165,6 +165,7 @@ $image-top-margin: 60px;
     &,
     & a {
       @extend .subtitle;
+      color: $dark-gray;
     }
 
     margin-bottom: 31px;
