@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
   useRef,
   useEffect,
@@ -42,7 +43,7 @@ const toPositionInMatrix = ([centerX, centerY]: [number, number]): Vector => {
 
 const getMatrixEdges = (
   windowSizeInCards: Vector,
-  center: [number, number]
+  center: Vector
 ): IMatrixEdges => {
   const bleed = [2, 2];
   const start = new Vector(center).add(new Vector(windowSizeInCards).scale(-1));
@@ -65,7 +66,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
     y: 0,
   }));
 
-  const [[matrixCenterX, matrixCenterY], setMatrixCenterXy] = useState<Vector>(
+  const [matrixCenterXy, setMatrixCenterXy] = useState<Vector>(
     toPositionInMatrix([0, 0])
   );
 
@@ -92,7 +93,8 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
         y: xy[1],
         immediate,
         onChange: (xy) => {
-          setMatrixCenterXy(toPositionInMatrix([xy.x!, xy.y!]));
+          const matrixCenterXy = toPositionInMatrix([xy.x!, xy.y!]);
+          setMatrixCenterXy(matrixCenterXy);
         },
       });
     },
@@ -135,20 +137,20 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
   );
 
   useEffect(() => {
+    console.log("getting window size");
     setWindowSizeInCards(
       getWindowSizeInCards([windowWidth, windowHeight], cardSize)
     );
   }, [windowWidth, windowHeight]);
 
   const [matrixEdges, setMatrixEdges] = useState<IMatrixEdges>(
-    getMatrixEdges(windowSizeInCards, [matrixCenterX, matrixCenterY])
+    getMatrixEdges(windowSizeInCards, matrixCenterXy)
   );
 
   useEffect(() => {
-    setMatrixEdges(
-      getMatrixEdges(windowSizeInCards, [matrixCenterX, matrixCenterY])
-    );
-  }, [windowSizeInCards, matrixCenterX, matrixCenterY]);
+    console.log("updating");
+    setMatrixEdges(getMatrixEdges(windowSizeInCards, matrixCenterXy));
+  }, [...matrixCenterXy, windowSizeInCards]);
 
   if (!filteredStudents) return null;
 
