@@ -13,8 +13,8 @@ interface IMatrixEdges {
 
 const getMatrixEdges = (
   cardSize: Vector,
-  windowSize: Vector | number[],
-  center: Vector
+  windowSize: [number, number],
+  center: [number, number]
 ): IMatrixEdges => {
   const windowSizeInCards = new Vector([
     Math.ceil(windowSize[0] / cardSize[0]),
@@ -150,10 +150,19 @@ const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
 };
 
 const CardsMatrix = React.memo(
-  ({ filteredStudents, matrixCenter, windowX, windowY }: ICardsProps) => {
+  ({
+    filteredStudents,
+    matrixCenter: [matrixCenterX, matrixCenterY],
+    windowX,
+    windowY,
+  }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
     const [matrixEdges, setMatrixEdges] = useState<IMatrixEdges>(
-      getMatrixEdges(cardSize, [windowX, windowY], matrixCenter)
+      getMatrixEdges(
+        cardSize,
+        [windowX, windowY],
+        [matrixCenterX, matrixCenterY]
+      )
     );
 
     const [prevValues, setPrevValues] = useState<PrevValues>({
@@ -165,9 +174,13 @@ const CardsMatrix = React.memo(
 
     useEffect(() => {
       setMatrixEdges(
-        getMatrixEdges(cardSize, [windowX, windowY], matrixCenter)
+        getMatrixEdges(
+          cardSize,
+          [windowX, windowY],
+          [matrixCenterX, matrixCenterY]
+        )
       );
-    }, [windowX, windowY, matrixCenter]);
+    }, [windowX, windowY, matrixCenterX, matrixCenterY]);
 
     useEffect(() => {
       DEBUG && console.log("computing");
@@ -180,7 +193,7 @@ const CardsMatrix = React.memo(
       });
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredStudents, matrixCenter.x, matrixCenter.y, windowX, windowY]);
+    }, [filteredStudents, matrixEdges]);
 
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
     const dropOldCards = prevValues.filteredStudentsChanged;
