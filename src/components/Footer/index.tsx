@@ -1,5 +1,5 @@
 import React from "react";
-import { TopicDict, IFilteredStudent } from "types";
+import { TopicDict, IStudentSummary } from "types";
 import { Navbar, Nav } from "react-bootstrap";
 import { Route, Switch, Link } from "react-router-dom";
 import { SearchIcon, Random, Filter } from "components/Svg";
@@ -31,7 +31,7 @@ interface FooterProps {
   advisors?: TopicDict;
   searchText: string;
   searchTextChanged: (searchText: string) => void;
-  filteredStudents: IFilteredStudent[];
+  filteredStudents: IStudentSummary[];
 }
 
 const Footer = ({

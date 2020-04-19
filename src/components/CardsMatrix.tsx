@@ -5,7 +5,7 @@ import {
   scaleVector,
   IMatrixEdges,
 } from "util/vector";
-import { IFilteredStudent, CardToShow, IStudentSummary } from "types";
+import { CardToShow, IStudentSummary } from "types";
 import shuffle from "lodash.shuffle";
 import { DEBUG, cardSize } from "config";
 
@@ -49,7 +49,7 @@ const repeatCards = (
   { start, end }: IMatrixEdges,
   studentsToShow: IStudentSummary[]
 ) => {
-  const [width, _] = end.add(start.scale(-1));
+  const [columns] = end.add(start.scale(-1));
 
   const numberToShow = studentsToShow.length;
 
@@ -57,11 +57,11 @@ const repeatCards = (
 
   const cardsToShow: CardToShow[] = [];
 
-  const startPosition = start.x + start.y * width;
+  const startPosition = start.x + start.y * columns;
 
   for (let matrixY = start.y; matrixY < end.y; matrixY++) {
     for (let matrixX = start.x; matrixX < end.x; matrixX++) {
-      const positionInGrid = matrixX - start.x + (matrixY - start.y) * width;
+      const positionInGrid = matrixX - start.x + (matrixY - start.y) * columns;
 
       const toShow = Math.abs((startPosition + positionInGrid) % numberToShow);
 
@@ -139,13 +139,13 @@ const getOffset = (xy: number[], cardSize: number[]): number[] =>
 
 interface PrevValues {
   matrixEdges: IMatrixEdges;
-  filteredStudents: IFilteredStudent[];
+  studentsToShow: IStudentSummary[];
   matrixEdgesChanged: boolean;
-  filteredStudentsChanged: boolean;
+  studentsToShowChanged: boolean;
 }
 
 interface ICardsProps {
-  filteredStudents: IFilteredStudent[];
+  studentsToShow: IStudentSummary[];
   matrixEdges: IMatrixEdges;
 }
 
@@ -157,41 +157,27 @@ const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
 
 const maxStudentsUntilSwitchToRepeat = 40;
 
-const toStudentsToShow = (
-  filteredStudents: IFilteredStudent[]
-): IStudentSummary[] =>
-  filteredStudents.filter(({ show }) => show).map(({ student }) => student);
-
 const CardsMatrix = React.memo(
-  ({ filteredStudents, matrixEdges }: ICardsProps) => {
+  ({ studentsToShow, matrixEdges }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
 
     const [prevValues, setPrevValues] = useState<PrevValues>({
       matrixEdges,
-      filteredStudents,
+      studentsToShow,
       matrixEdgesChanged: false,
-      filteredStudentsChanged: false,
+      studentsToShowChanged: false,
     });
 
     useEffect(() => {
       setPrevValues({
-        filteredStudents,
+        studentsToShow,
         matrixEdges,
         matrixEdgesChanged: matrixChanged(matrixEdges, prevValues.matrixEdges),
-        filteredStudentsChanged:
-          prevValues.filteredStudents !== filteredStudents,
+        studentsToShowChanged: prevValues.studentsToShow !== studentsToShow,
       });
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredStudents, matrixEdges]);
-
-    const [studentsToShow, setStudentsToShow] = useState<IStudentSummary[]>(
-      toStudentsToShow(filteredStudents)
-    );
-
-    useEffect(() => {
-      setStudentsToShow(toStudentsToShow(filteredStudents));
-    }, [filteredStudents]);
+    }, [studentsToShow, matrixEdges]);
 
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
 
@@ -200,7 +186,7 @@ const CardsMatrix = React.memo(
       if (studentsToShow.length <= maxStudentsUntilSwitchToRepeat) {
         setInViewportList(repeatCards(matrixEdges, studentsToShow));
       } else {
-        const dropOldCards = prevValues.filteredStudentsChanged;
+        const dropOldCards = prevValues.studentsToShowChanged;
         setInViewportList((prevState) =>
           getCardsInMatrixToShow(
             matrixEdges,
@@ -210,7 +196,7 @@ const CardsMatrix = React.memo(
           )
         );
       }
-    }, [matrixEdges, studentsToShow, prevValues.filteredStudentsChanged]);
+    }, [matrixEdges, studentsToShow, prevValues.studentsToShowChanged]);
 
     const skipAnimation = prevValues.matrixEdgesChanged;
 

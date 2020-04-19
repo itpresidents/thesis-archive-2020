@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import StudentCards from "./StudentCards";
-import { IStudentSummary, IFilteredStudent, TopicDict, ISearch } from "types";
+import { IStudentSummary, TopicDict, ISearch } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import Footer from "./Footer/index";
@@ -25,11 +25,8 @@ interface IHomeProps {
 const updateFilteredStudents = (
   students: IStudentSummary[],
   filter: (student: IStudentSummary) => boolean
-): IFilteredStudent[] => {
-  return students.map((student) => ({
-    show: filter(student),
-    student,
-  }));
+): IStudentSummary[] => {
+  return students.filter(filter);
 };
 
 interface FilterOptions {
@@ -41,8 +38,8 @@ const noFilter = (student: IStudentSummary) => true;
 
 const Explore = ({ students }: IHomeProps) => {
   const [filteredStudents, setFilteredStudents] = useState<
-    IFilteredStudent[] | null
-  >(null);
+    IStudentSummary[] | undefined
+  >();
   const [searchText, setSearchText] = useState<string>("");
 
   const tagMatch = useRouteMatch<{ tag: string }>("/filter/category/:tag");
@@ -112,7 +109,7 @@ const Explore = ({ students }: IHomeProps) => {
   return (
     <Container fluid>
       <div className="row">
-        <DraggableCards filteredStudents={filteredStudents} />
+        <DraggableCards studentsToShow={filteredStudents} />
       </div>
       <Footer
         {...filterOptions}

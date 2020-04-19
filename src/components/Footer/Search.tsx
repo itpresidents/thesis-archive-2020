@@ -1,5 +1,5 @@
 import React from "react";
-import { IFilteredStudent } from "types";
+import { IStudentSummary } from "types";
 import { FooterLeft, ScrollableFooterRight } from "./util";
 import { Nav, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -8,7 +8,7 @@ import { CloseBlack } from "components/Svg";
 interface SearchProps {
   text: string;
   textChanged: (search: string) => void;
-  searchResults: IFilteredStudent[];
+  searchResults: IStudentSummary[];
 }
 
 const SearchMain = ({ text, textChanged, searchResults }: SearchProps) => {
@@ -33,16 +33,13 @@ const SearchMain = ({ text, textChanged, searchResults }: SearchProps) => {
         </Nav.Item>
       </FooterLeft>
       <ScrollableFooterRight scrollableWidth={500}>
-        {searchResults.map(
-          ({ show, student }) =>
-            show && (
-              <Nav.Item key={student.student_id}>
-                <Link to={`/students/${student.student_id}`}>
-                  {student.student_name}
-                </Link>
-              </Nav.Item>
-            )
-        )}
+        {searchResults.map((student) => (
+          <Nav.Item key={student.student_id}>
+            <Link to={`/students/${student.student_id}`}>
+              {student.student_name}
+            </Link>
+          </Nav.Item>
+        ))}
       </ScrollableFooterRight>
     </>
   );
