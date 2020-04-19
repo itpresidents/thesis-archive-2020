@@ -61,7 +61,7 @@ export interface VideoScheduleRowContents {
 }
 
 export interface CardToShow {
-  studentIndex: number;
+  student: IStudentSummary;
   matrixX: number;
   matrixY: number;
 }
@@ -70,14 +70,9 @@ export declare type IStudentFilter = (student: IStudentSummary) => boolean;
 
 type FilterStatus = "add" | "remove" | "nochange";
 
-export interface IFilteredStudent {
-  show: boolean;
-  student: IStudentSummary;
-}
-
 export interface ISearchResult {
   student_id: string;
   student_name: string;
 }
 
-export declare type ISearch = (search: string) => IFilteredStudent[];
+export declare type ISearch = (search: string) => IStudentSummary[];

@@ -6,7 +6,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { IFilteredStudent } from "../types";
+import { IStudentSummary } from "../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
 import {
@@ -23,7 +23,7 @@ import { clearMessageHub } from "./MessageHub";
 import CardsMatrix from "./CardsMatrix";
 
 interface IDraggableCardsProps {
-  filteredStudents: IFilteredStudent[];
+  studentsToShow: IStudentSummary[];
 }
 
 const smoother = new SmoothVector();
@@ -58,7 +58,7 @@ const getWindowSizeInCards = (windowSize: [number, number], cardSize: Vector) =>
     Math.ceil(windowSize[1] / cardSize[1]),
   ]);
 
-const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
+const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
   const { windowSize, navigatorPlatform } = useContext(Context);
   const [windowWidth, windowHeight] = windowSize;
   const [position, setSpring] = useSpring<Position>(() => ({
@@ -152,7 +152,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
     setMatrixEdges(getMatrixEdges(windowSizeInCards, matrixCenterXy));
   }, [...matrixCenterXy, windowSizeInCards]);
 
-  if (!filteredStudents) return null;
+  if (!studentsToShow) return null;
 
   return (
     <>
@@ -165,7 +165,7 @@ const DraggableCards = ({ filteredStudents }: IDraggableCardsProps) => {
         <animated.div style={{ ...position }}>
           <CardsMatrix
             {...{
-              filteredStudents,
+              studentsToShow,
               matrixEdges,
             }}
           />
