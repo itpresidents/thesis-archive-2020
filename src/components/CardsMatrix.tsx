@@ -12,20 +12,20 @@ import { DEBUG, cardSize } from "config";
 import { StudentCardWithTransition } from "./StudentCard";
 
 class CardMatrix {
-  [key: number]: Record<number, number>;
-  cardIndices: Record<number, Vector>;
+  [key: number]: Record<number, IStudentSummary>;
+  cardIndices: Record<string, Vector>;
   constructor() {
     this.cardIndices = {};
   }
   get(x: number, y: number) {
     if (this[x] !== undefined && this[x][y] !== undefined) return this[x][y];
   }
-  set(x: number, y: number, student: number) {
+  set(x: number, y: number, student: IStudentSummary) {
     if (this[x] === undefined) this[x] = {};
     this[x][y] = student;
-    this.cardIndices[student] = new Vector([x, y]);
+    this.cardIndices[student.student_id] = new Vector([x, y]);
   }
-  hasStudent(id: number) {
+  hasStudent(id: string) {
     if (this.cardIndices[id] !== undefined) return true;
     return false;
   }
@@ -35,7 +35,7 @@ class CardMatrix {
     for (let x in this) {
       for (let y in this[x]) {
         result.push({
-          studentIndex: this.get(parseInt(x), parseInt(y))!,
+          student: this.get(parseInt(x), parseInt(y))!,
           matrixX: parseInt(x),
           matrixY: parseInt(y),
         });
@@ -45,26 +45,13 @@ class CardMatrix {
   }
 }
 
-const filterStudentsAndIndeces = (
-  filteredStudents: IFilteredStudent[]
-): { index: number; student: IStudentSummary }[] => {
-  return filteredStudents
-    .map(({ show, student }, index) => ({
-      student,
-      show,
-      index,
-    }))
-    .filter(({ show }) => show);
-};
-
 const repeatCards = (
   { start, end }: IMatrixEdges,
-  filteredStudents: IFilteredStudent[]
+  studentsToShow: IStudentSummary[]
 ) => {
-  const filteredStudentsAndIndeces = filterStudentsAndIndeces(filteredStudents);
   const [width, _] = end.add(start.scale(-1));
 
-  const numberToShow = filteredStudentsAndIndeces.length;
+  const numberToShow = studentsToShow.length;
 
   if (numberToShow === 0) return [];
 
@@ -78,12 +65,10 @@ const repeatCards = (
 
       const toShow = Math.abs((startPosition + positionInGrid) % numberToShow);
 
-      const filteredStudentToShow = filteredStudentsAndIndeces[toShow];
-
       cardsToShow.push({
         matrixX,
         matrixY,
-        studentIndex: filteredStudentToShow.index,
+        student: studentsToShow[toShow],
       });
     }
   }
@@ -94,10 +79,16 @@ const repeatCards = (
 const getCardsInMatrixToShow = (
   { start, end }: IMatrixEdges,
   prevCards: CardToShow[],
-  filteredStudents: IFilteredStudent[],
+  studentsToShow: IStudentSummary[],
   dropOldCards: boolean = false
 ): CardToShow[] => {
   const cardsInNewView: CardMatrix = new CardMatrix();
+
+  const studentsByKey: { [student_id: string]: IStudentSummary } = {};
+  for (let student of studentsToShow) {
+    studentsByKey[student.student_id] = student;
+  }
+
   //for scrolling, we will keep most old cards
   if (!dropOldCards) {
     for (let card of prevCards) {
@@ -111,25 +102,18 @@ const getCardsInMatrixToShow = (
         y <= end.y &&
         x >= start.x &&
         x <= end.x &&
-        filteredStudents[card.studentIndex] &&
-        filteredStudents[card.studentIndex].show
+        studentsByKey[card.student.student_id]
       ) {
-        cardsInNewView.set(x, y, card.studentIndex);
+        cardsInNewView.set(x, y, card.student);
       }
     }
   }
 
-  // findout who is in the filtered student list but not added in the new viewport yet.
-  const studentsShowAndIndeces = filteredStudents.map(({ show }, index) => ({
-    show,
-    index,
-  }));
+  const studentsNotYetAdded = Object.values(studentsByKey).filter(
+    ({ student_id }) => !cardsInNewView.hasStudent(student_id)
+  );
 
-  const studentIndecesNotYetAdded = studentsShowAndIndeces
-    .filter(({ show, index }) => show && !cardsInNewView.hasStudent(index))
-    .map(({ index }) => index);
-
-  let studentsToAdd: number[] = shuffle(studentIndecesNotYetAdded);
+  let studentsToAdd: IStudentSummary[] = shuffle(studentsNotYetAdded);
 
   // if there's an empty slot in the new viewport, get a student in studentsNotInNewView and add it to there.
   for (let x = start.x; x < end.x; x++) {
@@ -137,10 +121,7 @@ const getCardsInMatrixToShow = (
       if (cardsInNewView.get(x, y) === undefined) {
         // if out of data - reset students to use all students
         if (studentsToAdd.length === 0) {
-          const studentsToShow = studentsShowAndIndeces
-            .filter(({ show }) => show)
-            .map(({ index }) => index);
-          studentsToAdd = shuffle(studentsToShow);
+          studentsToAdd = shuffle(Object.values(studentsByKey));
         }
         // else if (studentsToAdd.length < 5)
         //   // else - just shuffle them some more
@@ -174,6 +155,13 @@ const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
   return !isSame;
 };
 
+const maxStudentsUntilSwitchToRepeat = 40;
+
+const toStudentsToShow = (
+  filteredStudents: IFilteredStudent[]
+): IStudentSummary[] =>
+  filteredStudents.filter(({ show }) => show).map(({ student }) => student);
+
 const CardsMatrix = React.memo(
   ({ filteredStudents, matrixEdges }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
@@ -186,7 +174,6 @@ const CardsMatrix = React.memo(
     });
 
     useEffect(() => {
-      DEBUG && console.log("computing");
       setPrevValues({
         filteredStudents,
         matrixEdges,
@@ -198,28 +185,39 @@ const CardsMatrix = React.memo(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filteredStudents, matrixEdges]);
 
+    const [studentsToShow, setStudentsToShow] = useState<IStudentSummary[]>(
+      toStudentsToShow(filteredStudents)
+    );
+
+    useEffect(() => {
+      setStudentsToShow(toStudentsToShow(filteredStudents));
+    }, [filteredStudents]);
+
     const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
-    const dropOldCards = prevValues.filteredStudentsChanged;
 
     useEffect(() => {
       DEBUG && console.log("calling getCardsInMatrixToShow");
-      setInViewportList((prevState) =>
-        getCardsInMatrixToShow(
-          matrixEdges,
-          prevState,
-          filteredStudents,
-          dropOldCards
-        )
-      );
-    }, [matrixEdges, filteredStudents, dropOldCards]);
+      if (studentsToShow.length <= maxStudentsUntilSwitchToRepeat) {
+        setInViewportList(repeatCards(matrixEdges, studentsToShow));
+      } else {
+        const dropOldCards = prevValues.filteredStudentsChanged;
+        setInViewportList((prevState) =>
+          getCardsInMatrixToShow(
+            matrixEdges,
+            prevState,
+            studentsToShow,
+            dropOldCards
+          )
+        );
+      }
+    }, [matrixEdges, studentsToShow, prevValues.filteredStudentsChanged]);
 
     const skipAnimation = prevValues.matrixEdgesChanged;
 
     return (
       <>
         {inViewPortList.map((item) => {
-          if (item.studentIndex === undefined) return null;
-          if (filteredStudents[item.studentIndex] === undefined) return null;
+          if (item.student === undefined) return null;
           const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
           return (
             <StudentCardWithTransition
@@ -227,7 +225,7 @@ const CardsMatrix = React.memo(
               y={offsets[1]}
               key={`${item.matrixX}_${item.matrixY}`}
               skipAnimation={skipAnimation}
-              student={filteredStudents[item.studentIndex].student}
+              student={item.student}
             />
           );
         })}

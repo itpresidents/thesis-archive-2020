@@ -61,7 +61,7 @@ export interface VideoScheduleRowContents {
 }
 
 export interface CardToShow {
-  studentIndex: number;
+  student: IStudentSummary;
   matrixX: number;
   matrixY: number;
 }
