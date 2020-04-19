@@ -5,7 +5,7 @@ import {
   scaleVector,
   IMatrixEdges,
 } from "util/vector";
-import { IFilteredStudent, CardToShow } from "types";
+import { IFilteredStudent, CardToShow, IStudentSummary } from "types";
 import shuffle from "lodash.shuffle";
 import { DEBUG, cardSize } from "config";
 
@@ -44,6 +44,52 @@ class CardMatrix {
     return result;
   }
 }
+
+const filterStudentsAndIndeces = (
+  filteredStudents: IFilteredStudent[]
+): { index: number; student: IStudentSummary }[] => {
+  return filteredStudents
+    .map(({ show, student }, index) => ({
+      student,
+      show,
+      index,
+    }))
+    .filter(({ show }) => show);
+};
+
+const repeatCards = (
+  { start, end }: IMatrixEdges,
+  filteredStudents: IFilteredStudent[]
+) => {
+  const filteredStudentsAndIndeces = filterStudentsAndIndeces(filteredStudents);
+  const [width, _] = end.add(start.scale(-1));
+
+  const numberToShow = filteredStudentsAndIndeces.length;
+
+  if (numberToShow === 0) return [];
+
+  const cardsToShow: CardToShow[] = [];
+
+  const startPosition = start.x + start.y * width;
+
+  for (let matrixY = start.y; matrixY < end.y; matrixY++) {
+    for (let matrixX = start.x; matrixX < end.x; matrixX++) {
+      const positionInGrid = matrixX - start.x + (matrixY - start.y) * width;
+
+      const toShow = Math.abs((startPosition + positionInGrid) % numberToShow);
+
+      const filteredStudentToShow = filteredStudentsAndIndeces[toShow];
+
+      cardsToShow.push({
+        matrixX,
+        matrixY,
+        studentIndex: filteredStudentToShow.index,
+      });
+    }
+  }
+
+  return cardsToShow;
+};
 
 const getCardsInMatrixToShow = (
   { start, end }: IMatrixEdges,
