@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 // import StudentCards from "./StudentCards";
 import { IStudentSummary, TopicDict, ISearch } from "types";
-import DraggableCards from "./DraggableCards";
+import DraggableCards from "../components/DraggableCards";
 import { Container } from "react-bootstrap";
-import Footer from "./Footer/index";
+import Footer from "../components/Footer/index";
 import { useRouteMatch } from "react-router-dom";
 import * as queries from "util/queries";
 import { buildSearch } from "util/search";
