@@ -105,7 +105,7 @@ a {
   }
 }
 
-#header2020-bg {
+#header2020-container {
   position: relative;
   overflow: hidden;
   width: 100vw;
@@ -121,13 +121,19 @@ a {
   }
 }
 
-.header2020-bg-animation {
-  position: fixed;
-  opacity: 0.5;
-  left: 0;
-  top: 0px;
-  width: 100vw;
-  background: url("../images/20.svg") repeat-x;
+.svg2020-animation-container {
+  position: relative;
+  width: 100%;
+
+  .svg2020-animation-row {
+    // z-index: 999999;
+    position: absolute;
+    opacity: 0.5;
+    left: 0;
+    top: 0px;
+    width: 100vw;
+    background: url("../images/20.svg") repeat-x;
+  }
 }
 
 /**** Student Details ****/
