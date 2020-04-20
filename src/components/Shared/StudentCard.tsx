@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import { IStudentSummary } from "../types";
-import { cardSize, DEBUG } from "../config";
+import { IStudentSummary } from "../../types";
+import { cardSize, DEBUG } from "../../config";
 import { Link } from "react-router-dom";
 import {
   animated as a,

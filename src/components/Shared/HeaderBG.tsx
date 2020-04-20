@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useSpring, to, animated } from "react-spring";
-import { Context } from "../util/contexts";
+import { Context } from "../../util/contexts";
 import { AddMessage } from "./MessageHub";
-import { DEBUG } from "../config";
-import { useFirstClick } from "../util/useFirstClick";
+import { DEBUG } from "../../config";
+import { useFirstClick } from "../../util/useFirstClick";
 
 const headerHeightRatio = 0.7;
 const bgScrollSpeed = 15;

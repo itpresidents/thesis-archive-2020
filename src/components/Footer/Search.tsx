@@ -3,7 +3,7 @@ import { IStudentSummary } from "types";
 import { FooterLeft, ScrollableFooterRight } from "./util";
 import { Nav, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { CloseBlack } from "components/Svg";
+import { CloseBlack } from "images/Svg";
 
 interface SearchProps {
   text: string;

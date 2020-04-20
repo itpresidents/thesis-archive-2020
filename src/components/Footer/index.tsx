@@ -2,7 +2,7 @@ import React from "react";
 import { TopicDict, IStudentSummary } from "types";
 import { Navbar, Nav } from "react-bootstrap";
 import { Route, Switch, Link } from "react-router-dom";
-import { SearchIcon, Random, Filter } from "components/Svg";
+import { SearchIcon, Random, Filter } from "images/Svg";
 import FilterMain from "./Filter";
 import SearchMain from "./Search";
 
