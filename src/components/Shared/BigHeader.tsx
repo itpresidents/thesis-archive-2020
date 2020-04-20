@@ -5,35 +5,11 @@ import { Context } from "../../util/contexts";
 import { AddMessage } from "./MessageHub";
 import { DEBUG } from "../../config";
 import { useFirstClick } from "../../util/useFirstClick";
+import Rolling20, { IRolling20Props } from "./Rolling20";
 
-const headerHeightRatio = 0.7;
-const bgScrollSpeed = 15;
-const svgWhRatio = 1.17;
-const bgLayerCount = 2;
-
-const injectStyle = (style: string) => {
-  const styleElement = document.createElement("style");
-  document.head.appendChild(styleElement);
-  const styleSheet = styleElement.sheet! as CSSStyleSheet;
-  styleSheet.insertRule(style, styleSheet.cssRules.length);
-};
-
-const rollingBG = (reverse: boolean = false) => `
-@keyframes move_background${reverse ? "_reverse" : ""} {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: ${
-      (((reverse ? -1 : 1) * headerHeightRatio * svgWhRatio) / bgLayerCount) *
-      100
-    }vh 0;
-  }
-}
-`;
-
-injectStyle(rollingBG());
-injectStyle(rollingBG(true));
+export const HEADER_HEIGHT_IN_VH = 70;
+const BG_SCROLL_SPEED = 0.066;
+const BG_ROWS = 2;
 
 const testHomePage = (location: any): boolean => {
   // it's at home page if the first match is not in ["students", "video", "about"]
@@ -41,11 +17,14 @@ const testHomePage = (location: any): boolean => {
   return !notHomeRegex.test(location.pathname);
 };
 
-const HeaderBG = () => {
+const pxToVh = (px: number, windowHeight: number): number =>
+  (100 * px) / windowHeight;
+
+const HeaderSpring = () => {
   const { windowSize, navigatorPlatform } = useContext(Context);
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
-    height: windowHeight * headerHeightRatio,
+    height: HEADER_HEIGHT_IN_VH,
   }));
 
   const location = useLocation();
@@ -85,53 +64,60 @@ const HeaderBG = () => {
 
   useEffect(() => {
     setSpring({
-      height: windowHeight * headerHeightRatio - document.body.scrollTop,
-      immediate: true,
+      height: didFirstClick
+        ? 0
+        : HEADER_HEIGHT_IN_VH - pxToVh(document.body.scrollTop, windowHeight),
     });
-  }, [windowHeight, setSpring]);
+  }, [windowHeight, setSpring, didFirstClick]);
+
+  const Rolling20Props: IRolling20Props = {
+    heightInVh: spring!.height,
+    rows: BG_ROWS,
+    speed: BG_SCROLL_SPEED,
+  };
 
   return !isAtHomePage ? null : (
     <animated.div
-      id="header2020-bg"
+      id="header2020-container"
       style={{
-        height: to(spring.height, (height) => `${height}px`),
+        height: to(spring.height, (height) => `${height}vh`),
       }}
     >
-      {new Array(bgLayerCount).fill(0).map((item, i) => (
-        <animated.div
-          className="header2020-bg-animation"
-          key={i}
-          style={{
-            top: to(
-              spring.height,
-              (height) => `${(i * height) / bgLayerCount}px`
-            ),
-            backgroundSize: to(
-              spring.height,
-              (height) =>
-                `${(headerHeightRatio / bgLayerCount) * 100 * svgWhRatio}vh ${
-                  height / bgLayerCount
-                }px`
-            ),
-            height: to(spring.height, (height) => `${height / bgLayerCount}px`),
-            animation: `move_background${
-              i === 1 ? "_reverse" : ""
-            } ${bgScrollSpeed}s infinite linear`,
-          }}
-        />
-      ))}
-
       <animated.h1
         className="position-absolute"
         style={{
-          height: to(spring.height, (height) => `${height}px`),
+          height: to(spring.height, (height) => `${height}vh`),
         }}
       >
         Thesis <br />
         Archive
       </animated.h1>
+      <Rolling20 {...Rolling20Props} />
     </animated.div>
   );
 };
 
-export default HeaderBG;
+export default HeaderSpring;
+
+// {
+//   new Array(bgLayerCount).fill(0).map((item, i) => (
+//     <animated.div
+//       className="header2020-bg-animation"
+//       key={i}
+//       style={{
+//         top: to(spring.height, (height) => `${(i * height) / bgLayerCount}px`),
+//         backgroundSize: to(
+//           spring.height,
+//           (height) =>
+//             `${(headerHeightRatio / bgLayerCount) * 100 * svgWhRatio}vh ${
+//               height / bgLayerCount
+//             }px`
+//         ),
+//         height: to(spring.height, (height) => `${height / bgLayerCount}px`),
+//         animation: `move_background${
+//           i === 1 ? "_reverse" : ""
+//         } ${bgScrollSpeed}s infinite linear`,
+//       }}
+//     />
+//   ));
+// }

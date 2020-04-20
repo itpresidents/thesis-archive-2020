@@ -1,13 +1,13 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { NavLink, Link } from "react-router-dom";
-import HeaderBG from "./HeaderBG";
+import BigHeader from "./BigHeader";
 import MessageHub from "./MessageHub";
 
 const Header = () => (
   <>
     <div className="fixed-top">
-      <HeaderBG />
+      <BigHeader />
       <Navbar expand="md" bg="white">
         <Link to="/" className="navbar-brand">
           ITP Thesis Archive 2020
