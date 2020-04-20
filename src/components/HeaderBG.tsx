@@ -7,9 +7,9 @@ import { DEBUG } from "../config";
 import { useFirstClick } from "../util/useFirstClick";
 
 const headerHeightRatio = 0.7;
-const bgScrollSpeed = 6;
+const bgScrollSpeed = 15;
 const svgWhRatio = 1.17;
-const bgLayerCount = 3;
+const bgLayerCount = 2;
 
 const injectStyle = (style: string) => {
   const styleElement = document.createElement("style");
@@ -97,7 +97,7 @@ const HeaderBG = () => {
         height: to(spring.height, (height) => `${height}px`),
       }}
     >
-      {[0, 1, 2].map((i) => (
+      {new Array(bgLayerCount).fill(0).map((item, i) => (
         <animated.div
           className="header2020-bg-animation"
           key={i}

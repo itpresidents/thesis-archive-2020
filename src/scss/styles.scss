@@ -57,6 +57,7 @@ $mobile-nav-link-size: 72px;
     .nav-item {
       border-top: $black 1px solid;
       height: $mobile-nav-link-size;
+
       a {
         line-height: $mobile-nav-link-size;
         padding: 0;
@@ -73,12 +74,14 @@ $mobile-nav-link-size: 72px;
       }
     }
   }
+
   .navbar-toggler {
     .navbar-toggler-icon {
       background-image: svg-uri(
         '<svg width="30" height="28" viewBox="0 0 30 28" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2.69502" y1="1.28101" x2="28.695" y2="26.4143" stroke="#E859FF" stroke-width="2"/><line x1="1.30498" y1="26.4143" x2="27.305" y2="1.28098" stroke="#E859FF" stroke-width="2"/></svg>'
       );
     }
+
     &.collapsed {
       .navbar-toggler-icon {
         background-image: svg-uri(
@@ -119,7 +122,7 @@ a {
 
 .header2020-bg-animation {
   position: fixed;
-  opacity: 0.65;
+  opacity: 0.5;
   left: 0;
   top: 0px;
   width: 100vw;
@@ -239,6 +242,7 @@ $image-top-margin: 60px;
 
   .project {
     width: 100%;
+
     @include media-breakpoint-up(md) {
       width: 323px;
     }
@@ -260,9 +264,16 @@ $image-top-margin: 60px;
       text-decoration: none;
     }
 
+    &:hover {
+      svg {
+        margin-left: 40px;
+      }
+    }
+
     svg {
       margin-left: 33px;
       margin-top: -3px;
+      transition: all 0.5s;
     }
   }
 }

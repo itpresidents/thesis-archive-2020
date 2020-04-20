@@ -40,14 +40,6 @@
       background-size: cover;
       background-position: center center;
       transition: all 0.5s;
-
-      &:hover {
-        transform: scale(1.2);
-      }
-    }
-
-    &:hover + .card-info h3 {
-      text-decoration: line-through;
     }
   }
 
@@ -57,9 +49,8 @@
       max-height: 2.2em;
       overflow: hidden;
       text-overflow: ellipsis;
-      //7% margin top Font-weight: 600  https://github.com/oveddan/thesis-archive-2020/issues/31
+      //7% margin top  https://github.com/oveddan/thesis-archive-2020/issues/31
       margin-top: 7%;
-      font-weight: 600;
       transition: all 0.5s;
 
       &:hover {
@@ -83,5 +74,13 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+  }
+
+  &:hover .card-info h3 {
+    text-decoration: line-through;
+  }
+
+  &:hover .card-bg {
+    transform: scale(1.2);
   }
 }
