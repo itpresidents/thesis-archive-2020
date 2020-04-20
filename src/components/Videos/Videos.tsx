@@ -9,7 +9,7 @@ import {
   IStudentSummary,
 } from "types";
 import { getStudentIdFromSlug, selectRandom } from "util/queries";
-import Video from "../components/Video";
+import Video from "./Video";
 import cx from "classnames";
 
 const VideoCell = ({

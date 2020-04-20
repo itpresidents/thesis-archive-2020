@@ -2,7 +2,7 @@ import React from "react";
 import { FooterLeft, ScrollableFooterRight } from "./util";
 import { Nav } from "react-bootstrap";
 import { TopicDict } from "types";
-import { CloseBlack } from "components/Svg";
+import { CloseBlack } from "images/Svg";
 import { Link, NavLink, Switch, Route } from "react-router-dom";
 
 const tagFiltersWidth = 3000;
