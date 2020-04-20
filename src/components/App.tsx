@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import * as api from "util/api";
 import "scss/styles.scss";
-import Explore from "./Explore";
-import StudentDetails from "./StudentDetails";
+import Explore from "../pages/Explore";
+import StudentDetails from "../pages/StudentDetails";
 import { Switch, Route } from "react-router-dom";
 import { IStudentSummary } from "types";
 import Header from "./Header";
-import Videos from "./Videos";
+import Videos from "../pages/Videos";
 import { Context } from "../util/contexts";
 import useWindowSize from "../util/useWindowSize";
 import { isMobile } from "react-device-detect";
