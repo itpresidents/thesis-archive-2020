@@ -43,7 +43,7 @@ const App = ({ students }: IAppProps) => {
           <Route path="/">
             <>
               <FirstClicked firstClicked={() => setHasStartedExploring(true)} />
-              <Explore students={students} />
+              <Explore students={students} isExploring={hasStartedExploring} />
             </>
           </Route>
         </Switch>

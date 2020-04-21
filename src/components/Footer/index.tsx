@@ -5,6 +5,7 @@ import { Route, Switch, Link } from "react-router-dom";
 import { SearchIcon, Random, Filter } from "images/Svg";
 import FilterMain from "./Filter";
 import SearchMain from "./Search";
+import cx from "classnames";
 
 const FooterMain = () => (
   <Nav className="d-flex justify-content-center w-100 main">
@@ -32,6 +33,7 @@ interface FooterProps {
   searchText: string;
   searchTextChanged: (searchText: string) => void;
   filteredStudents: IStudentSummary[];
+  show: boolean;
 }
 
 const Footer = ({
@@ -40,9 +42,10 @@ const Footer = ({
   searchText,
   searchTextChanged,
   filteredStudents,
+  show,
 }: FooterProps) => {
   return (
-    <Navbar fixed="bottom" bg="white" className="footer">
+    <Navbar fixed="bottom" bg="white" className={cx("footer", { show })}>
       <Switch>
         <Route exact path="/">
           <FooterMain />
