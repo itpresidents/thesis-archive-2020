@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import { IStudentSummary } from "../types";
-import { cardSize, DEBUG } from "../config";
+import { IStudentSummary } from "../../types";
+import { cardSize, DEBUG } from "../../config";
 import { Link } from "react-router-dom";
 import {
   animated as a,
@@ -13,7 +13,7 @@ interface IStudentCardProps {
 }
 
 const width = `${cardSize[0] * 0.75}px`;
-const height = `${(cardSize[0] - 70) * 1.4}px`;
+const height = `${cardSize[0] * 1.1}px`;
 
 interface ICardTransitionProps {
   student: IStudentSummary;
@@ -114,7 +114,7 @@ const CardContent = React.memo(({ student }: IStudentCardProps) => (
       style={{ height: `${cardSize[0] * 0.4}px` }}
     >
       <h3>{student.title}</h3>
-      <h5>{student.student_name}</h5>
+      <h4>{student.student_name}</h4>
       <p>
         {student.tags.map((tag, index) =>
           index === student.tags.length - 1

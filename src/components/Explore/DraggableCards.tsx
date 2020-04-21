@@ -6,7 +6,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { IStudentSummary } from "../types";
+import { IStudentSummary } from "../../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
 import {
@@ -18,8 +18,8 @@ import {
 } from "util/vector";
 import { cardSize } from "config";
 import { usePrevious } from "util/usePrevious";
-import { Context } from "../util/contexts";
-import { clearMessageHub } from "./MessageHub";
+import { Context } from "../../util/contexts";
+import { clearMessageHub } from "../Shared/MessageHub";
 import CardsMatrix from "./CardsMatrix";
 
 interface IDraggableCardsProps {

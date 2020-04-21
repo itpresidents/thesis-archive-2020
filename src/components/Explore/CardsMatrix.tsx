@@ -8,7 +8,7 @@ import {
 import { CardToShow, IStudentSummary } from "types";
 import { DEBUG, cardSize } from "config";
 
-import { StudentCardWithTransition } from "./StudentCard";
+import { StudentCardWithTransition } from "../Shared/StudentCard";
 
 class CardMatrix {
   [key: number]: Record<number, IStudentSummary>;

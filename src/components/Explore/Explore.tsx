@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { IStudentSummary, TopicDict, ISearch } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
-import Footer from "./Footer/index";
+import Footer from "../Footer/index";
 import { useRouteMatch } from "react-router-dom";
 import * as queries from "util/queries";
 import { buildSearch } from "util/search";

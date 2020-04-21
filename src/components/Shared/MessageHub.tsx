@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { useTransition, animated } from "react-spring";
 import { FiX } from "react-icons/fi";
-import { DEBUG } from "../config";
-import "../scss/messageHub.scss";
+import { DEBUG } from "../../config";
 
 interface IMessage {
   key: number;

@@ -2,7 +2,7 @@ import React from "react";
 import { FooterLeft, ScrollableFooterRight } from "./util";
 import { Nav } from "react-bootstrap";
 import { TopicDict } from "types";
-import { CloseBlack } from "components/Svg";
+import { CloseBlack } from "images/Svg";
 import { Link, NavLink, Switch, Route } from "react-router-dom";
 
 const tagFiltersWidth = 3000;
@@ -12,7 +12,9 @@ const TagFilters = ({ tags }: { tags: TopicDict }) => {
     <ScrollableFooterRight scrollableWidth={tagFiltersWidth}>
       {Object.entries(tags).map(([slug, name]) => (
         <Nav.Item key={slug}>
-          <NavLink to={`/filter/category/${slug}`}>{name}</NavLink>
+          <NavLink replace to={`/filter/category/${slug}`}>
+            {name}
+          </NavLink>
         </Nav.Item>
       ))}
     </ScrollableFooterRight>
@@ -26,7 +28,9 @@ const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
     <ScrollableFooterRight scrollableWidth={advisorFiltersWidth}>
       {Object.entries(advisors).map(([slug, name]) => (
         <Nav.Item key={slug}>
-          <NavLink to={`/filter/advisor/${slug}`}>{name}</NavLink>
+          <NavLink replace to={`/filter/advisor/${slug}`}>
+            {name}
+          </NavLink>
         </Nav.Item>
       ))}
     </ScrollableFooterRight>
@@ -52,6 +56,7 @@ const FilterLeft = () => {
           Category
         </NavLink>
       </Nav.Item>
+      <Nav.Item>|</Nav.Item>
       <Nav.Item>
         <NavLink to={`/filter/advisor`} replace>
           Advisor
