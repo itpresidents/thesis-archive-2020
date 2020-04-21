@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 // import StudentCards from "./StudentCards";
 import { IStudentSummary, TopicDict, ISearch } from "types";
 import DraggableCards from "./DraggableCards";
@@ -37,6 +37,10 @@ interface FilterOptions {
 const noFilter = (student: IStudentSummary) => true;
 
 const Explore = ({ students }: IHomeProps) => {
+  const sortedStudents = useMemo(() => queries.sortByFirstName(students), [
+    students,
+  ]);
+
   const [filteredStudents, setFilteredStudents] = useState<
     IStudentSummary[] | undefined
   >();
@@ -71,10 +75,10 @@ const Explore = ({ students }: IHomeProps) => {
 
   useEffect(() => {
     // load search if it hasn't been loaded and search text has been entered
-    if (students && !search && searchText && searchText !== "") {
-      setSearch({ search: buildSearch(students) });
+    if (sortedStudents && !search && searchText && searchText !== "") {
+      setSearch({ search: buildSearch(sortedStudents) });
     }
-  }, [students, search, searchText]);
+  }, [sortedStudents, search, searchText]);
 
   useEffect(() => {
     if (!students) return;
