@@ -1,6 +1,31 @@
 // {"name":"Performance","slug":"performance"},{"name":"Society","slug":"society"}]
 import { IStudentSummary, TopicDict } from "types";
 
+const compare = (a: string, b: string) => {
+  if (a > b) {
+    return -1;
+  }
+  if (b > a) {
+    return 1;
+  }
+  return 0;
+};
+
+export const sortByFirstName = (
+  students: IStudentSummary[] | undefined
+): IStudentSummary[] | undefined => {
+  if (!students) return;
+
+  const studentsSorted = students.slice();
+
+  studentsSorted.sort(
+    ({ student_name: studentAName }, { student_name: studentBName }) =>
+      compare(studentAName, studentBName)
+  );
+
+  return studentsSorted;
+};
+
 const toLowerSnakeCase = (name: string) => {
   return name.toLowerCase().replace(/ /g, "_");
 };
