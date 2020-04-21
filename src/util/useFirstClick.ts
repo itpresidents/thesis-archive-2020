@@ -1,30 +1,32 @@
-import { useState, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-const DEBUG = false;
+const eventNames = ["wheel", "click", "touchmove"];
 
 export const useFirstClick = (): boolean => {
   // if the use click, touch, or scrolled the page, the callback will get fired.
-  const eventNames = ["wheel", "click", "touchmove"];
-  const [listenersAdded, setListenersAdded] = useState(false);
-  const [did, setDid] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
-  const listenToFistClick = useRef(() => {
-    !did && setDid(true);
-    for (let eventName of eventNames) {
-      window.removeEventListener(eventName, listenToFistClick.current);
+  const clickedHandler = useCallback(() => {
+    setClicked(true);
+  }, []);
+
+  useEffect(() => {
+    if (!clicked) {
+      for (let eventName of eventNames) {
+        window.addEventListener(eventName, clickedHandler);
+      }
+    } else {
+      for (let eventName of eventNames) {
+        window.removeEventListener(eventName, clickedHandler);
+      }
     }
-    DEBUG &&
-      console.log(
-        `tried  window.removeEventListener("click", listenToFistClick.current);`
-      );
-  });
+    // cleanup
+    return () => {
+      for (let eventName of eventNames) {
+        window.removeEventListener(eventName, clickedHandler);
+      }
+    };
+  }, [clicked, clickedHandler]);
 
-  if (!listenersAdded) {
-    for (let eventName of eventNames) {
-      window.addEventListener(eventName, listenToFistClick.current);
-    }
-    setListenersAdded(true);
-  }
-
-  return did;
+  return clicked;
 };
