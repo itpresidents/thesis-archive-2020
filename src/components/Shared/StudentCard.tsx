@@ -114,7 +114,7 @@ const CardContent = React.memo(({ student }: IStudentCardProps) => (
       style={{ height: `${cardSize[0] * 0.4}px` }}
     >
       <h3>{student.title}</h3>
-      <h5>{student.student_name}</h5>
+      <h4>{student.student_name}</h4>
       <p>
         {student.tags.map((tag, index) =>
           index === student.tags.length - 1
