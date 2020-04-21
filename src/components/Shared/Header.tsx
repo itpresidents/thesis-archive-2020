@@ -6,13 +6,21 @@ import MessageHub from "./MessageHub";
 import cx from "classnames";
 
 const Header = ({ hasStartedExploring }: { hasStartedExploring: boolean }) => {
-  const isOnExploringPage = useRouteMatch(["/", "/filter*", "/search*"]);
+  const rootMatch = useRouteMatch(["/"]);
+  const subExploreMatch = useRouteMatch(["/filter*", "/search*"]);
+
+  const isAtRoot = rootMatch && rootMatch.isExact;
+
+  const isOnExploringPage = isAtRoot || subExploreMatch !== null;
 
   const exploreActive = isOnExploringPage && hasStartedExploring;
 
   return (
     <div className="fixed-top">
-      <BigHeader collapse={hasStartedExploring} />
+      <BigHeader
+        collapse={hasStartedExploring}
+        isAtHomePage={isOnExploringPage}
+      />
       <Navbar expand="md" bg="white">
         <Link to="/" className="navbar-brand">
           ITP Thesis Archive 2020
