@@ -136,6 +136,10 @@ a {
   }
 }
 
+.card-info h4 {
+  @extend h5;
+}
+
 /**** Student Details ****/
 
 $section-top-margin-mobile: 110px;
