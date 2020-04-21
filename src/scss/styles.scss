@@ -328,6 +328,10 @@ $desktop-footer-left-size: 400px;
     a {
       color: $black;
 
+      &:hover {
+        text-decoration: none;
+      }
+
       &.active {
         color: $primary-color;
       }
