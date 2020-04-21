@@ -6,7 +6,6 @@ import {
   IMatrixEdges,
 } from "util/vector";
 import { CardToShow, IStudentSummary } from "types";
-import shuffle from "lodash.shuffle";
 import { DEBUG, cardSize } from "config";
 
 import { StudentCardWithTransition } from "./StudentCard";
