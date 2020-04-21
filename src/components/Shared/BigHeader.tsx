@@ -1,34 +1,28 @@
-import React, { useState, useCallback, useEffect, useContext } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useCallback, useEffect, useContext } from "react";
 import { useSpring, to, animated } from "react-spring";
 import { Context } from "../../util/contexts";
 import { AddMessage } from "./MessageHub";
-import { DEBUG } from "../../config";
-import { useFirstClick } from "../../util/useFirstClick";
 import Rolling20, { IRolling20Props } from "./Rolling20";
 
 export const HEADER_HEIGHT_IN_VH = 70;
 const BG_SCROLL_SPEED = 0.066;
 const BG_ROWS = 2;
 
-const testHomePage = (location: any): boolean => {
-  // it's at home page if the first match is not in ["students", "video", "about"]
-  const notHomeRegex = /\b(students|videos|about)\b/;
-  return !notHomeRegex.test(location.pathname);
-};
-
 const pxToVh = (px: number, windowHeight: number): number =>
   (100 * px) / windowHeight;
 
-const HeaderSpring = () => {
+const HeaderSpring = ({
+  collapse,
+  isAtHomePage,
+}: {
+  collapse: boolean;
+  isAtHomePage: boolean;
+}) => {
   const { windowSize, navigatorPlatform } = useContext(Context);
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
     height: HEADER_HEIGHT_IN_VH,
   }));
-
-  const location = useLocation();
-  const [isAtHomePage, setIsAtHome] = useState(testHomePage(location));
 
   const collapseHeaderAndShowMessage = useCallback(() => {
     setSpring({ height: 0 });
@@ -42,10 +36,7 @@ const HeaderSpring = () => {
       );
   }, [setSpring, isAtHomePage, navigatorPlatform]);
 
-  const didFirstClick = useFirstClick();
-  DEBUG && console.log(didFirstClick);
-
-  useEffect(collapseHeaderAndShowMessage, [didFirstClick]);
+  useEffect(collapseHeaderAndShowMessage, [collapse]);
 
   useEffect(() => {
     if (isAtHomePage)
@@ -59,16 +50,12 @@ const HeaderSpring = () => {
   }, [isAtHomePage]);
 
   useEffect(() => {
-    setIsAtHome(testHomePage(location));
-  }, [location]);
-
-  useEffect(() => {
     setSpring({
-      height: didFirstClick
+      height: collapse
         ? 0
         : HEADER_HEIGHT_IN_VH - pxToVh(document.body.scrollTop, windowHeight),
     });
-  }, [windowHeight, setSpring, didFirstClick]);
+  }, [windowHeight, setSpring, collapse]);
 
   const Rolling20Props: IRolling20Props = {
     heightInVh: spring!.height,
