@@ -10,6 +10,7 @@ import Videos from "./Videos/Videos";
 import { Context } from "../util/contexts";
 import useWindowSize from "../util/useWindowSize";
 import { isMobile } from "react-device-detect";
+import { FirstClicked } from "./Shared/FirstClicked";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -24,10 +25,14 @@ const navigatorPlatform = {
 
 const App = ({ students }: IAppProps) => {
   const windowSize = useWindowSize();
+  const [hasStartedExploring, setHasStartedExploring] = useState<boolean>(
+    false
+  );
+
   return (
     <>
       <Context.Provider value={{ windowSize, navigatorPlatform }}>
-        <Header />
+        <Header hasStartedExploring={hasStartedExploring} />
         <Switch>
           <Route path="/students/:studentIdOrSlug">
             <StudentDetails students={students} />
@@ -36,7 +41,10 @@ const App = ({ students }: IAppProps) => {
             <Videos students={students} />
           </Route>
           <Route path="/">
-            <Explore students={students} />
+            <>
+              <FirstClicked firstClicked={() => setHasStartedExploring(true)} />
+              <Explore students={students} />
+            </>
           </Route>
         </Switch>
       </Context.Provider>

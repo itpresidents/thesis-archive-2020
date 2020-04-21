@@ -1,13 +1,18 @@
 import React from "react";
 import { Navbar, Nav } from "react-bootstrap";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useRouteMatch } from "react-router-dom";
 import BigHeader from "./BigHeader";
 import MessageHub from "./MessageHub";
+import cx from "classnames";
 
-const Header = () => (
-  <>
+const Header = ({ hasStartedExploring }: { hasStartedExploring: boolean }) => {
+  const isOnExploringPage = useRouteMatch(["/", "/filter*", "/search*"]);
+
+  const exploreActive = isOnExploringPage && hasStartedExploring;
+
+  return (
     <div className="fixed-top">
-      <BigHeader />
+      <BigHeader collapse={hasStartedExploring} />
       <Navbar expand="md" bg="white">
         <Link to="/" className="navbar-brand">
           ITP Thesis Archive 2020
@@ -16,9 +21,12 @@ const Header = () => (
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="justify-content-end ml-md-auto" as="ul">
             <Nav.Item>
-              <NavLink to="/" exact className="nav-link">
+              <Link
+                to="/"
+                className={cx("nav-link", { active: exploreActive })}
+              >
                 Explore
-              </NavLink>
+              </Link>
             </Nav.Item>
             <Nav.Item>
               <NavLink to="/videos" className="nav-link">
@@ -35,7 +43,7 @@ const Header = () => (
       </Navbar>
       <MessageHub />
     </div>
-  </>
-);
+  );
+};
 
 export default Header;
