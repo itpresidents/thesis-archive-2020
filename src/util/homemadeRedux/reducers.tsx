@@ -1,24 +1,28 @@
-import { messageActionTypes, ICentralStore, IMessage, IAction } from "types";
-import { REMOVE_MESSAGE, CLEAR_ALL_MESSAGES, ADD_MESSAGE } from "./actions";
+import {
+  messageActionTypes,
+  ICentralStore,
+  IMessage,
+  IAction,
+  ActionTypes,
+} from "types";
 
 const messageReducer = (
   state: ICentralStore,
   action: messageActionTypes
 ): ICentralStore => {
   const { type, payload } = action;
-  // console.log(action)
   switch (type) {
-    case REMOVE_MESSAGE:
+    case ActionTypes.RemoveMessage:
       return {
         ...state,
         messages: state.messages.filter((m) => m.id !== payload),
       };
-    case ADD_MESSAGE:
+    case ActionTypes.AddMessage:
       return {
         ...state,
         messages: [...state.messages, payload as IMessage],
       };
-    case CLEAR_ALL_MESSAGES:
+    case ActionTypes.ClearAllMessages:
       return {
         ...state,
         messages: [],

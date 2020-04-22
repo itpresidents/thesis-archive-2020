@@ -5,10 +5,10 @@ import { ICentralStore } from "types";
 type mapStateToProps = ((state: ICentralStore) => any) | null;
 type mapDispatchToProps = ((dispatch: React.Dispatch<any>) => any) | null;
 
-export const connect = <TProp extends Object>(
+export const connect = <TProp,>(
   mapStateToProps: mapStateToProps,
   mapDispatchToProps: mapDispatchToProps
-) => (Component: any): FC<TProp> => (props: TProp) => {
+) => (Component: React.ComponentType<any>): FC<TProp> => (props: TProp) => {
   const { centralStore, dispatch } = useContext(myContext);
   const mappedState = mapStateToProps ? mapStateToProps(centralStore) : {};
   const mappedDispatchs = mapDispatchToProps

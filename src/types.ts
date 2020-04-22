@@ -80,9 +80,14 @@ export interface ISearchResult {
 export declare type ISearch = (search: string) => IStudentSummary[];
 
 // types for homemade redux and messagehub
+export enum ActionTypes {
+  AddMessage,
+  RemoveMessage,
+  ClearAllMessages,
+}
 
 export interface IAction<T = null> {
-  type: string;
+  type: ActionTypes;
   payload: T;
 }
 
