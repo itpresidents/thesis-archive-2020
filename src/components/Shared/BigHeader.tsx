@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useContext } from "react";
 import { useSpring, to, animated } from "react-spring";
 import { Context } from "../../util/contexts";
-import { AddMessage } from "./MessageHub";
+import { connect } from "util/homemadeRedux/connect";
+import { addMessageAction } from "util/homemadeRedux/actions";
+import { Subtract } from "utility-types";
 import Rolling20, { IRolling20Props } from "./Rolling20";
 
 export const HEADER_HEIGHT_IN_VH = 70;
@@ -11,13 +13,17 @@ const BG_ROWS = 2;
 const pxToVh = (px: number, windowHeight: number): number =>
   (100 * px) / windowHeight;
 
+interface IHeaderSpringProps {
+  collapse: boolean;
+  isAtHomePage: boolean;
+  addMessage: (text: string, autoDisappear: boolean) => void;
+}
+
 const HeaderSpring = ({
   collapse,
   isAtHomePage,
-}: {
-  collapse: boolean;
-  isAtHomePage: boolean;
-}) => {
+  addMessage,
+}: IHeaderSpringProps) => {
   const { windowSize, navigatorPlatform } = useContext(Context);
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
@@ -26,15 +32,16 @@ const HeaderSpring = ({
 
   const collapseHeaderAndShowMessage = useCallback(() => {
     setSpring({ height: 0 });
-    isAtHomePage &&
+    collapse &&
+      isAtHomePage &&
       !navigatorPlatform?.isMobile &&
-      AddMessage(
+      addMessage(
         `Drag ${
           navigatorPlatform?.isMac ? "or scroll " : ""
         }to explore, click to Read More.`,
         false
       );
-  }, [setSpring, isAtHomePage, navigatorPlatform]);
+  }, [setSpring, collapse, addMessage, isAtHomePage, navigatorPlatform]);
 
   useEffect(collapseHeaderAndShowMessage, [collapse]);
 
@@ -84,27 +91,16 @@ const HeaderSpring = ({
   );
 };
 
-export default HeaderSpring;
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => ({
+  addMessage: (text: string, autoDisappear: boolean) =>
+    dispatch(addMessageAction(text, autoDisappear)),
+});
 
-// {
-//   new Array(bgLayerCount).fill(0).map((item, i) => (
-//     <animated.div
-//       className="header2020-bg-animation"
-//       key={i}
-//       style={{
-//         top: to(spring.height, (height) => `${(i * height) / bgLayerCount}px`),
-//         backgroundSize: to(
-//           spring.height,
-//           (height) =>
-//             `${(headerHeightRatio / bgLayerCount) * 100 * svgWhRatio}vh ${
-//               height / bgLayerCount
-//             }px`
-//         ),
-//         height: to(spring.height, (height) => `${height / bgLayerCount}px`),
-//         animation: `move_background${
-//           i === 1 ? "_reverse" : ""
-//         } ${bgScrollSpeed}s infinite linear`,
-//       }}
-//     />
-//   ));
-// }
+// if there're props other than mapped props,
+// calculate the IOwnProps then pass to connect.
+type IOwnProps = Subtract<
+  IHeaderSpringProps,
+  ReturnType<typeof mapDispatchToProps>
+>;
+
+export default connect<IOwnProps>(null, mapDispatchToProps)(HeaderSpring);

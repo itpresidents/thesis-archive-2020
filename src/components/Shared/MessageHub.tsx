@@ -1,105 +1,70 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { useTransition, animated } from "react-spring";
 import { FiX } from "react-icons/fi";
-import { DEBUG } from "../../config";
+import { DEBUG } from "config";
+import { IMessage, ICentralStore } from "types";
+import { connect } from "util/homemadeRedux/connect";
+import { removeMessageAction } from "util/homemadeRedux/actions";
+import { Subtract } from "utility-types";
 
-interface IMessage {
-  key: number;
-  msg: string;
-  autoDisappear: boolean;
+interface IMessageHubProps {
+  messages: IMessage[];
+  removeMessage: (messageId: IMessage["id"]) => void;
 }
 
-const MessageHub = () => {
+const MessageHub = ({ messages, removeMessage }: IMessageHubProps) => {
   const config = { tension: 125, friction: 20, precision: 0.1 };
   const timeout = 3000;
   const [refMap] = useState<Map<IMessage, HTMLDivElement>>(() => new Map());
   const [cancelMap] = useState<Map<IMessage, Function>>(() => new Map());
-  const [items, setItems] = useState<IMessage[]>([]);
-  const [listenerAdded, setListenerAdded] = useState(false);
-  const listenerRef = useRef<null | HTMLDivElement | any>(null);
-  const transition = useTransition(items, {
-    key: (item) => item.key,
+
+  const transition = useTransition(messages, {
+    key: (msg) => msg.id,
     from: { opacity: 0, height: 0, life: "100%", dead: 1 },
-    enter: (item) => async (next, stop) => {
-      DEBUG && console.log(`  Entering:`, item.key);
-      cancelMap.set(item, () => {
-        DEBUG && console.log(`  Cancelled:`, item.key);
+    enter: (msg) => async (next, stop) => {
+      DEBUG && console.log(`  Entering:`, msg.id);
+      cancelMap.set(msg, () => {
+        DEBUG && console.log(`  Cancelled:`, msg.id);
         stop();
-        setItems((state) => state.filter((i) => i.key !== item.key));
+        removeMessage(msg.id);
       });
       await next({
         opacity: 1,
-        height: refMap.get(item) ? refMap.get(item)!.offsetHeight : 48,
+        height: refMap.get(msg) ? refMap.get(msg)!.offsetHeight : 48,
         config,
       });
       await next({ life: "0%", config: { duration: timeout } });
-      item.autoDisappear && cancelMap.get(item)!();
+      msg.autoDisappear && cancelMap.get(msg)!();
     },
-    leave: (item) => async (next) => {
-      DEBUG && console.log(`  Leaving:`, item.key);
+    leave: (msg) => async (next) => {
+      DEBUG && console.log(`  Leaving:`, msg.id);
       await next({ opacity: 0, height: 0, config });
       await next({ dead: 0, config });
     },
   });
 
-  const handleMessage = useCallback(
-    (e: CustomEvent) => {
-      const { message: msg, autoDisappear } = e.detail;
-      setItems((state) => [
-        ...state,
-        {
-          key: state.map((a) => a.key).reduce((a, c) => Math.max(a, c), 0) + 1,
-          msg,
-          autoDisappear,
-        },
-      ]);
-    },
-    [setItems]
-  );
-
-  const clearMessageHub = () => {
-    document.querySelectorAll(".clear-message-btn").forEach((btn) => {
-      const btnRef = btn as HTMLElement;
-      btnRef.click();
-    });
-  };
-
-  useEffect(() => {
-    if (listenerAdded === false) {
-      // ref or other elements don't work, it has to be the document itself, I don't know why.
-      document.addEventListener("toMessageHub", ((e: CustomEvent) => {
-        handleMessage(e);
-      }) as EventListener);
-      document.addEventListener("clearMessageHub", (() => {
-        clearMessageHub();
-      }) as EventListener);
-      // console.log("added");
-      setListenerAdded(true);
-    }
-  }, [listenerAdded, handleMessage]);
-
   return (
-    <div id="message-hub-positioner" ref={listenerRef}>
+    <div id="message-hub-positioner">
       <div className="message-container">
-        {transition(({ life, dead, ...style }, item) => {
+        {transition(({ life, dead, ...style }, msg) => {
           return dead.get() === 0 ? null : (
-            <animated.div className="message" key={item.key} style={style}>
+            <animated.div className="message" key={msg.id} style={style}>
               <div
                 className="message-content"
-                ref={(ref) => ref && refMap.set(item, ref)}
+                ref={(ref) => ref && refMap.set(msg, ref)}
               >
-                {item.autoDisappear && (
+                {msg.autoDisappear && (
                   <animated.div
                     className="messageLife"
                     style={{ right: life }}
                   />
                 )}
-                <p>{item.msg}</p>
+                <p>{msg.text}</p>
                 <button
                   className="clear-message-btn"
                   onClick={(e) => {
                     e.stopPropagation();
-                    cancelMap.has(item) && cancelMap.get(item)!();
+                    cancelMap.has(msg) && cancelMap.get(msg)!();
                   }}
                 >
                   <FiX size={24} />
@@ -113,25 +78,23 @@ const MessageHub = () => {
   );
 };
 
-export const AddMessage = (message: string, autoDisappear: boolean = true) => {
-  DEBUG && console.log("Adding message: ", message);
-  document.dispatchEvent(
-    new CustomEvent("toMessageHub", {
-      detail: {
-        message: message,
-        autoDisappear: autoDisappear,
-      },
-    })
-  );
-};
+const mapStateToProps = (state: ICentralStore) => ({
+  messages: state.messages,
+});
 
-export const clearMessageHub = () => {
-  DEBUG && console.log("clearing message hub");
-  document.dispatchEvent(
-    new CustomEvent("clearMessageHub", {
-      detail: {},
-    })
-  );
-};
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => ({
+  removeMessage: (messageId: IMessage["id"]) =>
+    dispatch(removeMessageAction(messageId)),
+});
 
-export default MessageHub;
+// if there're props other than mapped props,
+// calculate the IOwnProps then pass to connect.
+interface mappedProps
+  extends ReturnType<typeof mapStateToProps>,
+    ReturnType<typeof mapDispatchToProps> {}
+type IOwnProps = Subtract<IMessageHubProps, mappedProps>;
+
+export default connect<IOwnProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(MessageHub);

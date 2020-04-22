@@ -1,3 +1,5 @@
+import { Vector } from "./util/vector";
+
 export interface ITag {
   slug: string;
   name: string;
@@ -76,3 +78,39 @@ export interface ISearchResult {
 }
 
 export declare type ISearch = (search: string) => IStudentSummary[];
+
+// types for homemade redux and messagehub
+
+export interface IAction<T = null> {
+  type: string;
+  payload: T;
+}
+
+export interface IMessage {
+  text: string;
+  id: string;
+  autoDisappear: boolean;
+}
+
+export type messageActionTypes =
+  | IAction<IMessage>
+  | IAction<IMessage["id"]>
+  | IAction;
+
+export interface ICentralStore {
+  messages: IMessage[];
+}
+
+export interface IPlatform {
+  label: string;
+  isMac: boolean;
+  isIOS: boolean;
+  isMobile: boolean;
+}
+
+export interface IContext {
+  centralStore: ICentralStore;
+  dispatch?: React.Dispatch<any>;
+  windowSize: Vector | number[];
+  navigatorPlatform?: IPlatform;
+}
