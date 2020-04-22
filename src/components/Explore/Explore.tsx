@@ -21,6 +21,7 @@ const generateTitle = (tag: string | null, advisor: string | null): string => {
 
 interface IHomeProps {
   students: IStudentSummary[] | undefined;
+  isExploring: boolean;
 }
 const updateFilteredStudents = (
   students: IStudentSummary[],
@@ -36,7 +37,7 @@ interface FilterOptions {
 
 const noFilter = (student: IStudentSummary) => true;
 
-const Explore = ({ students }: IHomeProps) => {
+const Explore = ({ students, isExploring }: IHomeProps) => {
   const sortedStudents = useMemo(() => queries.sortByFirstName(students), [
     students,
   ]);
@@ -117,10 +118,12 @@ const Explore = ({ students }: IHomeProps) => {
       </div>
       <Footer
         {...filterOptions}
+        show={isExploring}
         searchText={searchText}
         searchTextChanged={setSearchText}
         filteredStudents={filteredStudents}
       />
+      )}
     </Container>
   );
 };

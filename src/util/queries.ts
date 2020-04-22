@@ -26,7 +26,7 @@ export const sortByFirstName = (
   return studentsSorted;
 };
 
-const toLowerSnakeCase = (name: string) => {
+export const toLowerSnakeCase = (name: string) => {
   return name.toLowerCase().replace(/ /g, "_");
 };
 

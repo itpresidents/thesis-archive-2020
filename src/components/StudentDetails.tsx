@@ -10,7 +10,7 @@ import {
   IImage,
 } from "types";
 import { Link, useParams } from "react-router-dom";
-import { getStudentIdFromSlug, isNumber } from "util/queries";
+import { getStudentIdFromSlug, isNumber, toLowerSnakeCase } from "util/queries";
 import cx from "classnames";
 
 import { Chevron, VideoSign } from "../images/Svg";
@@ -117,7 +117,11 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
               </Col>
               <Col sm={12} md={3} className="linkHolder">
                 <h4>Advisor</h4>
-                <Link to={`/filter/advisor/${student.advisor_name}`}>
+                <Link
+                  to={`/filter/advisor/${toLowerSnakeCase(
+                    student.advisor_name
+                  )}`}
+                >
                   {student.advisor_name}
                 </Link>
               </Col>

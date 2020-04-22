@@ -301,6 +301,13 @@ $desktop-footer-left-size: 400px;
   border-top: $black 1px solid;
   border-bottom: $black 1px solid;
 
+  bottom: -$nav-size;
+  transition: bottom 0.5s;
+
+  &.show {
+    bottom: 0;
+  }
+
   .navbar-nav {
     float: left;
   }
