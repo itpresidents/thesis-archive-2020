@@ -409,3 +409,23 @@ $desktop-footer-left-size: 400px;
     }
   }
 }
+
+// -------------random on explore-----------------
+
+.random-container {
+  position: fixed;
+  background-color: white;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+
+  h3,
+  h2,
+  h1 {
+    background-color: white;
+    width: 100%;
+  }
+}

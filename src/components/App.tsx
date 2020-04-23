@@ -12,6 +12,7 @@ import useWindowSize from "../util/useWindowSize";
 import { isMobile } from "react-device-detect";
 import { FirstClicked } from "./Shared/FirstClicked";
 import { rootReducer } from "util/homemadeRedux/reducers";
+import RandomMain from "./Explore/Random";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -45,6 +46,9 @@ const App = ({ students }: IAppProps) => {
         <Switch>
           <Route path="/students/:studentIdOrSlug">
             <StudentDetails students={students} />
+          </Route>
+          <Route path="/random/:studentIdOrSlug?">
+            <RandomMain students={students} />
           </Route>
           <Route path="/videos/:studentSlug?">
             <Videos students={students} />
