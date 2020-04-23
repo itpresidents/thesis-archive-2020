@@ -1,48 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Vector,
-  multiplyElementWise,
-  scaleVector,
-  IMatrixEdges,
-} from "util/vector";
+import { multiplyElementWise, scaleVector, IMatrixEdges } from "util/vector";
 import { CardToShow, IStudentSummary } from "types";
 import { DEBUG, cardSize } from "config";
 
 import { StudentCardWithTransition } from "../Shared/StudentCard";
-
-class CardMatrix {
-  [key: number]: Record<number, IStudentSummary>;
-  cardIndices: Record<string, Vector>;
-  constructor() {
-    this.cardIndices = {};
-  }
-  get(x: number, y: number) {
-    if (this[x] !== undefined && this[x][y] !== undefined) return this[x][y];
-  }
-  set(x: number, y: number, student: IStudentSummary) {
-    if (this[x] === undefined) this[x] = {};
-    this[x][y] = student;
-    this.cardIndices[student.student_id] = new Vector([x, y]);
-  }
-  hasStudent(id: string) {
-    if (this.cardIndices[id] !== undefined) return true;
-    return false;
-  }
-  getArrayOfCardToShow(): CardToShow[] {
-    const result: CardToShow[] = [];
-    // put cards to show into an array as result
-    for (let x in this) {
-      for (let y in this[x]) {
-        result.push({
-          student: this.get(parseInt(x), parseInt(y))!,
-          matrixX: parseInt(x),
-          matrixY: parseInt(y),
-        });
-      }
-    }
-    return result;
-  }
-}
 
 const repeatCards = (
   { start, end }: IMatrixEdges,

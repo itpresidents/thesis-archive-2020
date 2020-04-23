@@ -19,8 +19,8 @@ import {
 import { cardSize } from "config";
 import { usePrevious } from "util/usePrevious";
 import { Context } from "../../util/contexts";
-import { clearMessageHub } from "../Shared/MessageHub";
 import CardsMatrix from "./CardsMatrix";
+import { clearAllMessagesAction } from "util/homemadeRedux/actions";
 
 interface IDraggableCardsProps {
   studentsToShow: IStudentSummary[];
@@ -59,7 +59,7 @@ const getWindowSizeInCards = (windowSize: [number, number], cardSize: Vector) =>
   ]);
 
 const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
-  const { windowSize, navigatorPlatform } = useContext(Context);
+  const { windowSize, navigatorPlatform, dispatch } = useContext(Context);
   const [windowWidth, windowHeight] = windowSize;
   const [position, setSpring] = useSpring<Position>(() => ({
     x: 0,
@@ -76,7 +76,7 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
   const [clearedDraggingTip, setClearedDraggingTip] = useState<number>(0);
   const clearDraggineTipTwice = () => {
     if (clearedDraggingTip <= 2) {
-      clearMessageHub();
+      dispatch!(clearAllMessagesAction());
       setClearedDraggingTip((prev) => (prev += 1));
     }
   };

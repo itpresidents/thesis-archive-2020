@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { Container, Row, Col, Figure } from "react-bootstrap";
+import { useSpring, animated as a } from "react-spring";
 
 import * as api from "util/api";
 import {
@@ -65,6 +66,24 @@ const TextSection = ({ children }: { children: React.ReactNode }) => (
     <Col lg={TEXT_SECTION_MD}>{children}</Col>
   </Row>
 );
+
+const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
+  const initialSpring = { marginLeft: "0px" };
+  const [spring, set] = useSpring(() => initialSpring);
+  return (
+    <a
+      href={to}
+      className="project"
+      onMouseEnter={() => set({ marginLeft: "30px" })}
+      onMouseLeave={() => set(initialSpring)}
+    >
+      Project Website{" "}
+      <a.span style={spring}>
+        <Chevron />
+      </a.span>
+    </a>
+  );
+};
 
 const StudentDetails = ({ student }: IStudentDetailsProps) => {
   return (
@@ -137,9 +156,7 @@ const StudentDetails = ({ student }: IStudentDetailsProps) => {
         <TextSection>
           <h3>Abstract</h3>
           <TextBlock text={student.abstract} />
-          <a href={student.project_url} className="project">
-            Project Website <Chevron />
-          </a>
+          <ProjectWebsiteButton to={student.project_url} />
         </TextSection>
         <Row className={justify}>
           <Col lg={IMAGE_COLS_LG}>
