@@ -1,9 +1,11 @@
-import React, { useState, FC, useCallback } from "react";
+import React, { useState, FC, useCallback, useEffect } from "react";
 import { IStudentSummary } from "types";
 import { useSpring, animated as a, SpringValue, config } from "react-spring";
 import { useHistory } from "react-router-dom";
 import Rolling20, { IRolling20Props } from "../Shared/Rolling20";
 import StudentDetails from "../StudentDetails";
+import { Random } from "images/Svg";
+import { Navbar, Nav } from "react-bootstrap";
 
 interface IRandomSpringProps {
   student: IStudentSummary;
@@ -17,7 +19,9 @@ const RandomSpring: FC<IRandomSpringProps> = ({
   reRoll,
 }) => {
   const [redirect, setRedirect] = useState(false);
-  const { student_slug, student_name, title } = student;
+
+  const [localStudent, setStudent] = useState<IStudentSummary>(student);
+  const { student_slug, student_name, title } = localStudent;
   const history = useHistory();
 
   const initialSpring = {
@@ -26,15 +30,21 @@ const RandomSpring: FC<IRandomSpringProps> = ({
       animatedName: 0,
       titleOpacity: 0,
       finished: 0,
-      detailsOpacity: 0,
+      detailsOpacity: 1,
     },
     to: async (next: any) => {
+      next({ detailsOpacity: 0, config: config.gentle });
       next({
         animatedName: 1,
         config: { mass: 1, tension: 200, friction: 60 },
       });
       await next({ curtainDown: "0vh" });
-      await next({ titleOpacity: 1, config: config.slow });
+      await next(
+        (() => {
+          history.push(`/random/${student_slug}`);
+          return { titleOpacity: 1, config: config.slow };
+        })()
+      );
       next({
         curtainDown: "-100vh",
         config: { mass: 1, tension: 170, friction: 150 },
@@ -46,13 +56,32 @@ const RandomSpring: FC<IRandomSpringProps> = ({
       });
     },
     onRest: () => {
-      history.push(`/random/${student_slug}`);
       setRedirect(true);
     },
     config: { mass: 1, tension: 210, friction: 60 },
   };
 
-  const [spring] = useSpring(() => initialSpring);
+  const [spring, setSpring] = useSpring(() => initialSpring);
+
+  useEffect(() => {
+    reRoll();
+    document.body.scrollTo({ top: 0, behavior: "smooth" });
+    console.log("callll");
+    console.log(localStudent.student_slug);
+    if (redirect) {
+      //@ts-ignore
+      setSpring({ ...initialSpring.from, immediate: true });
+    }
+    setTimeout(() => {
+      //@ts-ignore
+      setSpring(initialSpring);
+    }, 100);
+    // eslint-disable-next-line
+  }, [localStudent.student_slug]);
+
+  const resetHandeler = () => {
+    setStudent(student);
+  };
 
   return (
     <>
@@ -61,12 +90,30 @@ const RandomSpring: FC<IRandomSpringProps> = ({
         redirect && (
           <a.div style={{ opacity: spring.detailsOpacity }}>
             <StudentDetails students={students} />
+            <ReRollButton {...{ resetHandeler }} />
           </a.div>
-        ))()}{" "}
+        ))()}
       }
     </>
   );
 };
+
+const ReRollButton = ({ resetHandeler }: { resetHandeler: () => void }) => (
+  <Navbar fixed="bottom" bg="white" className="footer show">
+    <Nav className="d-flex justify-content-center w-100 main">
+      <Nav.Item className="randon">
+        <a
+          href="#top"
+          className=" fixed-bottom vw-100 text-center"
+          onClick={resetHandeler}
+        >
+          {" "}
+          <Random /> Random
+        </a>
+      </Nav.Item>
+    </Nav>
+  </Navbar>
+);
 
 interface IRandomAnimationProps {
   curtainDown: SpringValue<string>;
