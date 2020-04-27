@@ -1,33 +1,30 @@
 import React, { useRef, useState } from "react";
-import { IStudentSummary } from "../../types";
-import { cardSize, DEBUG } from "../../config";
+import { IStudentSummary, ICardSize, ICentralStore } from "types";
 import { Link } from "react-router-dom";
 import {
   animated as a,
   useTransition,
   config as SpringConfig,
 } from "react-spring";
+import { connect } from "util/homemadeRedux/connect";
+import { Diff } from "utility-types";
 
-interface IStudentCardProps {
-  student: IStudentSummary;
-}
-
-const width = `${cardSize[0] * 0.75}px`;
-const height = `${cardSize[0] * 1.1}px`;
+const DEBUG = false;
 
 interface ICardTransitionProps {
   student: IStudentSummary;
   x: number;
   y: number;
   skipAnimation: boolean;
+  cardSize: ICardSize;
 }
 export const StudentCardWithTransition = React.memo(
-  ({ student, x, y, skipAnimation }: ICardTransitionProps) => {
+  ({ student, x, y, skipAnimation, cardSize }: ICardTransitionProps) => {
     DEBUG && console.log("re-render CardTransition");
     const transition = useTransition(student, {
       key: student.student_id,
-      from: { opacity: 1 },
-      enter: { opacity: 1 },
+      from: { opacity: 0 },
+      enter: { opacity: 1, delay: 300 },
       leave: { opacity: 0 },
       config: SpringConfig.slow,
     });
@@ -41,13 +38,16 @@ export const StudentCardWithTransition = React.memo(
               style={{
                 ...anim,
                 position: "absolute",
-                width: width,
-                height: height,
+                width: cardSize.width,
+                height: cardSize.height,
                 left: `${x}px`,
                 top: `${y}px`,
               }}
             >
-              <StudentCard key={student.student_id} student={student} />
+              <StudentCard
+                key={student.student_id}
+                {...{ student, cardSize }}
+              />
             </a.div>
           );
         })}
@@ -56,7 +56,12 @@ export const StudentCardWithTransition = React.memo(
   }
 );
 
-const StudentCard = React.memo(({ student }: IStudentCardProps) => {
+interface IStudentCardProps {
+  student: IStudentSummary;
+  cardSize: ICardSize;
+}
+
+const StudentCard = React.memo(({ student, cardSize }: IStudentCardProps) => {
   const linkRef = useRef<null | HTMLAnchorElement | any>(null);
   const [isDragging, setDragging] = useState<boolean>(false);
   const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
@@ -80,8 +85,8 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
     <div
       className="student-card"
       style={{
-        width: width,
-        height: height,
+        width: cardSize.width,
+        height: cardSize.height,
       }}
     >
       <Link
@@ -91,13 +96,13 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
         onMouseUp={onMouseUp}
         onClick={onClick}
       >
-        <CardContent student={student} />
+        <CardContent {...{ student, cardSize }} />
       </Link>
     </div>
   );
 });
 
-const CardContent = React.memo(({ student }: IStudentCardProps) => (
+const CardContent = React.memo(({ student, cardSize }: IStudentCardProps) => (
   <>
     <div className="card-bg-frame">
       <div
@@ -109,10 +114,7 @@ const CardContent = React.memo(({ student }: IStudentCardProps) => (
         }}
       />
     </div>
-    <div
-      className="card-info mt-2"
-      style={{ height: `${cardSize[0] * 0.4}px` }}
-    >
+    <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
       <h3>{student.title}</h3>
       <h4>{student.student_name}</h4>
       <p>
@@ -126,34 +128,14 @@ const CardContent = React.memo(({ student }: IStudentCardProps) => (
   </>
 ));
 
-// const TransitionStudentCard = React.memo(({ student }: IStudentCardProps) => {
-//   const transition = useTransition({
-//     from: { opacity: 0.5, rotateY: 90, dead: 1 },
-//     enter: () => async (next, stop) => {
-//       await next({ opacity: 1, rotateY: 0, config });
-//     },
-//     leave: () => async () => {
-//       await next({ opacity: 0, rotateY: -90, config });
-//       await next({ dead: 0, config });
-//     },
-//     trail: 10,
-//   });
-// }
+const mapStateToProps = (state: ICentralStore) => ({
+  cardSize: state.cardSize,
+});
 
-// const TransitionStudentCardWhenChange = React.memo(({ student }: IStudentCardProps) => {
-//   const [lastStudent, setLastStudent] = useState<IStudentSummary | null>(null);
-//   const [animateTransition, setAnimateTransition] = useState<boolean>(false);
+type diffedPropType = Diff<ICardTransitionProps, { cardSize: ICardSize }>;
 
-//   useEffect(() => {
-//     if (!lastStudent) setAnimateTransition(false);
-
-//     setAnimateTransition(student !== lastStudent) ;
-//     setLastStudent(student);
-//   }, [student, lastStudent]);
-
-//   if (animateTransition) return <TransitionStudentCard student={student} />;
-
-//   return <StudentCard student={student} />;
-// }
-
+export const ConnectedStudentCardWithTransition = connect<diffedPropType>(
+  mapStateToProps,
+  null
+)(StudentCardWithTransition);
 export default StudentCard;

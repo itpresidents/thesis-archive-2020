@@ -84,6 +84,7 @@ export enum ActionTypes {
   AddMessage,
   RemoveMessage,
   ClearAllMessages,
+  ResizeCards,
 }
 
 export interface IAction<T = null> {
@@ -104,6 +105,7 @@ export type messageActionTypes =
 
 export interface ICentralStore {
   messages: IMessage[];
+  cardSize: ICardSize;
 }
 
 export interface IPlatform {
@@ -118,4 +120,12 @@ export interface IContext {
   dispatch?: React.Dispatch<any>;
   windowSize: Vector | number[];
   navigatorPlatform?: IPlatform;
+}
+
+export interface ICardSize {
+  width: number;
+  height: number;
+  infoHeight: number;
+  widthWithMargin: number;
+  heightWithMargin: number;
 }

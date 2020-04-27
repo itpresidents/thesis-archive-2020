@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { multiplyElementWise, scaleVector, IMatrixEdges } from "util/vector";
-import { CardToShow, IStudentSummary } from "types";
-import { DEBUG, cardSize } from "config";
+import { CardToShow, IStudentSummary, ICardSize } from "types";
 
-import { StudentCardWithTransition } from "../Shared/StudentCard";
+import { ConnectedStudentCardWithTransition as StudentCardWithTransition } from "../Shared/StudentCard";
+
+const DEBUG = false;
 
 const repeatCards = (
   { start, end }: IMatrixEdges,
@@ -46,19 +47,20 @@ interface PrevValues {
   studentsToShowChanged: boolean;
 }
 
-interface ICardsProps {
-  studentsToShow: IStudentSummary[];
-  matrixEdges: IMatrixEdges;
-}
-
 const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
   const isSame = a.start.isEqual(b.start) && a.end.isEqual(b.end);
 
   return !isSame;
 };
 
+interface ICardsProps {
+  studentsToShow: IStudentSummary[];
+  matrixEdges: IMatrixEdges;
+  cardSize: ICardSize;
+}
+
 const CardsMatrix = React.memo(
-  ({ studentsToShow, matrixEdges }: ICardsProps) => {
+  ({ studentsToShow, matrixEdges, cardSize }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
 
     const [prevValues, setPrevValues] = useState<PrevValues>({
@@ -92,7 +94,10 @@ const CardsMatrix = React.memo(
       <>
         {inViewPortList.map((item) => {
           if (item.student === undefined) return null;
-          const offsets = getOffset([item.matrixX, item.matrixY], cardSize);
+          const offsets = getOffset(
+            [item.matrixX, item.matrixY],
+            [cardSize.widthWithMargin, cardSize.heightWithMargin]
+          );
           return (
             <StudentCardWithTransition
               x={offsets[0]}

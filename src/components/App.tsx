@@ -13,6 +13,8 @@ import { isMobile } from "react-device-detect";
 import { FirstClicked } from "./Shared/FirstClicked";
 import { rootReducer } from "util/homemadeRedux/reducers";
 import RandomMain from "./Explore/Random";
+import { resizeCardAction } from "util/homemadeRedux/actions";
+import { getCardHeightByCardWidth } from "util/cardSizeBreakpoints";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -27,6 +29,7 @@ const navigatorPlatform = {
 
 const initialCentralStore: ICentralStore = {
   messages: [],
+  cardSize: getCardHeightByCardWidth(212),
 };
 
 const App = ({ students }: IAppProps) => {
@@ -36,6 +39,10 @@ const App = ({ students }: IAppProps) => {
   );
 
   const [centralStore, dispatch] = useReducer(rootReducer, initialCentralStore);
+
+  useEffect(() => {
+    dispatch(resizeCardAction(windowSize));
+  }, [windowSize]);
 
   return (
     <>

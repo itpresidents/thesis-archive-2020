@@ -6,7 +6,7 @@ import React, {
   useContext,
   useCallback,
 } from "react";
-import { IStudentSummary } from "../../types";
+import { IStudentSummary, ICardSize } from "../../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
 import {
@@ -16,7 +16,6 @@ import {
   Vector,
   IMatrixEdges,
 } from "util/vector";
-import { cardSize } from "config";
 import { usePrevious } from "util/usePrevious";
 import { Context } from "../../util/contexts";
 import CardsMatrix from "./CardsMatrix";
@@ -33,11 +32,13 @@ interface Position {
   y: number;
 }
 
-const toPositionInMatrix = ([centerX, centerY]: [number, number]): Vector => {
-  const [cardWidth, cardHeight] = cardSize;
+const toPositionInMatrix = (
+  [centerX, centerY]: [number, number],
+  cardSize: ICardSize
+): Vector => {
   return new Vector([
-    Math.ceil(centerX / cardWidth),
-    Math.ceil(centerY / cardHeight),
+    Math.ceil(centerX / cardSize.widthWithMargin),
+    Math.ceil(centerY / cardSize.heightWithMargin),
   ]);
 };
 
@@ -52,22 +53,28 @@ const getMatrixEdges = (
   return { start: new Vector(start), end: new Vector(end) };
 };
 
-const getWindowSizeInCards = (windowSize: [number, number], cardSize: Vector) =>
+const getWindowSizeInCards = (
+  windowSize: [number, number],
+  cardSize: ICardSize
+) =>
   new Vector([
-    Math.ceil(windowSize[0] / cardSize[0]),
-    Math.ceil(windowSize[1] / cardSize[1]),
+    Math.ceil(windowSize[0] / cardSize.widthWithMargin),
+    Math.ceil(windowSize[1] / cardSize.heightWithMargin),
   ]);
 
 const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
-  const { windowSize, navigatorPlatform, dispatch } = useContext(Context);
+  const { windowSize, navigatorPlatform, dispatch, centralStore } = useContext(
+    Context
+  );
   const [windowWidth, windowHeight] = windowSize;
+  const { cardSize } = centralStore;
   const [position, setSpring] = useSpring<Position>(() => ({
     x: 0,
     y: 0,
   }));
 
   const [matrixCenterXy, setMatrixCenterXy] = useState<Vector>(
-    toPositionInMatrix([0, 0])
+    toPositionInMatrix([0, 0], cardSize)
   );
 
   const prevWidth = usePrevious(windowWidth);
@@ -93,7 +100,7 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
         y: xy[1],
         immediate,
         onChange: (xy) => {
-          const matrixCenterXy = toPositionInMatrix([xy.x!, xy.y!]);
+          const matrixCenterXy = toPositionInMatrix([xy.x!, xy.y!], cardSize);
           setMatrixCenterXy(matrixCenterXy);
         },
       });
@@ -167,6 +174,7 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
             {...{
               studentsToShow,
               matrixEdges,
+              cardSize,
             }}
           />
         </animated.div>
