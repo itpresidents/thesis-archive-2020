@@ -7,13 +7,11 @@ import {
   useTransition,
   config as SpringConfig,
 } from "react-spring";
+import cx from "classnames";
 
 interface IStudentCardProps {
   student: IStudentSummary;
 }
-
-const width = `${cardSize[0] * 0.75}px`;
-const height = `${cardSize[0] * 1.1}px`;
 
 interface ICardTransitionProps {
   student: IStudentSummary;
@@ -21,6 +19,10 @@ interface ICardTransitionProps {
   y: number;
   skipAnimation: boolean;
 }
+
+const width = cardSize[0] * 0.75;
+const height = cardSize[0] * 1.1;
+
 export const StudentCardWithTransition = React.memo(
   ({ student, x, y, skipAnimation }: ICardTransitionProps) => {
     DEBUG && console.log("re-render CardTransition");
@@ -56,7 +58,29 @@ export const StudentCardWithTransition = React.memo(
   }
 );
 
-export const StudentCard = React.memo(({ student }: IStudentCardProps) => {
+export const CardOuter = ({
+  width,
+  height,
+  children,
+  className,
+}: {
+  width: number;
+  height: number;
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <div
+    className={cx("student-card", className)}
+    style={{
+      width: width,
+      height: height,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const StudentCard = React.memo(({ student }: IStudentCardProps) => {
   const linkRef = useRef<null | HTMLAnchorElement | any>(null);
   const [isDragging, setDragging] = useState<boolean>(false);
   const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
@@ -76,14 +100,9 @@ export const StudentCard = React.memo(({ student }: IStudentCardProps) => {
     if (dist > 10) setDragging(true);
     else setDragging(false);
   };
+
   return (
-    <div
-      className="student-card"
-      style={{
-        width: width,
-        height: height,
-      }}
-    >
+    <CardOuter width={width} height={height}>
       <Link
         to={`/students/${student.student_id}`}
         ref={linkRef}
@@ -93,7 +112,7 @@ export const StudentCard = React.memo(({ student }: IStudentCardProps) => {
       >
         <CardContent student={student} />
       </Link>
-    </div>
+    </CardOuter>
   );
 });
 

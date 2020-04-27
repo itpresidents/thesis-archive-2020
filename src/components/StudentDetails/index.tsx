@@ -6,29 +6,33 @@ import { useParams } from "react-router-dom";
 import { getStudentIdFromSlug, isNumber } from "util/queries";
 
 import DetailsBody from "./DetailsBody";
+import DetailsFooter from "./DetailsFooter";
 
 interface IStudentDetailsProps {
   student: IStudentDetails;
+  students: IStudentSummary[] | undefined;
 }
 
 type EmptyProps = {};
 
-const StudentDetails = ({ student }: IStudentDetailsProps) => {
+const StudentDetails = ({ student, students }: IStudentDetailsProps) => {
   return (
     <div id="details">
       <DetailsBody student={student} />
+      <DetailsFooter students={students} />
     </div>
   );
 };
 
 interface IStudentProps {
   studentId: string;
+  students: IStudentSummary[] | undefined;
 }
 
 const studentToTitle = (student: IStudentDetails) =>
   `${student.title} by ${student.student_name} | ITP Thesis Archive 2020`;
 
-const Student = ({ studentId }: IStudentProps) => {
+const Student = ({ studentId, students }: IStudentProps) => {
   const [student, setProject] = useState<IStudentDetails>();
 
   useEffect(() => {
@@ -61,7 +65,7 @@ const Student = ({ studentId }: IStudentProps) => {
 
   if (!student) return <div>Loading...</div>;
 
-  return <StudentDetails student={student} />;
+  return <StudentDetails student={student} students={students} />;
 };
 
 interface IStudentByIdOrSlugProps {
@@ -75,14 +79,14 @@ const StudentByIdOrSlug = ({ students }: IStudentByIdOrSlugProps) => {
   if (!studentIdOrSlug) return null;
 
   if (isNumber(studentIdOrSlug)) {
-    return <Student studentId={studentIdOrSlug} />;
+    return <Student studentId={studentIdOrSlug} students={students} />;
   }
 
   if (!students) return null;
 
   const studentId = getStudentIdFromSlug(students, studentIdOrSlug);
 
-  return <Student studentId={studentId} />;
+  return <Student studentId={studentId} students={students} />;
 };
 
 export default StudentByIdOrSlug;

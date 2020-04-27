@@ -17,9 +17,14 @@
   }
 }
 
+#projects-canvas {
+  .student-card {
+    position: absolute;
+    margin: 10px;
+  }
+}
+
 .student-card {
-  position: absolute;
-  margin: 10px;
   width: 200px;
   height: 300px;
   // https://github.com/oveddan/thesis-archive-2020/issues/31
@@ -82,5 +87,19 @@
 
   &:hover .card-bg {
     transform: scale(1.2);
+  }
+
+  $card-icon-scale: 10;
+
+  &.icon-card {
+    .card-bg-frame {
+      text-align: center;
+    }
+    svg {
+      transform-origin: #{25}px 20px;
+      transform: scale($card-icon-scale);
+      -ms-transform: scale($card-icon-scale);
+      -webkit-transform: scale($card-icon-scale);
+    }
   }
 }
