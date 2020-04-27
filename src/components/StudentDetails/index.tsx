@@ -19,7 +19,7 @@ const StudentDetails = ({ student, students }: IStudentDetailsProps) => {
   return (
     <div id="details">
       <DetailsBody student={student} />
-      <DetailsFooter students={students} />
+      <DetailsFooter student={student} students={students} />
     </div>
   );
 };

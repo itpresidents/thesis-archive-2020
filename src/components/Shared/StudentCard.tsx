@@ -116,7 +116,7 @@ const StudentCard = React.memo(({ student }: IStudentCardProps) => {
   );
 });
 
-const CardContent = React.memo(({ student }: IStudentCardProps) => (
+export const CardContent = React.memo(({ student }: IStudentCardProps) => (
   <>
     <div className="card-bg-frame">
       <div
