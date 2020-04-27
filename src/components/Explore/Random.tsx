@@ -19,9 +19,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
   reRoll,
 }) => {
   const [redirect, setRedirect] = useState(false);
-
-  const [localStudent, setStudent] = useState<IStudentSummary>(student);
-  const { student_id, student_name, title } = localStudent;
+  const { student_id, student_name, title } = student;
   const history = useHistory();
 
   const initialSpring = {
@@ -64,10 +62,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
   const [spring, setSpring] = useSpring(() => initialSpring);
 
   useEffect(() => {
-    reRoll();
     document.body.scrollTo({ top: 0, behavior: "smooth" });
-    console.log("callll");
-    console.log(localStudent.student_slug);
     if (redirect) {
       //@ts-ignore
       setSpring({ ...initialSpring.from, immediate: true });
@@ -77,11 +72,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
       setSpring(initialSpring);
     }, 100);
     // eslint-disable-next-line
-  }, [localStudent.student_slug]);
-
-  const resetHandeler = () => {
-    setStudent(student);
-  };
+  }, [student.student_id]);
 
   return (
     <>
@@ -90,7 +81,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
         redirect && (
           <a.div style={{ opacity: spring.detailsOpacity }}>
             <StudentDetails students={students} />
-            <ReRollButton {...{ resetHandeler }} />
+            <ReRollButton {...{ resetHandeler: reRoll }} />
           </a.div>
         ))()}
       }
