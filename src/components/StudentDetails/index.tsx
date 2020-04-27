@@ -14,7 +14,7 @@ import { Link, useParams } from "react-router-dom";
 import { getStudentIdFromSlug, isNumber, toLowerSnakeCase } from "util/queries";
 import cx from "classnames";
 
-import { Chevron, VideoSign } from "../images/Svg";
+import { Chevron, VideoSign } from "images/Svg";
 
 const createMarkup = (html: string) => ({ __html: html });
 
