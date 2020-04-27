@@ -15,9 +15,9 @@ export const getCardHeightByCardWidth = (cardW: number = 212): ICardSize => ({
 export const getCardSizeByWindowSize = (windowSize: number[]): ICardSize => {
   switch (true) {
     case windowSize[0] > bkp_lg:
-      return getCardHeightByCardWidth(212 + windowSize[0] / 20);
+      return getCardHeightByCardWidth(212 + windowSize[0] / 50);
     case windowSize[0] > bkp_sm:
-      return getCardHeightByCardWidth(193 + windowSize[0] / 20);
+      return getCardHeightByCardWidth(193 + windowSize[0] / 50);
     default:
       return getCardHeightByCardWidth(175);
   }
