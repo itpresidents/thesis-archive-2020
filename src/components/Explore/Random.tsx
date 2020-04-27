@@ -21,7 +21,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
   const [redirect, setRedirect] = useState(false);
 
   const [localStudent, setStudent] = useState<IStudentSummary>(student);
-  const { student_slug, student_name, title } = localStudent;
+  const { student_id, student_name, title } = localStudent;
   const history = useHistory();
 
   const initialSpring = {
@@ -41,7 +41,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
       await next({ curtainDown: "0vh" });
       await next(
         (() => {
-          history.push(`/random/${student_slug}`);
+          history.replace(`/random/${student_id}`);
           return { titleOpacity: 1, config: config.slow };
         })()
       );
