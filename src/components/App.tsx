@@ -4,7 +4,7 @@ import "scss/styles.scss";
 import Explore from "./Explore/Explore";
 import StudentDetails from "./StudentDetails";
 import { Switch, Route } from "react-router-dom";
-import { IStudentSummary, ICentralStore } from "types";
+import { IStudentSummary, ICentralStore, ICardSize } from "types";
 import Header from "./Shared/Header";
 import Videos from "./Videos/Videos";
 import { Context } from "../util/contexts";
@@ -13,8 +13,7 @@ import { isMobile } from "react-device-detect";
 import { FirstClicked } from "./Shared/FirstClicked";
 import { rootReducer } from "util/homemadeRedux/reducers";
 import RandomMain from "./Explore/Random";
-import { resizeCardAction } from "util/homemadeRedux/actions";
-import { getCardHeightByCardWidth } from "util/cardSizeBreakpoints";
+import { getCardSizeByWindowSize } from "util/cardSizeBreakpoints";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -29,7 +28,6 @@ const navigatorPlatform = {
 
 const initialCentralStore: ICentralStore = {
   messages: [],
-  cardSize: getCardHeightByCardWidth(212),
 };
 
 const App = ({ students }: IAppProps) => {
@@ -37,17 +35,25 @@ const App = ({ students }: IAppProps) => {
   const [hasStartedExploring, setHasStartedExploring] = useState<boolean>(
     false
   );
-
+  const [cardSize, setCardSize] = useState<ICardSize>(
+    getCardSizeByWindowSize(windowSize)
+  );
   const [centralStore, dispatch] = useReducer(rootReducer, initialCentralStore);
 
   useEffect(() => {
-    dispatch(resizeCardAction(windowSize));
+    setCardSize(getCardSizeByWindowSize(windowSize));
   }, [windowSize]);
 
   return (
     <>
       <Context.Provider
-        value={{ windowSize, navigatorPlatform, centralStore, dispatch }}
+        value={{
+          windowSize,
+          navigatorPlatform,
+          centralStore,
+          cardSize,
+          dispatch,
+        }}
       >
         <Header hasStartedExploring={hasStartedExploring} />
         <Switch>

@@ -105,7 +105,6 @@ export type messageActionTypes =
 
 export interface ICentralStore {
   messages: IMessage[];
-  cardSize: ICardSize;
 }
 
 export interface IPlatform {
@@ -117,6 +116,7 @@ export interface IPlatform {
 
 export interface IContext {
   centralStore: ICentralStore;
+  cardSize: ICardSize;
   dispatch?: React.Dispatch<any>;
   windowSize: Vector | number[];
   navigatorPlatform?: IPlatform;

@@ -5,6 +5,6 @@ export const Context = createContext<IContext>({
   windowSize: [window.innerWidth, window.innerHeight],
   centralStore: {
     messages: [],
-    cardSize: getCardHeightByCardWidth(),
   },
+  cardSize: getCardHeightByCardWidth(),
 });

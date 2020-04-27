@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { multiplyElementWise, scaleVector, IMatrixEdges } from "util/vector";
 import { CardToShow, IStudentSummary, ICardSize } from "types";
 
-import { ConnectedStudentCardWithTransition as StudentCardWithTransition } from "../Shared/StudentCard";
+import { StudentCardWithTransition } from "../Shared/StudentCard";
 
 const DEBUG = false;
 

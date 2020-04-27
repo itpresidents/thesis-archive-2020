@@ -1,13 +1,12 @@
-import React, { useRef, useState } from "react";
-import { IStudentSummary, ICardSize, ICentralStore } from "types";
+import React, { useRef, useState, useContext } from "react";
+import { IStudentSummary, ICardSize } from "types";
 import { Link } from "react-router-dom";
 import {
   animated as a,
   useTransition,
   config as SpringConfig,
 } from "react-spring";
-import { connect } from "util/homemadeRedux/connect";
-import { Diff } from "utility-types";
+import { Context } from "util/contexts";
 
 const DEBUG = false;
 
@@ -16,11 +15,11 @@ interface ICardTransitionProps {
   x: number;
   y: number;
   skipAnimation: boolean;
-  cardSize: ICardSize;
 }
 export const StudentCardWithTransition = React.memo(
-  ({ student, x, y, skipAnimation, cardSize }: ICardTransitionProps) => {
+  ({ student, x, y, skipAnimation }: ICardTransitionProps) => {
     DEBUG && console.log("re-render CardTransition");
+    const { cardSize } = useContext(Context);
     const transition = useTransition(student, {
       key: student.student_id,
       from: { opacity: 0 },
@@ -127,15 +126,4 @@ const CardContent = React.memo(({ student, cardSize }: IStudentCardProps) => (
     </div>
   </>
 ));
-
-const mapStateToProps = (state: ICentralStore) => ({
-  cardSize: state.cardSize,
-});
-
-type diffedPropType = Diff<ICardTransitionProps, { cardSize: ICardSize }>;
-
-export const ConnectedStudentCardWithTransition = connect<diffedPropType>(
-  mapStateToProps,
-  null
-)(StudentCardWithTransition);
 export default StudentCard;

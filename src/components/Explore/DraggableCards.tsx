@@ -63,11 +63,10 @@ const getWindowSizeInCards = (
   ]);
 
 const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
-  const { windowSize, navigatorPlatform, dispatch, centralStore } = useContext(
+  const { windowSize, navigatorPlatform, dispatch, cardSize } = useContext(
     Context
   );
   const [windowWidth, windowHeight] = windowSize;
-  const { cardSize } = centralStore;
   const [position, setSpring] = useSpring<Position>(() => ({
     x: 0,
     y: 0,
