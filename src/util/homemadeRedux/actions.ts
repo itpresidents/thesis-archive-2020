@@ -20,3 +20,8 @@ export const removeMessageAction = (
   type: ActionTypes.RemoveMessage,
   payload: messageId,
 });
+
+export const resizeCardAction = (windowSize: number[]): IAction<number[]> => ({
+  type: ActionTypes.ResizeCards,
+  payload: windowSize,
+});

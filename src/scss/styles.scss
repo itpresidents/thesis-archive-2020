@@ -115,9 +115,16 @@ a {
 
   h1 {
     margin-left: 10px;
-    font-size: 12em;
     line-height: 1em;
     font-weight: 700;
+
+    @include break(520px) {
+      font-size: 8em;
+    }
+
+    @include break(768px) {
+      font-size: 12em;
+    }
   }
 }
 
