@@ -7,11 +7,17 @@ import { Link } from "react-router-dom";
 import { Context } from "util/contexts";
 
 import * as queries from "util/queries";
+import Rolling20, { IRolling20Props } from "components/Shared/Rolling20";
 
-interface IDetailsFooterProps {
-  student: IStudentDetails;
-  students: IStudentSummary[] | undefined;
-}
+const Rolling20Props: IRolling20Props = {
+  heightInVh: 31.65,
+  rows: 1,
+  speed: 0.0,
+};
+
+const FooterGraphic = () => {
+  return <Rolling20 {...Rolling20Props} />;
+};
 
 const RandomCard = ({ width, height }: { width: number; height: number }) => (
   <CardOuter width={width} height={height} className="icon-card">
@@ -58,6 +64,11 @@ const SimilarCards = ({
   );
 };
 
+interface IDetailsFooterProps {
+  student: IStudentDetails;
+  students: IStudentSummary[] | undefined;
+}
+
 const DetailsFooter = ({ student, students }: IDetailsFooterProps) => {
   const { cardSize } = useContext(Context);
 
@@ -83,6 +94,9 @@ const DetailsFooter = ({ student, students }: IDetailsFooterProps) => {
             </>
           )}
         </Col>
+      </Row>
+      <Row>
+        <FooterGraphic />
       </Row>
     </Container>
   );

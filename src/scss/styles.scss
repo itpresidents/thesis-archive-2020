@@ -274,6 +274,15 @@ $image-top-margin: 60px;
         }
       }
     }
+
+    .svg2020-animation-container {
+      overflow-y: hidden;
+      .svg2020-animation-row {
+        // margin-top: 120px;
+        position: absolute;
+        top: 40% !important;
+      }
+    }
   }
 
   .textblock {
