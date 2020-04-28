@@ -7,6 +7,7 @@ import {
   config as SpringConfig,
 } from "react-spring";
 import { Context } from "util/contexts";
+import cx from "classnames";
 
 const DEBUG = false;
 
@@ -55,6 +56,28 @@ export const StudentCardWithTransition = React.memo(
   }
 );
 
+export const CardOuter = ({
+  width,
+  height,
+  children,
+  className,
+}: {
+  width: number;
+  height: number;
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <div
+    className={cx("student-card", className)}
+    style={{
+      width: width,
+      height: height,
+    }}
+  >
+    {children}
+  </div>
+);
+
 interface IStudentCardProps {
   student: IStudentSummary;
   cardSize: ICardSize;
@@ -81,13 +104,7 @@ const StudentCard = React.memo(({ student, cardSize }: IStudentCardProps) => {
     else setDragging(false);
   };
   return (
-    <div
-      className="student-card"
-      style={{
-        width: cardSize.width,
-        height: cardSize.height,
-      }}
-    >
+    <CardOuter width={cardSize.width} height={cardSize.height}>
       <Link
         to={`/students/${student.student_id}`}
         ref={linkRef}
@@ -97,33 +114,35 @@ const StudentCard = React.memo(({ student, cardSize }: IStudentCardProps) => {
       >
         <CardContent {...{ student, cardSize }} />
       </Link>
-    </div>
+    </CardOuter>
   );
 });
 
-const CardContent = React.memo(({ student, cardSize }: IStudentCardProps) => (
-  <>
-    <div className="card-bg-frame">
-      <div
-        className="card-bg"
-        style={{
-          backgroundImage: `url(${
-            student.thumbnail_image && student.thumbnail_image.src
-          })`,
-        }}
-      />
-    </div>
-    <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
-      <h3>{student.title}</h3>
-      <h4>{student.student_name}</h4>
-      <p>
-        {student.tags.map((tag, index) =>
-          index === student.tags.length - 1
-            ? tag.name.toUpperCase()
-            : tag.name.toUpperCase() + ", "
-        )}
-      </p>
-    </div>
-  </>
-));
+export const CardContent = React.memo(
+  ({ student, cardSize }: IStudentCardProps) => (
+    <>
+      <div className="card-bg-frame">
+        <div
+          className="card-bg"
+          style={{
+            backgroundImage: `url(${
+              student.thumbnail_image && student.thumbnail_image.src
+            })`,
+          }}
+        />
+      </div>
+      <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
+        <h3>{student.title}</h3>
+        <h4>{student.student_name}</h4>
+        <p>
+          {student.tags.map((tag, index) =>
+            index === student.tags.length - 1
+              ? tag.name.toUpperCase()
+              : tag.name.toUpperCase() + ", "
+          )}
+        </p>
+      </div>
+    </>
+  )
+);
 export default StudentCard;

@@ -1,5 +1,5 @@
 // {"name":"Performance","slug":"performance"},{"name":"Society","slug":"society"}]
-import { IStudentSummary, TopicDict } from "types";
+import { IStudentSummary, TopicDict, IStudentDetails, ITag } from "types";
 
 const compare = (a: string, b: string) => {
   if (a > b) {
@@ -129,3 +129,35 @@ export function shuffle<T>(toShuffle: T[]): T[] {
 
   return arrayClone;
 }
+
+const hasAnyTags = (tags: ITag[], tagsToMatch: string[]): boolean => {
+  for (let tag of tags) {
+    if (tagsToMatch.includes(tag.slug)) return true;
+  }
+
+  return false;
+};
+
+export const randomSimilarStudents = (
+  student: IStudentDetails,
+  students: IStudentSummary[],
+  numToGet: number
+): IStudentSummary[] => {
+  const shuffledStudents = shuffle(students);
+
+  const result: IStudentSummary[] = [];
+
+  const studentTagsToMatch = student.tags.map(({ slug }) => slug);
+
+  for (let randomStudent of shuffledStudents) {
+    if (hasAnyTags(randomStudent.tags, studentTagsToMatch)) {
+      result.push(randomStudent);
+
+      if (result.length >= numToGet) {
+        break;
+      }
+    }
+  }
+
+  return result;
+};

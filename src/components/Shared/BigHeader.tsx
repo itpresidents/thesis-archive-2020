@@ -6,7 +6,7 @@ import { addMessageAction } from "util/homemadeRedux/actions";
 import { Subtract } from "utility-types";
 import Rolling20, { IRolling20Props } from "./Rolling20";
 
-const getHeaderHeight = (windowWidth: number): number => {
+export const getHeaderHeight = (windowWidth: number): number => {
   switch (true) {
     case windowWidth > 600:
       return 70;
