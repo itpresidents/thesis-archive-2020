@@ -51,7 +51,7 @@
   .card-info {
     h3 {
       @extend .subtitle;
-      max-height: 2.2em;
+      max-height: 2.5em;
       overflow: hidden;
       text-overflow: ellipsis;
       //7% margin top  https://github.com/oveddan/thesis-archive-2020/issues/31

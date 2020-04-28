@@ -6,7 +6,16 @@ import { addMessageAction } from "util/homemadeRedux/actions";
 import { Subtract } from "utility-types";
 import Rolling20, { IRolling20Props } from "./Rolling20";
 
-export const HEADER_HEIGHT_IN_VH = 70;
+const getHeaderHeight = (windowWidth: number): number => {
+  switch (true) {
+    case windowWidth > 600:
+      return 70;
+    default:
+      return 40;
+  }
+};
+
+export const HEADER_HEIGHT_IN_VH = getHeaderHeight(window.innerWidth);
 const BG_SCROLL_SPEED = 0.066;
 const BG_ROWS = 2;
 

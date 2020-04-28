@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { IStudentSummary, IStudentDetails } from "types";
+import React, { useEffect, useState, useContext } from "react";
+import { IStudentSummary, IStudentDetails, ICardSize } from "types";
 import { Container, Row, Col } from "react-bootstrap";
 import { CardOuter, CardContent } from "components/Shared/StudentCard";
-import { cardSize } from "config";
 import { Random } from "images/Svg";
 import { Link } from "react-router-dom";
+import { Context } from "util/contexts";
 
 import * as queries from "util/queries";
 
@@ -12,10 +12,8 @@ interface IDetailsFooterProps {
   student: IStudentDetails;
   students: IStudentSummary[] | undefined;
 }
-const width = cardSize[0] * 0.75;
-const height = cardSize[0] * 1.1;
 
-const RandomCard = () => (
+const RandomCard = ({ width, height }: { width: number; height: number }) => (
   <CardOuter width={width} height={height} className="icon-card">
     <Link to="/random" replace>
       <div className="card-bg-frame">
@@ -30,9 +28,11 @@ const NUM_SIMILAR_STUDENTS = 3;
 const SimilarCards = ({
   student,
   students,
+  cardSize,
 }: {
   student: IStudentDetails;
   students: IStudentSummary[];
+  cardSize: ICardSize;
 }) => {
   const [similarCards, setSimilarCards] = useState<IStudentSummary[]>();
 
@@ -47,9 +47,9 @@ const SimilarCards = ({
       {similarCards &&
         similarCards.map((similarCard) => (
           <Col key={similarCard.student_slug} lg={4} sm={12}>
-            <CardOuter width={width} height={height}>
+            <CardOuter width={cardSize.width} height={cardSize.height}>
               <Link to={`/students/${student.student_id}`}>
-                <CardContent student={similarCard} />
+                <CardContent student={similarCard} cardSize={cardSize} />
               </Link>
             </CardOuter>
           </Col>
@@ -59,18 +59,27 @@ const SimilarCards = ({
 };
 
 const DetailsFooter = ({ student, students }: IDetailsFooterProps) => {
+  const { cardSize } = useContext(Context);
+
   return (
     <Container fluid className="details-footer">
       <Row>
         <Col lg={6} sm={12} className="section">
           <h3>Randomize Next</h3>
-          <RandomCard></RandomCard>
+          <RandomCard
+            width={cardSize.width}
+            height={cardSize.height}
+          ></RandomCard>
         </Col>
         <Col lg={6} sm={12} className="section">
           {students && (
             <>
               <h3>Similar Projects</h3>
-              <SimilarCards student={student} students={students} />
+              <SimilarCards
+                student={student}
+                students={students}
+                cardSize={cardSize}
+              />
             </>
           )}
         </Col>
