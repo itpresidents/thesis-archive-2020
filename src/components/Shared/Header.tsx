@@ -37,11 +37,6 @@ const Header = ({ hasStartedExploring }: { hasStartedExploring: boolean }) => {
               </Link>
             </Nav.Item>
             <Nav.Item>
-              <NavLink to="/videos" className="nav-link">
-                Watch
-              </NavLink>
-            </Nav.Item>
-            <Nav.Item>
               <NavLink to="/about" className="nav-link">
                 About
               </NavLink>
