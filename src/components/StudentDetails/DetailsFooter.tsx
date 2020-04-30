@@ -65,7 +65,12 @@ const SimilarCards = ({
         {similarCards &&
           similarCards.map((similarCard) => (
             <CardOuter width={cardSize.width} height={cardSize.height}>
-              <Link to={`/students/${student.student_id}`}>
+              <Link
+                to={`/students/${similarCard.student_id}`}
+                onClick={() => {
+                  document.body.scrollTo({ top: 0 });
+                }}
+              >
                 <CardContent student={similarCard} cardSize={cardSize} />
               </Link>
             </CardOuter>
