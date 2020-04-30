@@ -172,22 +172,22 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => (
         <h3>Technical Details</h3>
         <TextBlock text={student.technical_details} />
       </TextSection>
-
-      <Row className={justify}>
-        <Col lg={IMAGE_COLS_LG}>
-          {student.slide_show
-            .slice(1, student.slide_show.length - 2)
-            .map((image) => (
-              <ImageWithCaption key={image.src} image={image} />
-            ))}
-        </Col>
-      </Row>
+      {student.slide_show
+        .slice(1, 3)
+        .map(
+          (image) => image && <SlideShowImage key={image.src} image={image} />
+        )}
       {student.further_reading !== "" && (
         <TextSection>
           <h3>Further Reading</h3>
           <TextBlock text={student.further_reading} />
         </TextSection>
       )}
+      {student.slide_show
+        .slice(3, 5)
+        .map(
+          (image) => image && <SlideShowImage key={image.src} image={image} />
+        )}
     </Container>
   </>
 );
