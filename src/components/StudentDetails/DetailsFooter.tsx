@@ -55,17 +55,23 @@ const SimilarCards = ({
     );
   }, [student, students, numSimilarCards]);
 
+  const headerText =
+    numSimilarCards === 1 ? "Similar Project" : "Similar Projects";
+
   return (
-    <div className="similar">
-      {similarCards &&
-        similarCards.map((similarCard) => (
-          <CardOuter width={cardSize.width} height={cardSize.height}>
-            <Link to={`/students/${student.student_id}`}>
-              <CardContent student={similarCard} cardSize={cardSize} />
-            </Link>
-          </CardOuter>
-        ))}
-    </div>
+    <>
+      <h3>{headerText}</h3>
+      <div className="similar">
+        {similarCards &&
+          similarCards.map((similarCard) => (
+            <CardOuter width={cardSize.width} height={cardSize.height}>
+              <Link to={`/students/${student.student_id}`}>
+                <CardContent student={similarCard} cardSize={cardSize} />
+              </Link>
+            </CardOuter>
+          ))}
+      </div>
+    </>
   );
 };
 
@@ -91,7 +97,6 @@ const DetailsFooter = ({ student, students }: IDetailsFooterProps) => {
           <ContainerDimensions>
             {({ width }) => (
               <>
-                <h3>Similar Projects</h3>
                 {students && (
                   <SimilarCards
                     student={student}
