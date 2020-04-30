@@ -4,7 +4,10 @@ import { Figure, Container } from "react-bootstrap";
 import { Row, Col } from "react-bootstrap";
 import cx from "classnames";
 import { useSpring, animated as a } from "react-spring";
-import { Chevron, VideoSign } from "images/Svg";
+import {
+  Chevron,
+  // VideoSign
+} from "images/Svg";
 import { Link } from "react-router-dom";
 import { toLowerSnakeCase } from "util/queries";
 

@@ -8,6 +8,7 @@ import {
 } from "react-spring";
 import { Context } from "util/contexts";
 import cx from "classnames";
+import he from "he";
 
 const DEBUG = false;
 
@@ -133,7 +134,7 @@ export const CardContent = React.memo(
         />
       </div>
       <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
-        <h3>{student.project_title}</h3>
+        <h3>{he.decode(student.project_title)}</h3>
         <h4>{student.student_name}</h4>
         <p>
           {student.topics.map((tag, index) =>
