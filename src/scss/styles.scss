@@ -239,6 +239,7 @@ $image-top-margin: 60px;
   }
 
   .slide-show-image {
+    text-align: center;
     &,
     .col {
       @include media-breakpoint-down(md) {
