@@ -53,6 +53,14 @@ const TextSection = ({ children }: { children: React.ReactNode }) => (
   </Row>
 );
 
+const SlideShowImage = ({ image }: { image: IImage | undefined }) => (
+  <Row className={cx(justify, "slide-show-image")}>
+    <Col lg={IMAGE_COLS_LG} className="col">
+      <ImageWithCaption image={image} />
+    </Col>
+  </Row>
+);
+
 const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
   const initialSpring = { marginLeft: "0px" };
   const [spring, set] = useSpring(() => initialSpring);
@@ -147,12 +155,7 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => (
         <TextBlock text={student.short_description} />
         <ProjectWebsiteButton to={student.project_url} />
       </TextSection>
-      <Row className={justify}>
-        <Col lg={IMAGE_COLS_LG}>
-          <ImageWithCaption image={student.slide_show[0]} />
-        </Col>
-      </Row>
-
+      <SlideShowImage image={student.slide_show[0]} />
       <TextSection>
         <h3>Research</h3>
         <TextBlock text={student.context_research} />

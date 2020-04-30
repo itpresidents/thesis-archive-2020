@@ -238,6 +238,16 @@ $image-top-margin: 60px;
     }
   }
 
+  .slide-show-image {
+    &,
+    .col {
+      @include media-breakpoint-down(md) {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+
   .body1 {
     h3 {
       margin-top: $section-top-margin-mobile;
