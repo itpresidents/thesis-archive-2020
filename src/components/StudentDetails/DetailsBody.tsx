@@ -81,7 +81,7 @@ const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
 
 const DetailsBody = ({ student }: { student: IStudentDetails }) => (
   <>
-    <FeaturedImage image={student.hero_header_image} />
+    <FeaturedImage image={student.hero_header_img[0]} />
     <Container className="body1">
       {/* <Row className={justify}> */}
       {/* <Col md={12}> */}

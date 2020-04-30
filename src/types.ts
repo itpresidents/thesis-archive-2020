@@ -29,7 +29,7 @@ export interface IStudentDetails extends IStudentSummary {
   video_presentation_url: string;
   portfolio_url?: string;
   // description: string;
-  hero_header_image: IImage;
+  hero_header_img: [IImage];
   slide_show: IImage[];
 }
 

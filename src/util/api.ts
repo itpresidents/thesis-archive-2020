@@ -61,7 +61,7 @@ const toCurrentStudentDetails = (
   project_url: studentDetails.video_documentation_url,
   video_presentation_url: studentDetails.video_presentation_url,
   portfolio_url: "http://www.portfolio.com",
-  hero_header_image: studentDetails.thumbnail_image,
+  hero_header_img: [studentDetails.thumbnail_image],
   slide_show: studentDetails.slide_show,
 });
 
