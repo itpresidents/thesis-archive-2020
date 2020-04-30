@@ -73,7 +73,7 @@ const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
 
 const DetailsBody = ({ student }: { student: IStudentDetails }) => (
   <>
-    <FeaturedImage image={student.thumbnail_image} />
+    <FeaturedImage image={student.portfolio_thumbnail} />
     <Container className="body1">
       {/* <Row className={justify}> */}
       {/* <Col md={12}> */}
@@ -82,17 +82,17 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => (
 
       <Row className={cx(justify, centerText)}>
         <Col lg={MAIN_COLS_LG}>
-          <h2>{student.title}</h2>
+          <h2>{student.project_title}</h2>
         </Col>
       </Row>
       <Row className={cx(justify, centerText)}>
         <Col lg={MAIN_COLS_LG} className="tags">
-          {student.tags.map((topic, i) => (
+          {student.topics.map((topic, i) => (
             <>
               <Link key={topic.slug} to={`/filter/category/${topic.slug}`}>
                 {topic.name}
               </Link>
-              {i !== student.tags.length - 1 && " | "}
+              {i !== student.topics.length - 1 && " | "}
             </>
           ))}
         </Col>
@@ -101,7 +101,7 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => (
         <Col lg={MAIN_COLS_LG}>
           <p
             className="summary"
-            dangerouslySetInnerHTML={createMarkup(student.thesis_statement)}
+            dangerouslySetInnerHTML={createMarkup(student.project_question)}
           />
         </Col>
       </Row>
@@ -111,34 +111,40 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => (
             <Col sm={12}>
               <hr />
             </Col>
-            <Col sm={12} md={3} className="linkHolder first">
+            <Col sm={12} md={4} className="linkHolder first">
               <h4>Student</h4>
               <span>{student.student_name}</span>
             </Col>
-            <Col sm={12} md={3} className="linkHolder">
-              <h4>Portfolio</h4>
-              <a href="//www.example.com">www.example.com</a>
+            <Col sm={12} md={4} className="linkHolder">
+              {student.portfolio_url && (
+                <>
+                  <h4>Portfolio</h4>
+                  <a href={student.portfolio_url}>{student.portfolio_url}</a>
+                </>
+              )}
             </Col>
-            <Col sm={12} md={3} className="linkHolder">
+            <Col sm={12} md={4} className="linkHolder">
               <h4>Advisor</h4>
               <Link
-                to={`/filter/advisor/${toLowerSnakeCase(student.advisor_name)}`}
+                to={`/filter/advisor/${toLowerSnakeCase(
+                  student.advisor_name || ""
+                )}`}
               >
                 {student.advisor_name}
               </Link>
             </Col>
-            <Col sm={12} md={3} className="linkHolder">
+            {/* <Col sm={12} md={3} className="linkHolder">
               <h4>Watch</h4>
               <Link to={`/videos/${student.student_slug}`}>
                 <VideoSign />
               </Link>
-            </Col>
+            </Col> */}
           </Row>
         </Col>
       </Row>
       <TextSection>
         <h3>Abstract</h3>
-        <TextBlock text={student.abstract} />
+        <TextBlock text={student.short_description} />
         <ProjectWebsiteButton to={student.project_url} />
       </TextSection>
       <Row className={justify}>
@@ -163,11 +169,12 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => (
             ))}
         </Col>
       </Row>
-
-      <TextSection>
-        <h3>Further Reading</h3>
-        <TextBlock text={student.further_reading} />
-      </TextSection>
+      {student.further_reading !== "" && (
+        <TextSection>
+          <h3>Further Reading</h3>
+          <TextBlock text={student.further_reading} />
+        </TextSection>
+      )}
     </Container>
   </>
 );

@@ -5,6 +5,6 @@ export const apis = {
   REAL: "REAL",
 };
 
-export const api = apis.FAKE_FROM_2018;
+export const api = apis.REAL;
 
 export const DEBUG = false;

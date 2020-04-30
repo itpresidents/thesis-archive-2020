@@ -30,7 +30,7 @@ interface IStudentProps {
 }
 
 const studentToTitle = (student: IStudentDetails) =>
-  `${student.title} by ${student.student_name} | ITP Thesis Archive 2020`;
+  `${student.project_title} by ${student.student_name} | ITP Thesis Archive 2020`;
 
 const Student = ({ studentId, students }: IStudentProps) => {
   const [student, setProject] = useState<IStudentDetails>();
@@ -51,14 +51,17 @@ const Student = ({ studentId, students }: IStudentProps) => {
       );
 
       if (metaDescription)
-        metaDescription.setAttribute("description", student.thesis_statement);
+        metaDescription.setAttribute("description", student.project_question);
 
       const metaOgImageElement = document.querySelector(
         "meta[property='og:image']"
       );
 
       if (metaOgImageElement) {
-        metaOgImageElement.setAttribute("content", student.thumbnail_image.src);
+        metaOgImageElement.setAttribute(
+          "content",
+          student.portfolio_thumbnail.src
+        );
       }
     }
   }, [student]);

@@ -39,16 +39,15 @@ export const getTagsAndAdvisors = (
   const allTags: TopicDict = {};
   const allAdvisors: TopicDict = {};
 
-  for (let { tags, advisor_name } of students) {
+  for (let { topics: tags, advisor_name, advisor_id } of students) {
     for (let tag of tags) {
       const { slug: tagSlug, name: tagName } = tag;
       if (!allTags[tagSlug]) {
         allTags[tagSlug] = tagName;
       }
     }
-    const advisorSlug = toLowerSnakeCase(advisor_name);
-    if (!allAdvisors[advisorSlug]) {
-      allAdvisors[advisorSlug] = advisor_name;
+    if (!allAdvisors[advisor_id]) {
+      allAdvisors[advisor_id] = advisor_name || "";
     }
   }
 
@@ -58,11 +57,12 @@ export const getTagsAndAdvisors = (
   };
 };
 
-export const matchesTag = (tagSlug: string) => ({ tags }: IStudentSummary) =>
-  tags.map(({ slug }) => slug).includes(tagSlug);
+export const matchesTag = (tagSlug: string) => ({
+  topics: tags,
+}: IStudentSummary) => tags.map(({ slug }) => slug).includes(tagSlug);
 export const matchesAvisor = (advisorSlug: string) => ({
   advisor_name,
-}: IStudentSummary) => toLowerSnakeCase(advisor_name) === advisorSlug;
+}: IStudentSummary) => toLowerSnakeCase(advisor_name || "") === advisorSlug;
 
 export const filterByTag = (
   students: IStudentSummary[],
@@ -76,7 +76,7 @@ export const filterByAdvisorName = (
   advisorSlug: string
 ): IStudentSummary[] => {
   return students.filter(
-    ({ advisor_name }) => toLowerSnakeCase(advisor_name) === advisorSlug
+    ({ advisor_name }) => toLowerSnakeCase(advisor_name || "") === advisorSlug
   );
 };
 
@@ -147,10 +147,10 @@ export const randomSimilarStudents = (
 
   const result: IStudentSummary[] = [];
 
-  const studentTagsToMatch = student.tags.map(({ slug }) => slug);
+  const studentTagsToMatch = student.topics.map(({ slug }) => slug);
 
   for (let randomStudent of shuffledStudents) {
-    if (hasAnyTags(randomStudent.tags, studentTagsToMatch)) {
+    if (hasAnyTags(randomStudent.topics, studentTagsToMatch)) {
       result.push(randomStudent);
 
       if (result.length >= numToGet) {

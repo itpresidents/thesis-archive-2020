@@ -1,20 +1,25 @@
 import axios from "axios";
 import * as config from "config";
-import { IStudentApi, IStudentDetails, IStudentSummary } from "types";
+import {
+  IStudentApi,
+  IStudentDetails,
+  IStudentSummary,
+  IStudentSummary2019,
+  IStudentDetails2019,
+} from "types";
 
 export const getAllStudents = () => getApi().getAllStudents();
 export const getStudent = (studentId: string) => getApi().getStudent(studentId);
 
 const getApi = (): IStudentApi => {
   if (config.api === config.apis.FAKE_FROM_2018) {
-    return fake2018Api;
+    return fake2019Api;
   } else {
     return realApi;
   }
 };
 
-const baseApiUrl =
-  "https://itp.nyu.edu/thesis2018/wp-content/themes/itpthesis/api.php";
+const baseApiUrl = "https://itp.nyu.edu/thesis2020/api.php";
 
 const realApi: IStudentApi = {
   getAllStudents: async () =>
@@ -24,11 +29,51 @@ const realApi: IStudentApi = {
       .data as IStudentDetails,
 };
 
-const fake2018Api: IStudentApi = {
+const toCurrentStudentSummary = ({
+  student_id,
+  student_name,
+  student_slug,
+  thesis_statement,
+  advisor_name,
+  title,
+  thumbnail_image,
+  tags,
+}: IStudentSummary2019): IStudentSummary => ({
+  student_id,
+  student_name,
+  student_slug,
+  advisor_id: "",
+  advisor_name,
+  project_title: title,
+  project_question: thesis_statement,
+  portfolio_thumbnail: thumbnail_image,
+  topics: tags,
+});
+
+const toCurrentStudentDetails = (
+  studentDetails: IStudentDetails2019
+): IStudentDetails => ({
+  ...toCurrentStudentSummary(studentDetails),
+  short_description: studentDetails.abstract,
+  context_research: studentDetails.context_research,
+  technical_details: studentDetails.technical_details,
+  further_reading: studentDetails.further_reading,
+  project_url: studentDetails.video_documentation_url,
+  video_presentation_url: studentDetails.video_presentation_url,
+  portfolio_url: "http://www.portfolio.com",
+  hero_header_image: studentDetails.thumbnail_image,
+  slide_show: studentDetails.slide_show,
+});
+
+const fake2019Api: IStudentApi = {
   getAllStudents: async () =>
-    (await axios.get("/2019/all.json")).data as IStudentSummary[],
+    ((await axios.get("/2019/all.json")).data as IStudentSummary2019[]).map(
+      toCurrentStudentSummary
+    ),
   getStudent: async (studentId) =>
-    (await axios.get(`/2019/${studentId}.json`)).data as IStudentDetails,
+    toCurrentStudentDetails(
+      (await axios.get(`/2019/${studentId}.json`)).data as IStudentDetails2019
+    ),
 };
 
 // sample json for students:

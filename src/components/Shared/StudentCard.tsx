@@ -126,17 +126,17 @@ export const CardContent = React.memo(
           className="card-bg"
           style={{
             backgroundImage: `url(${
-              student.thumbnail_image && student.thumbnail_image.src
+              student.portfolio_thumbnail && student.portfolio_thumbnail.src
             })`,
           }}
         />
       </div>
       <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
-        <h3>{student.title}</h3>
+        <h3>{student.project_title}</h3>
         <h4>{student.student_name}</h4>
         <p>
-          {student.tags.map((tag, index) =>
-            index === student.tags.length - 1
+          {student.topics.map((tag, index) =>
+            index === student.topics.length - 1
               ? tag.name.toUpperCase()
               : tag.name.toUpperCase() + ", "
           )}

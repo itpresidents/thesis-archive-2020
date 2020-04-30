@@ -19,7 +19,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
   reRoll,
 }) => {
   const [redirect, setRedirect] = useState(false);
-  const { student_id, student_name, title } = student;
+  const { student_id, student_name, project_title: title } = student;
   const history = useHistory();
 
   const initialSpring = {

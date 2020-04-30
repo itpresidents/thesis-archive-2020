@@ -11,6 +11,32 @@ export interface IStudentSummary {
   student_id: string;
   student_name: string;
   student_slug: string;
+  advisor_id: string;
+  // todo: advisor_name is missing.  Have him add it back
+  advisor_name?: string;
+  project_title: string;
+  project_question: string;
+  portfolio_thumbnail: IImage;
+  topics: ITag[];
+}
+
+export interface IStudentDetails extends IStudentSummary {
+  short_description: string;
+  context_research: string;
+  technical_details: string;
+  further_reading: string;
+  project_url: string;
+  video_presentation_url: string;
+  portfolio_url?: string;
+  // description: string;
+  hero_header_image: IImage;
+  slide_show: IImage[];
+}
+
+export interface IStudentSummary2019 {
+  student_id: string;
+  student_name: string;
+  student_slug: string;
   advisor_name: string;
   title: string;
   thesis_statement: string;
@@ -24,6 +50,12 @@ export interface IStudentSummary {
   video_documentation_url: string;
 }
 
+export interface IStudentDetails2019 extends IStudentSummary2019 {
+  technical_details: string;
+  further_reading: string;
+  project_url: string;
+}
+
 export interface IFeaturedImage {
   src: string;
   alt: string;
@@ -35,12 +67,6 @@ export interface IImage {
   alt: string;
   title: string;
   caption: string;
-}
-
-export interface IStudentDetails extends IStudentSummary {
-  technical_details: string;
-  further_reading: string;
-  project_url: string;
 }
 
 export interface IStudentApi {
