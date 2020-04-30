@@ -19,6 +19,11 @@ html {
   overflow: hidden;
 }
 
+img {
+  // img should never cause overflow.
+  max-width: 100%;
+}
+
 body {
   height: 100%;
   padding: 0;
