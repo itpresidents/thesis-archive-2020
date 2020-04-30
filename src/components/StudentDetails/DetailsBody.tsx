@@ -24,12 +24,17 @@ const TEXT_SECTION_MD = MAIN_COLS_LG;
 
 const createMarkup = (html: string) => ({ __html: html });
 
+// todo: if we can have the server do this job, then let's remove this hack
+// https://github.com/itpresidents/thesis-archive-2020/issues/69
+const getActualSizeImage = (imgSrc: string): string =>
+  imgSrc.replace(/-\d+x\d+(?=\.(png|jpg|jpeg|gif))/, "");
+
 const FeaturedImage = ({ image }: { image: IFeaturedImage | undefined }) => {
   if (!image) return null;
   return (
     <img
       key={image.src}
-      src={image.src}
+      src={getActualSizeImage(image.src)}
       alt={image.alt}
       title={image.title}
       className="img-fluid"
