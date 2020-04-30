@@ -10,6 +10,8 @@ import {
 } from "images/Svg";
 import { Link } from "react-router-dom";
 import { toLowerSnakeCase } from "util/queries";
+import parseHtml from "html-react-parser";
+import he from "he";
 
 const justify = "justify-content-md-center";
 const centerText = "text-center";
@@ -47,7 +49,7 @@ const ImageWithCaption = ({ image }: { image: IImage | undefined }) => {
 };
 
 const TextBlock = ({ text }: { text: string }) => (
-  <div dangerouslySetInnerHTML={createMarkup(text)} className="textblock" />
+  <div className="textblock">{parseHtml(he.decode(text))}</div>
 );
 
 const TextSection = ({ children }: { children: React.ReactNode }) => (
