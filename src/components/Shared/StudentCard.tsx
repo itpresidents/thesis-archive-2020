@@ -128,6 +128,7 @@ export const CardContent = React.memo(
             backgroundImage: `url(${
               student.portfolio_thumbnail && student.portfolio_thumbnail.src
             })`,
+            width: cardSize.width,
           }}
         />
       </div>

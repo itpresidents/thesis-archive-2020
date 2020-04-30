@@ -45,6 +45,7 @@
       background-size: cover;
       background-position: center center;
       transition: all 0.5s;
+      transition-delay: 0.1s;
     }
   }
 
@@ -57,6 +58,7 @@
       //7% margin top  https://github.com/oveddan/thesis-archive-2020/issues/31
       margin-top: 7%;
       transition: all 0.5s;
+      transition-delay: 0.1s;
 
       &:hover {
         text-decoration: line-through;
