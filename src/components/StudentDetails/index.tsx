@@ -57,7 +57,7 @@ const Student = ({ studentId, students }: IStudentProps) => {
         "meta[property='og:image']"
       );
 
-      if (metaOgImageElement) {
+      if (metaOgImageElement && student.portfolio_thumbnail) {
         metaOgImageElement.setAttribute(
           "content",
           student.portfolio_thumbnail.src
