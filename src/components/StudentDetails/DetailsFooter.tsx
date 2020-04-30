@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { IStudentSummary, IStudentDetails, ICardSize } from "types";
 import { Container, Row, Col } from "react-bootstrap";
 import { CardOuter, CardContent } from "components/Shared/StudentCard";
 import { Random } from "images/Svg";
 import { Link } from "react-router-dom";
 import { Context } from "util/contexts";
+import ContainerDimensions from "react-container-dimensions";
 
 import * as queries from "util/queries";
 import Rolling20, { IRolling20Props } from "components/Shared/Rolling20";
@@ -29,38 +30,42 @@ const RandomCard = ({ width, height }: { width: number; height: number }) => (
   </CardOuter>
 );
 
-const NUM_SIMILAR_STUDENTS = 3;
+const MARGIN_RIGHT = 52;
 
 const SimilarCards = ({
   student,
   students,
   cardSize,
+  width,
 }: {
   student: IStudentDetails;
   students: IStudentSummary[];
   cardSize: ICardSize;
+  width: number;
 }) => {
+  const numSimilarCards = useMemo(() => {
+    return Math.max(Math.floor(width / (cardSize.width + MARGIN_RIGHT)), 1);
+  }, [width, cardSize]);
+
   const [similarCards, setSimilarCards] = useState<IStudentSummary[]>();
 
   useEffect(() => {
     setSimilarCards(
-      queries.randomSimilarStudents(student, students, NUM_SIMILAR_STUDENTS)
+      queries.randomSimilarStudents(student, students, numSimilarCards)
     );
-  }, [student, students]);
+  }, [student, students, numSimilarCards]);
 
   return (
-    <Row className="similar">
+    <div className="similar">
       {similarCards &&
         similarCards.map((similarCard) => (
-          <Col key={similarCard.student_slug} lg={4} sm={12}>
-            <CardOuter width={cardSize.width} height={cardSize.height}>
-              <Link to={`/students/${student.student_id}`}>
-                <CardContent student={similarCard} cardSize={cardSize} />
-              </Link>
-            </CardOuter>
-          </Col>
+          <CardOuter width={cardSize.width} height={cardSize.height}>
+            <Link to={`/students/${student.student_id}`}>
+              <CardContent student={similarCard} cardSize={cardSize} />
+            </Link>
+          </CardOuter>
         ))}
-    </Row>
+    </div>
   );
 };
 
@@ -83,16 +88,21 @@ const DetailsFooter = ({ student, students }: IDetailsFooterProps) => {
           ></RandomCard>
         </Col>
         <Col lg={6} sm={12} className="section">
-          {students && (
-            <>
-              <h3>Similar Projects</h3>
-              <SimilarCards
-                student={student}
-                students={students}
-                cardSize={cardSize}
-              />
-            </>
-          )}
+          <ContainerDimensions>
+            {({ width }) => (
+              <>
+                <h3>Similar Projects</h3>
+                {students && (
+                  <SimilarCards
+                    student={student}
+                    students={students}
+                    cardSize={cardSize}
+                    width={width}
+                  />
+                )}
+              </>
+            )}
+          </ContainerDimensions>
         </Col>
       </Row>
       <Row>
