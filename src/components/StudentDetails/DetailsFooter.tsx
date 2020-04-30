@@ -63,18 +63,22 @@ const SimilarCards = ({
       <h3>{headerText}</h3>
       <div className="similar">
         {similarCards &&
-          similarCards.map((similarCard) => (
-            <CardOuter width={cardSize.width} height={cardSize.height}>
-              <Link
-                to={`/students/${similarCard.student_id}`}
-                onClick={() => {
-                  document.body.scrollTo({ top: 0 });
-                }}
-              >
-                <CardContent student={similarCard} cardSize={cardSize} />
-              </Link>
-            </CardOuter>
-          ))}
+          similarCards
+            .filter(
+              (similarCard) => similarCard.student_id !== student.student_id
+            )
+            .map((similarCard) => (
+              <CardOuter width={cardSize.width} height={cardSize.height}>
+                <Link
+                  to={`/students/${similarCard.student_id}`}
+                  onClick={() => {
+                    document.body.scrollTo({ top: 0 });
+                  }}
+                >
+                  <CardContent student={similarCard} cardSize={cardSize} />
+                </Link>
+              </CardOuter>
+            ))}
       </div>
     </>
   );
