@@ -6,7 +6,6 @@ import Rolling20, { IRolling20Props } from "../Shared/Rolling20";
 import StudentDetails from "../StudentDetails";
 import { Random } from "images/Svg";
 import { Navbar, Nav } from "react-bootstrap";
-import { AnimatedTitle } from "components/Shared/AnimatedTitle";
 import { FiX } from "react-icons/fi";
 
 interface IRandomSpringProps {
@@ -155,7 +154,7 @@ const RandomAnimation: FC<IRandomAnimationProps> = ({
         top: curtainDown,
       }}
     >
-      <AnimatedTitle {...{ spring: animatedName, title, AnimatedTag: a.h2 }} />
+      <AnimateTitle {...{ animatedName, title }} />
       <a.h3 style={{ opacity: titleOpacity }}>{student_name}</a.h3>
       <div className="position-absolute">
         <Rolling20 {...Rolling20Props} />
@@ -163,6 +162,39 @@ const RandomAnimation: FC<IRandomAnimationProps> = ({
     </a.div>
   </>
 );
+
+const ANIMATE_RANGE = 70;
+const clampNameCode = (n: number): number => {
+  if (n < 65) return n;
+  return 65 + ((n - 65) % 26);
+};
+const mapCharcdoeAndSpring = (spring: number, charCode: number): number => {
+  const change = (26 + Math.ceil(spring * ANIMATE_RANGE) - ANIMATE_RANGE) % 26;
+  return clampNameCode(charCode + change);
+};
+
+const mapNumberToChar = (x: any, name: string): any => {
+  let r: string = "";
+  for (let i = 0; i < name.length; i++) {
+    const newChar: string = String.fromCharCode(
+      mapCharcdoeAndSpring(x, name.charCodeAt(i))
+    );
+    r = r.concat(newChar);
+  }
+  return r;
+};
+
+interface IAnimateTitleProps {
+  animatedName: SpringValue<number>;
+  title: string;
+}
+const AnimateTitle: FC<IAnimateTitleProps> = ({ title, animatedName }) => {
+  return (
+    <a.h2>
+      {animatedName.to((x) => mapNumberToChar(x, title.toUpperCase()))}
+    </a.h2>
+  );
+};
 
 interface IRandomMainProps {
   students: IStudentSummary[];

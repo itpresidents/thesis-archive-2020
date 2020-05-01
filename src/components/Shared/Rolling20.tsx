@@ -76,24 +76,14 @@ const getAnimation = (idx: number, speed: number, uniqueId: string): string =>
 export const SVG_20_WIDTH_HEIGHT_RATIO = 1.17;
 export interface IRolling20Props {
   heightInVh: number | SpringValue<number>;
-  targetVH?: number;
   rows: number;
   speed: number;
 }
 
-const Rolling20 = ({
-  heightInVh: height,
-  rows,
-  speed,
-  targetVH,
-}: IRolling20Props) => {
+const Rolling20 = ({ heightInVh: height, rows, speed }: IRolling20Props) => {
   const uniqueId = useRef<string>(Math.random().toString(36).substring(2, 10));
   const heightVhRef = useRef<number>(
-    targetVH !== undefined
-      ? targetVH
-      : typeof height === "number"
-      ? height
-      : height.get()
+    typeof height === "number" ? height : height.get()
   );
   injectRollingbgKeyframes(uniqueId.current, rows, heightVhRef.current);
 

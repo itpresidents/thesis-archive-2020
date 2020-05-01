@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useContext } from "react";
-import { useSpring, animated as a } from "react-spring";
+import { useSpring, to, animated } from "react-spring";
 import { Context } from "../../util/contexts";
 import { connect } from "util/homemadeRedux/connect";
 import { addMessageAction } from "util/homemadeRedux/actions";
 import { Subtract } from "utility-types";
 import Rolling20, { IRolling20Props } from "./Rolling20";
-import { AnimatedTitle } from "components/Shared/AnimatedTitle";
 
 export const getHeaderHeight = (windowWidth: number): number => {
   switch (true) {
@@ -14,12 +13,6 @@ export const getHeaderHeight = (windowWidth: number): number => {
     default:
       return 40;
   }
-};
-
-const setHtmlOverscrollBehaviorX = (value: string): void => {
-  document
-    .getElementsByTagName("html")[0]
-    .setAttribute("style", `overscroll-behavior-x:${value}`);
 };
 
 export const HEADER_HEIGHT_IN_VH = getHeaderHeight(window.innerWidth);
@@ -43,20 +36,11 @@ const HeaderSpring = ({
   const { windowSize, navigatorPlatform } = useContext(Context);
   const windowHeight = windowSize[1];
   const [spring, setSpring] = useSpring(() => ({
-    from: {
-      height: 0,
-      titleAnimation: 0,
-    },
-    to: {
-      height: HEADER_HEIGHT_IN_VH,
-      titleAnimation: 1,
-    },
-    config: { mass: 1, tension: 200, friction: 60 },
+    height: HEADER_HEIGHT_IN_VH,
   }));
 
   const collapseHeaderAndShowMessage = useCallback(() => {
-    //@ts-ignore
-    setSpring({ height: 0, titleAnimation: 1 });
+    setSpring({ height: 0 });
     collapse &&
       isAtHomePage &&
       !navigatorPlatform?.isMobile &&
@@ -71,16 +55,21 @@ const HeaderSpring = ({
   useEffect(collapseHeaderAndShowMessage, [collapse]);
 
   useEffect(() => {
-    setHtmlOverscrollBehaviorX(isAtHomePage ? "none" : "auto");
+    if (isAtHomePage)
+      document
+        .getElementsByTagName("html")[0]
+        .setAttribute("style", "overscroll-behavior-x:none");
+    else
+      document
+        .getElementsByTagName("html")[0]
+        .setAttribute("style", "overscroll-behavior-x:auto");
   }, [isAtHomePage]);
 
   useEffect(() => {
-    //@ts-ignore
     setSpring({
       height: collapse
         ? 0
         : HEADER_HEIGHT_IN_VH - pxToVh(document.body.scrollTop, windowHeight),
-      titleAnimation: 1,
     });
   }, [windowHeight, setSpring, collapse]);
 
@@ -88,24 +77,26 @@ const HeaderSpring = ({
     heightInVh: spring!.height,
     rows: BG_ROWS,
     speed: BG_SCROLL_SPEED,
-    targetVH: HEADER_HEIGHT_IN_VH,
   };
 
   return !isAtHomePage ? null : (
-    <a.div
+    <animated.div
       id="header2020-container"
       style={{
-        height: spring.height.to((height) => `${height}vh`),
+        height: to(spring.height, (height) => `${height}vh`),
       }}
     >
-      <AnimatedTitle
-        classNames={"position-absolute"}
-        AnimatedTag={a.h1}
-        title={`THESIS\nARCHIVE`}
-        spring={spring.titleAnimation}
-      />
+      <animated.h1
+        className="position-absolute"
+        style={{
+          height: to(spring.height, (height) => `${height}vh`),
+        }}
+      >
+        Thesis <br />
+        Archive
+      </animated.h1>
       <Rolling20 {...Rolling20Props} />
-    </a.div>
+    </animated.div>
   );
 };
 
