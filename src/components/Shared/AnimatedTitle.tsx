@@ -8,12 +8,12 @@ const clampNameCode = (n: number): number => {
   return 65 + ((n - 65) % 26);
 };
 const mapCharcdoeAndSpring = (spring: number, charCode: number): number => {
-  const change = (26 + Math.ceil(spring * ANIMATE_RANGE) - ANIMATE_RANGE) % 26;
-  return clampNameCode(charCode + change);
+  const change = Math.ceil(spring * ANIMATE_RANGE) - ANIMATE_RANGE;
+  const mod = ((change % 26) + 26) % 26;
+  return clampNameCode(charCode + mod);
 };
 
 export const mapSpringToString = (x: number, text: string): any => {
-  console.log(text.length);
   let r: string = "";
   for (let i = 0; i < text.length; i++) {
     if (text.charCodeAt(i) === 10) {

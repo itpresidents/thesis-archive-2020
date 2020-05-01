@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useContext } from "react";
-import { useSpring, animated as a } from "react-spring";
+import { useSpring, animated as a, config as springConfig } from "react-spring";
 import { Context } from "../../util/contexts";
 import { connect } from "util/homemadeRedux/connect";
 import { addMessageAction } from "util/homemadeRedux/actions";
 import { Subtract } from "utility-types";
 import Rolling20, { IRolling20Props } from "./Rolling20";
 import { AnimatedTitle } from "components/Shared/AnimatedTitle";
+import { Next } from "react-bootstrap/PageItem";
 
 export const getHeaderHeight = (windowWidth: number): number => {
   switch (true) {
@@ -47,16 +48,21 @@ const HeaderSpring = ({
       height: 0,
       titleAnimation: 0,
     },
-    to: {
-      height: HEADER_HEIGHT_IN_VH,
-      titleAnimation: 1,
+    to: async (next: any) => {
+      next({ height: HEADER_HEIGHT_IN_VH, config: springConfig.default });
+      next({
+        titleAnimation: 1,
+        config: { mass: 1, tension: 200, friction: 60 },
+      });
     },
-    config: { mass: 1, tension: 200, friction: 60 },
   }));
-
   const collapseHeaderAndShowMessage = useCallback(() => {
     //@ts-ignore
-    setSpring({ height: 0, titleAnimation: 1 });
+    setSpring({
+      height: 0,
+      titleAnimation: 1,
+      config: { mass: 1, tension: 200, friction: 60 },
+    });
     collapse &&
       isAtHomePage &&
       !navigatorPlatform?.isMobile &&
