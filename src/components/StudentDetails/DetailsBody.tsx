@@ -105,13 +105,15 @@ const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
   );
 };
 
-const Topic = ({ topic, notLast }: { topic: ITag; notLast: boolean }) => (
-  <>
-    <Link key={topic.slug} to={`/filter/category/${topic.slug}`}>
-      {topic.name}
-    </Link>
-    {notLast && " | "}
-  </>
+const Topic = React.memo(
+  ({ topic, notLast }: { topic: ITag; notLast: boolean }) => (
+    <>
+      <Link key={topic.slug} to={`/filter/category/${topic.slug}`}>
+        {he.decode(topic.name)}
+      </Link>
+      {notLast && " | "}
+    </>
+  )
 );
 
 const DetailsBody = ({ student }: { student: IStudentDetails }) => {

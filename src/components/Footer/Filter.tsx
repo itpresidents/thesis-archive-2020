@@ -4,6 +4,7 @@ import { Nav } from "react-bootstrap";
 import { TopicDict } from "types";
 import { CloseBlack } from "images/Svg";
 import { Link, NavLink, Switch, Route } from "react-router-dom";
+import he from "he";
 
 const tagFiltersWidth = 3000;
 
@@ -19,7 +20,7 @@ const TagFilters = ({ tags }: { tags: TopicDict }) => {
               e.preventDefault();
             }}
           >
-            {name}
+            {he.decode(name)}
           </NavLink>
         </Nav.Item>
       ))}

@@ -119,6 +119,8 @@ const StudentCard = React.memo(({ student, cardSize }: IStudentCardProps) => {
   );
 });
 
+const formatTag = (tagName: string) => he.decode(tagName.toUpperCase());
+
 export const CardContent = React.memo(
   ({ student, cardSize }: IStudentCardProps) => (
     <>
@@ -139,8 +141,8 @@ export const CardContent = React.memo(
         <p>
           {student.topics.map((tag, index) =>
             index === student.topics.length - 1
-              ? tag.name.toUpperCase()
-              : tag.name.toUpperCase() + ", "
+              ? formatTag(tag.name)
+              : formatTag(tag.name) + ", "
           )}
         </p>
       </div>
