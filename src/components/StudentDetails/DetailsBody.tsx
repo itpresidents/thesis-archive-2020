@@ -71,6 +71,22 @@ const SlideShowImage = ({ image }: { image: IImage | undefined }) => (
   </Row>
 );
 
+const isEmpty = (text: string | undefined) => !text || text.trim() === "";
+
+const HideIfEmpty = ({
+  text,
+  children,
+}: {
+  text: string;
+  children: React.ReactNode;
+}) => {
+  if (isEmpty(text)) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
 const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
   const initialSpring = { marginLeft: "0px" };
   const [spring, set] = useSpring(() => initialSpring);
@@ -161,28 +177,36 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => (
         </Col>
       </Row>
       <TextSection>
-        <h3>Abstract</h3>
-        <TextBlock text={student.short_description} />
-        <ProjectWebsiteButton to={student.project_url} />
+        <HideIfEmpty text={student.short_description}>
+          <h3>Abstract</h3>
+          <TextBlock text={student.short_description} />
+        </HideIfEmpty>
+        <HideIfEmpty text={student.project_url}>
+          <ProjectWebsiteButton to={student.project_url} />
+        </HideIfEmpty>
       </TextSection>
       <SlideShowImage image={student.slide_show[0]} />
       <TextSection>
-        <h3>Research</h3>
-        <TextBlock text={student.context_research} />
-        <h3>Technical Details</h3>
-        <TextBlock text={student.technical_details} />
+        <HideIfEmpty text={student.context_research}>
+          <h3>Research</h3>
+          <TextBlock text={student.context_research} />
+        </HideIfEmpty>
+        <HideIfEmpty text={student.technical_details}>
+          <h3>Technical Details</h3>
+          <TextBlock text={student.technical_details} />
+        </HideIfEmpty>
       </TextSection>
       {student.slide_show
         .slice(1, 3)
         .map(
           (image) => image && <SlideShowImage key={image.src} image={image} />
         )}
-      {student.further_reading !== "" && (
+      <HideIfEmpty text={student.further_reading}>
         <TextSection>
           <h3>Further Reading</h3>
           <TextBlock text={student.further_reading} />
         </TextSection>
-      )}
+      </HideIfEmpty>
       {student.slide_show
         .slice(3, 5)
         .map(
