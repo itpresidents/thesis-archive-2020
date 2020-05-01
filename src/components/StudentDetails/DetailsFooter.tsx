@@ -68,7 +68,11 @@ const SimilarCards = ({
               (similarCard) => similarCard.student_id !== student.student_id
             )
             .map((similarCard) => (
-              <CardOuter width={cardSize.width} height={cardSize.height}>
+              <CardOuter
+                width={cardSize.width}
+                height={cardSize.height}
+                key={similarCard.student_id}
+              >
                 <Link
                   to={`/students/${similarCard.student_id}`}
                   onClick={() => {
