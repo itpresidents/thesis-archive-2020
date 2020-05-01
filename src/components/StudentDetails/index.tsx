@@ -16,6 +16,11 @@ interface IStudentDetailsProps {
 type EmptyProps = {};
 
 const StudentDetails = ({ student, students }: IStudentDetailsProps) => {
+  useEffect(() => {
+    // scroll to dop of body when student changes
+    document.body.scrollTo({ top: 0 });
+  }, [student]);
+
   return (
     <div id="details">
       <DetailsBody student={student} />
