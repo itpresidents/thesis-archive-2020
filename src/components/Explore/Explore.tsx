@@ -37,10 +37,15 @@ interface FilterOptions {
 
 const noFilter = (student: IStudentSummary) => true;
 
-const Explore = ({ students, isExploring }: IHomeProps) => {
-  const sortedStudents = useMemo(() => queries.sortByFirstName(students), [
-    students,
-  ]);
+const Explore = (props: IHomeProps) => {
+  const { isExploring } = props;
+
+  const students = useMemo(() => {
+    if (!props.students) {
+      return;
+    }
+    return queries.shuffle(props.students);
+  }, [props.students]);
 
   const [filteredStudents, setFilteredStudents] = useState<
     IStudentSummary[] | undefined
@@ -76,10 +81,10 @@ const Explore = ({ students, isExploring }: IHomeProps) => {
 
   useEffect(() => {
     // load search if it hasn't been loaded and search text has been entered
-    if (sortedStudents && !search && searchText && searchText !== "") {
-      setSearch({ search: buildSearch(sortedStudents) });
+    if (students && !search && searchText && searchText !== "") {
+      setSearch({ search: buildSearch(students) });
     }
-  }, [sortedStudents, search, searchText]);
+  }, [students, search, searchText]);
 
   useEffect(() => {
     if (!students) return;
