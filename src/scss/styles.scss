@@ -262,11 +262,16 @@ $image-top-margin: 60px;
   }
 
   .details-footer {
-    h3 {
-      margin-bottom: 40px;
+    margin-top: $section-top-margin-mobile;
+    @include media-breakpoint-up(lg) {
+      margin-top: 160px;
+    }
+
+    h3.header {
+      margin-bottom: $header-bottom-margin-mobile;
 
       @include media-breakpoint-up(lg) {
-        margin-bottom: 25px;
+        margin-bottom: $header-bottom-margin-desktop;
       }
     }
 

@@ -60,7 +60,7 @@ const SimilarCards = ({
 
   return (
     <>
-      <h3>{headerText}</h3>
+      <h3 className="header">{headerText}</h3>
       <div className="similar">
         {similarCards &&
           similarCards
@@ -96,7 +96,7 @@ const DetailsFooter = ({ student, students }: IDetailsFooterProps) => {
     <Container fluid className="details-footer">
       <Row>
         <Col lg={6} sm={12} className="section">
-          <h3>Randomize Next</h3>
+          <h3 className="header">Randomize Next</h3>
           <RandomCard
             width={cardSize.width}
             height={cardSize.height}
