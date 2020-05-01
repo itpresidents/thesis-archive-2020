@@ -7,6 +7,7 @@ import StudentDetails from "../StudentDetails";
 import { Random } from "images/Svg";
 import { Navbar, Nav } from "react-bootstrap";
 import { AnimatedTitle } from "components/Shared/AnimatedTitle";
+import { FiX } from "react-icons/fi";
 
 interface IRandomSpringProps {
   student: IStudentSummary;
@@ -90,22 +91,39 @@ const RandomSpring: FC<IRandomSpringProps> = ({
   );
 };
 
-const ReRollButton = ({ resetHandeler }: { resetHandeler: () => void }) => (
-  <Navbar fixed="bottom" bg="white" className="footer show">
-    <Nav className="d-flex justify-content-center w-100 main">
-      <Nav.Item className="randon">
-        <a
-          href="#top"
-          className=" fixed-bottom vw-100 text-center"
-          onClick={resetHandeler}
+const ReRollButton = ({ resetHandeler }: { resetHandeler: () => void }) => {
+  const [hide, set] = useState(false);
+
+  return hide ? null : (
+    <>
+      <Navbar fixed="bottom" bg="white" className="footer show">
+        <Nav
+          style={{
+            width: "100%",
+            display: "grid",
+            gridTemplate: "100% / 64px 1fr 64px ",
+          }}
         >
-          {" "}
-          <Random /> Random
-        </a>
-      </Nav.Item>
-    </Nav>
-  </Navbar>
-);
+          <Nav.Item style={{ gridArea: "1/2/2/3" }} className="mx-auto">
+            <a
+              href="#top"
+              className="text-center mx-auto"
+              onClick={resetHandeler}
+            >
+              <Random />
+              Random
+            </a>
+          </Nav.Item>
+          <Nav.Item className="h-100 mx-auto" style={{ gridArea: "1/3/2/4" }}>
+            <div onClick={() => set(true)}>
+              <FiX size={28} />
+            </div>
+          </Nav.Item>
+        </Nav>
+      </Navbar>
+    </>
+  );
+};
 
 interface IRandomAnimationProps {
   curtainDown: SpringValue<string>;
