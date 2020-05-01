@@ -53,12 +53,12 @@ const MessageHub = ({ messages, removeMessage }: IMessageHubProps) => {
                 className="message-content"
                 ref={(ref) => ref && refMap.set(msg, ref)}
               >
-                {msg.autoDisappear && (
+                {/* {msg.autoDisappear && (
                   <animated.div
                     className="messageLife"
                     style={{ right: life }}
                   />
-                )}
+                )} */}
                 <p>{msg.text}</p>
                 <button
                   className="clear-message-btn"
