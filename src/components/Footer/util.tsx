@@ -1,17 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { useDrag } from "react-use-gesture";
 import { animated } from "react-spring";
 import { Nav } from "react-bootstrap";
+import ContainerDimensions from "react-container-dimensions";
 // todo: automatically determine
 
 const HorizontalDraggable = ({
   children,
-  maxWidth,
+  containerWidth,
 }: {
   children: React.ReactNode;
-  maxWidth: number;
+  containerWidth: number;
 }) => {
   const [x, setX] = useState<number>(0);
+
+  const [wrapperWidth, setWrapperWidth] = useState<number | null>(null);
+
+  const wrapperRef = (node: HTMLDivElement | null) => {
+    if (!node) return;
+    setWrapperWidth(node.getBoundingClientRect().width);
+  };
+
+  console.log("wrapper width", wrapperWidth);
+
+  const maxLeft = useMemo(() => {
+    if (!wrapperWidth) return 0;
+
+    console.log("container, wrapper", containerWidth, wrapperWidth);
+
+    return Math.min((containerWidth * 2) / 3 - wrapperWidth, 0);
+  }, [containerWidth, wrapperWidth]);
+
+  console.log("max left", maxLeft);
 
   const bind = useDrag(
     ({ offset: [x] }) => {
@@ -19,7 +39,7 @@ const HorizontalDraggable = ({
     },
     {
       bounds: {
-        left: -maxWidth,
+        left: maxLeft,
         bottom: 0,
         top: 0,
         right: 0,
@@ -29,7 +49,7 @@ const HorizontalDraggable = ({
   );
 
   return (
-    <animated.div {...bind()} style={{ x }} className="inner">
+    <animated.div {...bind()} style={{ x }} className="inner" ref={wrapperRef}>
       {children}
     </animated.div>
   );
@@ -41,14 +61,16 @@ export const FooterLeft = ({ children }: { children: React.ReactNode }) => (
 
 export const ScrollableFooterRight = ({
   children,
-  scrollableWidth,
 }: {
   children: React.ReactNode;
-  scrollableWidth: number;
 }) => (
   <div className="right navbar-nav">
-    <HorizontalDraggable maxWidth={scrollableWidth}>
-      {children}
-    </HorizontalDraggable>
+    <ContainerDimensions>
+      {({ width }) => (
+        <HorizontalDraggable containerWidth={width}>
+          {children}
+        </HorizontalDraggable>
+      )}
+    </ContainerDimensions>
   </div>
 );

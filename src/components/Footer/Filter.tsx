@@ -6,11 +6,9 @@ import { CloseBlack } from "images/Svg";
 import { Link, NavLink, Switch, Route } from "react-router-dom";
 import he from "he";
 
-const tagFiltersWidth = 3000;
-
 const TagFilters = ({ tags }: { tags: TopicDict }) => {
   return (
-    <ScrollableFooterRight scrollableWidth={tagFiltersWidth}>
+    <ScrollableFooterRight>
       {Object.entries(tags).map(([slug, name]) => (
         <Nav.Item key={slug}>
           <NavLink
@@ -28,11 +26,9 @@ const TagFilters = ({ tags }: { tags: TopicDict }) => {
   );
 };
 
-const advisorFiltersWidth = 500;
-
 const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
   return (
-    <ScrollableFooterRight scrollableWidth={advisorFiltersWidth}>
+    <ScrollableFooterRight>
       {Object.entries(advisors).map(([slug, name]) => (
         <Nav.Item key={slug}>
           <NavLink replace to={`/filter/advisor/${slug}`}>

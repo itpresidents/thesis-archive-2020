@@ -32,7 +32,7 @@ const SearchMain = ({ text, textChanged, searchResults }: SearchProps) => {
           </Form>
         </Nav.Item>
       </FooterLeft>
-      <ScrollableFooterRight scrollableWidth={500}>
+      <ScrollableFooterRight>
         {searchResults.map((student) => (
           <Nav.Item key={student.student_id}>
             <Link
