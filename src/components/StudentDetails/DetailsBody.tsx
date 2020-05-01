@@ -1,5 +1,5 @@
 import React from "react";
-import { IFeaturedImage, IStudentDetails, IImage } from "types";
+import { IFeaturedImage, IStudentDetails, IImage, ITag } from "types";
 import { Figure, Container } from "react-bootstrap";
 import { Row, Col } from "react-bootstrap";
 import cx from "classnames";
@@ -71,6 +71,22 @@ const SlideShowImage = ({ image }: { image: IImage | undefined }) => (
   </Row>
 );
 
+const isEmpty = (text: string | undefined) => !text || text.trim() === "";
+
+const HideIfEmpty = ({
+  text,
+  children,
+}: {
+  text: string;
+  children: React.ReactNode;
+}) => {
+  if (isEmpty(text)) {
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
 const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
   const initialSpring = { marginLeft: "0px" };
   const [spring, set] = useSpring(() => initialSpring);
@@ -89,107 +105,122 @@ const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
   );
 };
 
-const DetailsBody = ({ student }: { student: IStudentDetails }) => (
+const Topic = ({ topic, notLast }: { topic: ITag; notLast: boolean }) => (
   <>
-    <FeaturedImage image={student.hero_header_img[0]} />
-    <Container className="body1">
-      {/* <Row className={justify}> */}
-      {/* <Col md={12}> */}
-      {/* </Col> */}
-      {/* </Row> */}
+    <Link key={topic.slug} to={`/filter/category/${topic.slug}`}>
+      {topic.name}
+    </Link>
+    {notLast && " | "}
+  </>
+);
 
-      <Row className={cx(justify, centerText)}>
-        <Col lg={MAIN_COLS_LG}>
-          <h2>{student.project_title}</h2>
-        </Col>
-      </Row>
-      <Row className={cx(justify, centerText)}>
-        <Col lg={MAIN_COLS_LG} className="tags">
-          {student.topics.map((topic, i) => (
-            <>
-              <Link key={topic.slug} to={`/filter/category/${topic.slug}`}>
-                {topic.name}
-              </Link>
-              {i !== student.topics.length - 1 && " | "}
-            </>
-          ))}
-        </Col>
-      </Row>
-      <Row className={cx(justify, centerText)}>
-        <Col lg={MAIN_COLS_LG}>
-          <p
-            className="summary"
-            dangerouslySetInnerHTML={createMarkup(student.project_question)}
-          />
-        </Col>
-      </Row>
-      <Row className={cx(justify, centerText)}>
-        <Col lg={10}>
-          <Row className="links">
-            <Col sm={12}>
-              <hr />
-            </Col>
-            <Col sm={12} md={4} className="linkHolder first">
-              <h4>Student</h4>
-              <span>{student.student_name}</span>
-            </Col>
-            <Col sm={12} md={4} className="linkHolder">
-              {student.portfolio_url && (
-                <>
-                  <h4>Portfolio</h4>
-                  <a href={student.portfolio_url}>{student.portfolio_url}</a>
-                </>
-              )}
-            </Col>
-            <Col sm={12} md={4} className="linkHolder">
-              <h4>Advisor</h4>
-              <Link
-                to={`/filter/advisor/${toLowerSnakeCase(
-                  student.advisor_name || ""
-                )}`}
-              >
-                {student.advisor_name}
-              </Link>
-            </Col>
-            {/* <Col sm={12} md={3} className="linkHolder">
+const DetailsBody = ({ student }: { student: IStudentDetails }) => {
+  // const counter = incrementer();
+
+  return (
+    <>
+      <FeaturedImage image={student.hero_header_img[0]} />
+      <Container className="body1">
+        <Row className={cx(justify, centerText)}>
+          <Col lg={MAIN_COLS_LG}>
+            <h2>{student.project_title}</h2>
+          </Col>
+        </Row>
+        <Row className={cx(justify, centerText)}>
+          <Col lg={MAIN_COLS_LG} className="tags">
+            {student.topics.map((topic, i) => (
+              <Topic
+                key={topic.slug}
+                topic={topic}
+                notLast={i !== student.topics.length - 1}
+              />
+            ))}
+          </Col>
+        </Row>
+        <Row className={cx(justify, centerText)}>
+          <Col lg={MAIN_COLS_LG}>
+            <p
+              className="summary"
+              dangerouslySetInnerHTML={createMarkup(student.project_question)}
+            />
+          </Col>
+        </Row>
+        <Row className={cx(justify, centerText)}>
+          <Col lg={10}>
+            <Row className="links">
+              <Col sm={12}>
+                <hr />
+              </Col>
+              <Col sm={12} md={4} className="linkHolder first">
+                <h4>Student</h4>
+                <span>{student.student_name}</span>
+              </Col>
+              <Col sm={12} md={4} className="linkHolder">
+                {student.portfolio_url && (
+                  <>
+                    <h4>Portfolio</h4>
+                    <a href={student.portfolio_url}>{student.portfolio_url}</a>
+                  </>
+                )}
+              </Col>
+              <Col sm={12} md={4} className="linkHolder">
+                <h4>Advisor</h4>
+                <Link
+                  to={`/filter/advisor/${toLowerSnakeCase(
+                    student.advisor_name || ""
+                  )}`}
+                >
+                  {student.advisor_name}
+                </Link>
+              </Col>
+              {/* <Col sm={12} md={3} className="linkHolder">
               <h4>Watch</h4>
               <Link to={`/videos/${student.student_slug}`}>
                 <VideoSign />
               </Link>
             </Col> */}
-          </Row>
-        </Col>
-      </Row>
-      <TextSection>
-        <h3>Abstract</h3>
-        <TextBlock text={student.short_description} />
-        <ProjectWebsiteButton to={student.project_url} />
-      </TextSection>
-      <SlideShowImage image={student.slide_show[0]} />
-      <TextSection>
-        <h3>Research</h3>
-        <TextBlock text={student.context_research} />
-        <h3>Technical Details</h3>
-        <TextBlock text={student.technical_details} />
-      </TextSection>
-      {student.slide_show
-        .slice(1, 3)
-        .map(
-          (image) => image && <SlideShowImage key={image.src} image={image} />
-        )}
-      {student.further_reading !== "" && (
+            </Row>
+          </Col>
+        </Row>
         <TextSection>
-          <h3>Further Reading</h3>
-          <TextBlock text={student.further_reading} />
+          <HideIfEmpty text={student.short_description}>
+            <h3>Abstract</h3>
+            <TextBlock text={student.short_description} />
+          </HideIfEmpty>
+          <HideIfEmpty text={student.project_url}>
+            <ProjectWebsiteButton to={student.project_url} />
+          </HideIfEmpty>
         </TextSection>
-      )}
-      {student.slide_show
-        .slice(3, 5)
-        .map(
-          (image) => image && <SlideShowImage key={image.src} image={image} />
-        )}
-    </Container>
-  </>
-);
+        <SlideShowImage image={student.slide_show[0]} />
+        <TextSection>
+          <HideIfEmpty text={student.context_research}>
+            <h3>Research</h3>
+            <TextBlock text={student.context_research} />
+          </HideIfEmpty>
+          <HideIfEmpty text={student.technical_details}>
+            <h3>Technical Details</h3>
+            <TextBlock text={student.technical_details} />
+          </HideIfEmpty>
+        </TextSection>
+        {student.slide_show
+          .slice(1, 3)
+          .map(
+            (image) => image && <SlideShowImage key={image.src} image={image} />
+          )}
+        <HideIfEmpty text={student.further_reading}>
+          <TextSection>
+            <h3>Further Reading</h3>
+            <TextBlock text={student.further_reading} />
+          </TextSection>
+        </HideIfEmpty>
+        {student.slide_show
+          .slice(3, 5)
+          .map(
+            (image) => image && <SlideShowImage key={image.src} image={image} />
+          )}
+      </Container>
+    </>
+  );
+};
 
 export default DetailsBody;
