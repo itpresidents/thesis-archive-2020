@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useDrag } from "react-use-gesture";
 import { animated } from "react-spring";
 import { Nav } from "react-bootstrap";
