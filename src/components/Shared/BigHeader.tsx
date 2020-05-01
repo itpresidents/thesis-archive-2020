@@ -64,7 +64,7 @@ const HeaderSpring = ({
         `Drag ${
           navigatorPlatform?.isMac ? "or scroll " : ""
         }to explore, click to Read More.`,
-        false
+        true
       );
   }, [setSpring, collapse, addMessage, isAtHomePage, navigatorPlatform]);
 
