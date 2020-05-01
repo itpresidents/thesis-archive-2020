@@ -482,6 +482,10 @@ $desktop-footer-left-size: 400px;
     .nav-item {
       height: 100%;
       line-height: $nav-size;
+
+      a {
+        @extend .text-nowrap;
+      }
     }
   }
 }
