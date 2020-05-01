@@ -35,7 +35,12 @@ const SearchMain = ({ text, textChanged, searchResults }: SearchProps) => {
       <ScrollableFooterRight scrollableWidth={500}>
         {searchResults.map((student) => (
           <Nav.Item key={student.student_id}>
-            <Link to={`/students/${student.student_id}`}>
+            <Link
+              to={`/students/${student.student_id}`}
+              onDragStart={(e) => {
+                e.preventDefault();
+              }}
+            >
               {student.student_name}
             </Link>
           </Nav.Item>

@@ -12,7 +12,13 @@ const TagFilters = ({ tags }: { tags: TopicDict }) => {
     <ScrollableFooterRight scrollableWidth={tagFiltersWidth}>
       {Object.entries(tags).map(([slug, name]) => (
         <Nav.Item key={slug}>
-          <NavLink replace to={`/filter/category/${slug}`}>
+          <NavLink
+            replace
+            to={`/filter/category/${slug}`}
+            onDragStart={(e) => {
+              e.preventDefault();
+            }}
+          >
             {name}
           </NavLink>
         </Nav.Item>
