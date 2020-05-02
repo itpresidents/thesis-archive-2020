@@ -386,14 +386,6 @@ $desktop-footer-left-size: 400px;
     @extend .subtitle;
     color: $black;
 
-    &:not(:last-child) {
-      margin-right: 28px;
-
-      @include media-breakpoint-up(lg) {
-        margin-right: 32px;
-      }
-    }
-
     svg {
       margin-right: 2px;
 
@@ -411,6 +403,17 @@ $desktop-footer-left-size: 400px;
 
       &.active {
         color: $primary-color;
+      }
+    }
+  }
+
+  .right .nav-item,
+  .main .nav-item {
+    &:not(:last-child) {
+      margin-right: 28px;
+
+      @include media-breakpoint-up(lg) {
+        margin-right: 32px;
       }
     }
   }
@@ -444,18 +447,32 @@ $desktop-footer-left-size: 400px;
         border-right: $black 1px solid;
       }
 
-      input.search {
-        border: none;
+      .close-link {
+        position: relative;
+        top: -2px;
+        left: -4px;
+      }
 
-        margin-top: 2px;
-        height: $nav-size - 4;
-        line-height: $nav-size;
+      input.search {
+        @extend .border-0;
+        @extend .p-0;
+
+        height: $nav-size - 2;
+        line-height: $nav-size - 2;
         @extend .subtitle;
 
+        width: 300px;
+
+        margin-left: 10px;
+
         @include media-breakpoint-up(lg) {
-          margin-left: -30px;
+          margin-left: 0px;
           width: $desktop-footer-left-size - 55;
         }
+      }
+
+      .filter {
+        margin-left: 10px;
       }
     }
 
@@ -472,7 +489,7 @@ $desktop-footer-left-size: 400px;
       }
 
       @include media-breakpoint-up(lg) {
-        left: 400px;
+        left: $desktop-footer-left-size;
         width: 100%;
         padding: 0 $footer-padding;
         border-top: $black 1px solid;

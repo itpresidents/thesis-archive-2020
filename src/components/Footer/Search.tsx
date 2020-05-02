@@ -16,7 +16,12 @@ const SearchMain = ({ text, textChanged, searchResults }: SearchProps) => {
     <>
       <FooterLeft>
         <Nav.Item>
-          <Link to="/" replace onClick={() => textChanged("")}>
+          <Link
+            to="/"
+            replace
+            onClick={() => textChanged("")}
+            className="close-link"
+          >
             <CloseBlack />
           </Link>{" "}
         </Nav.Item>

@@ -52,14 +52,18 @@ const FilterLeft = () => {
         <Link to="/" replace>
           <CloseBlack />
         </Link>{" "}
-        Filter By:
+      </Nav.Item>
+      <Nav.Item className="filter">
+        <Link to={"/filter"} replace>
+          Filter By:&nbsp;
+        </Link>
       </Nav.Item>
       <Nav.Item>
         <NavLink to={`/filter/category`} replace>
           Category
         </NavLink>
       </Nav.Item>
-      <Nav.Item>|</Nav.Item>
+      <Nav.Item>&nbsp;|&nbsp;</Nav.Item>
       <Nav.Item>
         <NavLink to={`/filter/advisor`} replace>
           Advisor
