@@ -12,8 +12,7 @@ export interface IStudentSummary {
   student_name: string;
   student_slug: string;
   advisor_id: string;
-  // todo: advisor_name is missing.  Have him add it back
-  advisor_name?: string;
+  advisor_name: string;
   project_title: string;
   project_question: string;
   portfolio_thumbnail: IImage;

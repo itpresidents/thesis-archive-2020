@@ -53,12 +53,12 @@ const Explore = (props: IHomeProps) => {
   const [searchText, setSearchText] = useState<string>("");
 
   const tagMatch = useRouteMatch<{ tag: string }>("/filter/category/:tag");
-  const advisorMatch = useRouteMatch<{ advisor: string }>(
-    "/filter/advisor/:advisor"
+  const advisorMatch = useRouteMatch<{ advisorId: string }>(
+    "/filter/advisor/:advisorId"
   );
 
   const tag = tagMatch && tagMatch.params.tag;
-  const advisor = advisorMatch && advisorMatch.params.advisor;
+  const advisorId = advisorMatch && advisorMatch.params.advisorId;
 
   useEffect(() => {
     const metaDescription = document.querySelector("meta[name='description']");
@@ -74,8 +74,8 @@ const Explore = (props: IHomeProps) => {
   });
 
   useEffect(() => {
-    document.title = generateTitle(tag, advisor);
-  }, [tag, advisor]);
+    document.title = generateTitle(tag, advisorId);
+  }, [tag, advisorId]);
 
   const [{ search }, setSearch] = useState<{ search?: ISearch }>({});
 
@@ -97,14 +97,14 @@ const Explore = (props: IHomeProps) => {
       setFilteredStudents(
         updateFilteredStudents(students, queries.matchesTag(tag))
       );
-    } else if (advisor) {
+    } else if (advisorId) {
       setFilteredStudents(
-        updateFilteredStudents(students, queries.matchesAvisor(advisor))
+        updateFilteredStudents(students, queries.matchesAdvisor(advisorId))
       );
     } else {
       setFilteredStudents(updateFilteredStudents(students, noFilter));
     }
-  }, [students, tag, advisor, searchText, search]);
+  }, [students, tag, advisorId, searchText, search]);
 
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({});
 

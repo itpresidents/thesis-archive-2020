@@ -60,24 +60,16 @@ export const getTagsAndAdvisors = (
 export const matchesTag = (tagSlug: string) => ({
   topics: tags,
 }: IStudentSummary) => tags.map(({ slug }) => slug).includes(tagSlug);
-export const matchesAvisor = (advisorSlug: string) => ({
-  advisor_name,
-}: IStudentSummary) => toLowerSnakeCase(advisor_name || "") === advisorSlug;
+
+export const matchesAdvisor = (advisorIdToMatch: string) => ({
+  advisor_id,
+}: IStudentSummary) => advisor_id === advisorIdToMatch;
 
 export const filterByTag = (
   students: IStudentSummary[],
   tagSlug: string
 ): boolean[] => {
   return students.map(matchesTag(tagSlug));
-};
-
-export const filterByAdvisorName = (
-  students: IStudentSummary[],
-  advisorSlug: string
-): IStudentSummary[] => {
-  return students.filter(
-    ({ advisor_name }) => toLowerSnakeCase(advisor_name || "") === advisorSlug
-  );
 };
 
 export const getStudentIdFromSlug = (

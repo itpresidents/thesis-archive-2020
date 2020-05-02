@@ -167,11 +167,7 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => {
               </Col>
               <Col sm={12} md={4} className="linkHolder">
                 <h4>Advisor</h4>
-                <Link
-                  to={`/filter/advisor/${toLowerSnakeCase(
-                    student.advisor_name || ""
-                  )}`}
-                >
+                <Link to={`/filter/advisor/${student.advisor_id}`}>
                   {student.advisor_name}
                 </Link>
               </Col>
