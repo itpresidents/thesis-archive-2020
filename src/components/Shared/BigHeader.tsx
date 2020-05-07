@@ -47,19 +47,11 @@ const HeaderSpring = ({
       height: 0,
       titleAnimation: 0,
     },
-    to: async (next: any) => {
-      next({ height: HEADER_HEIGHT_IN_VH, config: springConfig.default });
-      next({
-        titleAnimation: 1,
-        config: { mass: 1, tension: 200, friction: 60 },
-      });
-    },
   }));
   const collapseHeaderAndShowMessage = useCallback(() => {
     //@ts-ignore
     setSpring({
       height: 0,
-      titleAnimation: 1,
       config: { mass: 1, tension: 200, friction: 60 },
     });
     collapse &&
@@ -85,7 +77,12 @@ const HeaderSpring = ({
       height: collapse
         ? 0
         : HEADER_HEIGHT_IN_VH - pxToVh(document.body.scrollTop, windowHeight),
+      config: springConfig.default,
+    });
+    //@ts-ignore
+    setSpring({
       titleAnimation: 1,
+      config: { mass: 1, tension: 200, friction: 60 },
     });
   }, [windowHeight, setSpring, collapse]);
 
