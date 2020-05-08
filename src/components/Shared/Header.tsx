@@ -36,11 +36,6 @@ const Header = ({ hasStartedExploring }: { hasStartedExploring: boolean }) => {
                 Explore
               </Link>
             </Nav.Item>
-            <Nav.Item>
-              <NavLink to="/about" className="nav-link">
-                About
-              </NavLink>
-            </Nav.Item>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
