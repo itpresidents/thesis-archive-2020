@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, lazy, Suspense } from "react";
 import * as api from "util/api";
 import "scss/styles.scss";
 import Explore from "./Explore/Explore";
@@ -13,8 +13,8 @@ import { isMobile } from "react-device-detect";
 import { FirstClicked } from "./Shared/FirstClicked";
 import { rootReducer } from "util/homemadeRedux/reducers";
 import RandomMain from "./Explore/Random";
-import About from "./About";
 import { getCardSizeByWindowSize } from "util/cardSizeBreakpoints";
+const About = lazy(() => import("./About"));
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -57,26 +57,33 @@ const App = ({ students }: IAppProps) => {
         }}
       >
         <Header hasStartedExploring={hasStartedExploring} />
-        <Switch>
-          <Route path="/students/:studentIdOrSlug">
-            <StudentDetails students={students} />
-          </Route>
-          <Route path="/random/:studentIdOrSlug?">
-            <RandomMain students={students} />
-          </Route>
-          <Route path="/videos/:studentSlug?">
-            <Videos students={students} />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/">
-            <>
-              <FirstClicked firstClicked={() => setHasStartedExploring(true)} />
-              <Explore students={students} isExploring={hasStartedExploring} />
-            </>
-          </Route>
-        </Switch>
+        <Suspense fallback={<h4>Loading...</h4>}>
+          <Switch>
+            <Route path="/students/:studentIdOrSlug">
+              <StudentDetails students={students} />
+            </Route>
+            <Route path="/random/:studentIdOrSlug?">
+              <RandomMain students={students} />
+            </Route>
+            <Route path="/videos/:studentSlug?">
+              <Videos students={students} />
+            </Route>
+            <Route path="/about">
+              <About />
+            </Route>
+            <Route path="/">
+              <>
+                <FirstClicked
+                  firstClicked={() => setHasStartedExploring(true)}
+                />
+                <Explore
+                  students={students}
+                  isExploring={hasStartedExploring}
+                />
+              </>
+            </Route>
+          </Switch>
+        </Suspense>
       </Context.Provider>
     </>
   );
