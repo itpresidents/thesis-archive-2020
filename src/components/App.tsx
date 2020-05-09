@@ -6,7 +6,6 @@ import StudentDetails from "./StudentDetails";
 import { Switch, Route } from "react-router-dom";
 import { IStudentSummary, ICentralStore, ICardSize } from "types";
 import Header from "./Shared/Header";
-import Videos from "./Videos/Videos";
 import { Context } from "../util/contexts";
 import useWindowSize from "../util/useWindowSize";
 import { isMobile } from "react-device-detect";
@@ -15,6 +14,7 @@ import { rootReducer } from "util/homemadeRedux/reducers";
 import RandomMain from "./Explore/Random";
 import { getCardSizeByWindowSize } from "util/cardSizeBreakpoints";
 const About = lazy(() => import("./About"));
+const Videos = lazy(() => import("./Videos/Videos"));
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
