@@ -1,13 +1,15 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { residents } from "./contents";
+import { residents, ITPPerson, fullTimeFaculty, staff } from "./contents";
 
 const Hero = () => <></>;
 
 const Poem = () => <></>;
 
 const Section = ({ children }: { children: React.ReactNode }) => (
-  <section className="row">{children}</section>
+  <section className="row">
+    <Col>{children}</Col>
+  </section>
 );
 
 const Header = ({ children }: { children: React.ReactNode }) => (
@@ -19,10 +21,22 @@ const TextBlock = ({ children }: { children: React.ReactNode }) => (
 );
 
 const LinkList = ({ items }: { items: { [name: string]: string } }) => (
-  <ul>
+  <ul className="link-list">
     {Object.entries(items).map(([name, link]) => (
       <li key={name}>
         <a href={link} title={name}>
+          {name}
+        </a>
+      </li>
+    ))}
+  </ul>
+);
+
+const PersonList = ({ items }: { items: ITPPerson[] }) => (
+  <ul className="link-list">
+    {items.map(({ url, name }) => (
+      <li key={name}>
+        <a href={url} title={name}>
           {name}
         </a>
       </li>
@@ -35,8 +49,8 @@ const About = () => (
     <Hero />
     <Container className="body1">
       <Row>
-        <Col lg={1} sm={0} />
-        <Col lg={5} sm={12}>
+        <Col lg={2} sm={0} />
+        <Col lg={10}>
           <Section>
             <Header>About ITP & Thesis</Header>
             <TextBlock>
@@ -78,15 +92,18 @@ const About = () => (
             <Header>About the Thesis Archive</Header>
             <TextBlock>
               The Thesis Archive is a place for graduate students of ITP to
-              showcase their projects. This years site was created designed,
-              conceptualized, and built by ITP residents Ilana Bonder, Dan Oved
-              and Yang Yang, with production support by Erik Van Zummerman.
+              showcase their projects. This years site was created designed and
+              built by <a href="http://www.ilanabonder.com/">Ilana Bonder</a>,{" "}
+              <a href="https://www.danioved.com/">Dan Oved </a>
+              <a href="http://yangyang.blog/portfolio/"> Yang Yang,</a> with
+              production support by{" "}
+              <a href="https://www.erikvanzummeren.com/">Erik Van Zummeren.</a>
             </TextBlock>
           </Section>
           <Section>
             <Header>Thesis Advisors</Header>
             <TextBlock>
-              <ul>
+              <ul className="link-list">
                 <li>Nancy Hechinger</li>
                 <li>Sarah Rothberg</li>
                 <li>Kathleen Wilson</li>
@@ -101,7 +118,9 @@ const About = () => (
           </Section>
           <Section>
             <Header>Full-Time Faculty</Header>
-            <TextBlock>{/* ToDo: Scrape! */}</TextBlock>
+            <TextBlock>
+              <PersonList items={fullTimeFaculty} />
+            </TextBlock>
           </Section>
           <Section>
             <Header>Research Residents</Header>
@@ -111,11 +130,10 @@ const About = () => (
           </Section>
           <Section>
             <Header>Staff and Admin</Header>
-            {/* ToDo: Scrape!*/}
+            <TextBlock>
+              <PersonList items={staff} />
+            </TextBlock>
           </Section>
-        </Col>
-        <Col lg={5} sm={12}>
-          <Poem />
         </Col>
       </Row>
     </Container>

@@ -178,6 +178,19 @@ $image-top-margin: 60px;
     }
   }
 
+  ul.link-list {
+    text-decoration: none;
+    padding: 0;
+
+    li {
+      list-style: none;
+
+      a {
+        color: $black;
+      }
+    }
+  }
+
   h2 {
     word-wrap: break-word;
     margin-top: 57px;

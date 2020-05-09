@@ -30,7 +30,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "scrapeSchedule": "ts-node  -O '{\"module\": \"commonjs\"}' ./scripts/scrapeSchedule",
-    "scrapeStudentsJson": "ts-node  -O '{\"module\": \"commonjs\"}' ./scripts/scrapeStudents2019Json"
+    "scrapeStudentsJson": "ts-node  -O '{\"module\": \"commonjs\"}' ./scripts/scrapeStudents2019Json",
+    "scrapePeoplePage": "ts-node  -O '{\"module\": \"commonjs\"}' ./scripts/scrapePeoplePage"
   },
   "eslintConfig": {
     "extends": "react-app"
