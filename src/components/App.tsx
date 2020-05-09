@@ -13,6 +13,7 @@ import { isMobile } from "react-device-detect";
 import { FirstClicked } from "./Shared/FirstClicked";
 import { rootReducer } from "util/homemadeRedux/reducers";
 import RandomMain from "./Explore/Random";
+import About from "./About";
 import { getCardSizeByWindowSize } from "util/cardSizeBreakpoints";
 
 interface IAppProps {
@@ -65,6 +66,9 @@ const App = ({ students }: IAppProps) => {
           </Route>
           <Route path="/videos/:studentSlug?">
             <Videos students={students} />
+          </Route>
+          <Route path="/about">
+            <About />
           </Route>
           <Route path="/">
             <>

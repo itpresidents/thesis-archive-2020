@@ -1,12 +1,12 @@
 import React from "react";
 import { FooterLeft, ScrollableFooterRight } from "./util";
 import { Nav } from "react-bootstrap";
-import { TopicDict } from "types";
+import { StringDict } from "types";
 import { CloseBlack } from "images/Svg";
 import { Link, NavLink, Switch, Route } from "react-router-dom";
 import he from "he";
 
-const TagFilters = ({ tags }: { tags: TopicDict }) => {
+const TagFilters = ({ tags }: { tags: StringDict }) => {
   return (
     <ScrollableFooterRight>
       {Object.entries(tags).map(([slug, name]) => (
@@ -26,7 +26,7 @@ const TagFilters = ({ tags }: { tags: TopicDict }) => {
   );
 };
 
-const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
+const AdvisorFilters = ({ advisors }: { advisors: StringDict }) => {
   return (
     <ScrollableFooterRight>
       {Object.entries(advisors).map(([slug, name]) => (
@@ -41,8 +41,8 @@ const AdvisorFilters = ({ advisors }: { advisors: TopicDict }) => {
 };
 
 interface FilterMainProps {
-  tags?: TopicDict;
-  advisors?: TopicDict;
+  tags?: StringDict;
+  advisors?: StringDict;
 }
 
 const FilterLeft = () => {

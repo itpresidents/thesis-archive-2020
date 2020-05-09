@@ -5,7 +5,7 @@ export interface ITag {
   name: string;
 }
 
-export declare type TopicDict = { [key: string]: string };
+export declare type StringDict = { [key: string]: string };
 
 export interface IStudentSummary {
   student_id: string;

@@ -1,5 +1,5 @@
 import React from "react";
-import { TopicDict, IStudentSummary } from "types";
+import { StringDict, IStudentSummary } from "types";
 import { Navbar, Nav } from "react-bootstrap";
 import { Route, Switch, Link } from "react-router-dom";
 import { SearchIcon, Random, Filter } from "images/Svg";
@@ -28,8 +28,8 @@ const FooterMain = () => (
 );
 
 interface FooterProps {
-  tags?: TopicDict;
-  advisors?: TopicDict;
+  tags?: StringDict;
+  advisors?: StringDict;
   searchText: string;
   searchTextChanged: (searchText: string) => void;
   filteredStudents: IStudentSummary[];

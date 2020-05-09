@@ -22,7 +22,7 @@ const StudentDetails = ({ student, students }: IStudentDetailsProps) => {
   }, [student]);
 
   return (
-    <div id="details">
+    <div className="contents">
       <DetailsBody student={student} />
       <DetailsFooter student={student} students={students} />
     </div>

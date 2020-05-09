@@ -1,5 +1,5 @@
 // {"name":"Performance","slug":"performance"},{"name":"Society","slug":"society"}]
-import { IStudentSummary, TopicDict, IStudentDetails, ITag } from "types";
+import { IStudentSummary, StringDict, IStudentDetails, ITag } from "types";
 
 const compare = (a: string, b: string) => {
   if (a > b) {
@@ -33,11 +33,11 @@ export const toLowerSnakeCase = (name: string) => {
 export const getTagsAndAdvisors = (
   students: IStudentSummary[]
 ): {
-  tags: TopicDict;
-  advisors: TopicDict;
+  tags: StringDict;
+  advisors: StringDict;
 } => {
-  const allTags: TopicDict = {};
-  const allAdvisors: TopicDict = {};
+  const allTags: StringDict = {};
+  const allAdvisors: StringDict = {};
 
   for (let { topics: tags, advisor_name, advisor_id } of students) {
     for (let tag of tags) {

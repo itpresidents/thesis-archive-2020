@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 // import StudentCards from "./StudentCards";
-import { IStudentSummary, TopicDict, ISearch } from "types";
+import { IStudentSummary, StringDict, ISearch } from "types";
 import DraggableCards from "./DraggableCards";
 import { Container } from "react-bootstrap";
 import Footer from "../Footer/index";
@@ -31,8 +31,8 @@ const updateFilteredStudents = (
 };
 
 interface FilterOptions {
-  tags?: TopicDict;
-  advisors?: TopicDict;
+  tags?: StringDict;
+  advisors?: StringDict;
 }
 
 const noFilter = (student: IStudentSummary) => true;
