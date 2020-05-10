@@ -29,20 +29,18 @@ export const mapSpringToString = (x: number, text: string): any => {
 };
 
 interface IAnimateTitleProps {
-  spring: SpringValue<number>;
   title: string;
   classNames?: string;
   AnimatedTag: AnimatedComponent<"h1"> | AnimatedComponent<"h2">;
 }
 export const AnimatedTitle: FC<IAnimateTitleProps> = ({
   title,
-  spring,
   AnimatedTag,
   classNames = "",
 }) => {
   return (
     <AnimatedTag className={classNames}>
-      {spring.to((x) => mapSpringToString(x, he.decode(title).toUpperCase()))}
+      {he.decode(title).toUpperCase()}
     </AnimatedTag>
   );
 };
