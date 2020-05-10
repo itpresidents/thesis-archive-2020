@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { multiplyElementWise, scaleVector, IMatrixEdges } from "util/vector";
 import { CardToShow, IStudentSummary, ICardSize } from "types";
 
-import { StudentCardWithTransition } from "../Shared/StudentCard";
+import { StudentCard } from "../Shared/StudentCard";
 
 const DEBUG = false;
 
@@ -99,13 +99,18 @@ const CardsMatrix = React.memo(
             [cardSize.widthWithMargin, cardSize.heightWithMargin]
           );
           return (
-            <StudentCardWithTransition
-              x={offsets[0]}
-              y={offsets[1]}
+            <div
               key={`${item.matrixX}_${item.matrixY}`}
-              skipAnimation={skipAnimation}
-              student={item.student}
-            />
+              style={{
+                position: "absolute",
+                width: cardSize.width,
+                height: cardSize.height,
+                left: `${offsets[0]}px`,
+                top: `${offsets[1]}px`,
+              }}
+            >
+              <StudentCard student={item.student} cardSize={cardSize} />
+            </div>
           );
         })}
       </>
