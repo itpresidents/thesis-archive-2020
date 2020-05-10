@@ -4,6 +4,7 @@ import { animated } from "react-spring";
 import { Nav } from "react-bootstrap";
 import ContainerDimensions from "react-container-dimensions";
 // todo: automatically determine
+const DEBUG = false;
 
 const HorizontalDraggable = ({
   children,
@@ -21,17 +22,17 @@ const HorizontalDraggable = ({
     setWrapperWidth(node.getBoundingClientRect().width);
   };
 
-  console.log("wrapper width", wrapperWidth);
+  DEBUG && console.log("wrapper width", wrapperWidth);
 
   const maxLeft = useMemo(() => {
     if (!wrapperWidth) return 0;
 
-    console.log("container, wrapper", containerWidth, wrapperWidth);
+    DEBUG && console.log("container, wrapper", containerWidth, wrapperWidth);
 
     return Math.min((containerWidth * 2) / 3 - wrapperWidth, 0);
   }, [containerWidth, wrapperWidth]);
 
-  console.log("max left", maxLeft);
+  DEBUG && console.log("max left", maxLeft);
 
   const bind = useDrag(
     ({ offset: [x] }) => {

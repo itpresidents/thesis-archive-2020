@@ -21,6 +21,8 @@ import { Context } from "../../util/contexts";
 import CardsMatrix from "./CardsMatrix";
 import { clearAllMessagesAction } from "util/homemadeRedux/actions";
 
+const DEBUG = false;
+
 interface IDraggableCardsProps {
   studentsToShow: IStudentSummary[];
 }
@@ -143,7 +145,7 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
   );
 
   useEffect(() => {
-    console.log("getting window size");
+    DEBUG && console.log("getting window size");
     setWindowSizeInCards(
       getWindowSizeInCards([windowWidth, windowHeight], cardSize)
     );
@@ -154,7 +156,7 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
   );
 
   useEffect(() => {
-    console.log("updating");
+    DEBUG && console.log("updating");
     setMatrixEdges(getMatrixEdges(windowSizeInCards, matrixCenterXy));
   }, [...matrixCenterXy, windowSizeInCards]);
 
