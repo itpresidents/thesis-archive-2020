@@ -106,19 +106,17 @@ const HeaderSpring = ({
   };
 
   return !isAtHomePage ? null : (
-    <a.div
+    <div
       id="header2020-container"
       style={{
         height: `${animation.height}vh`,
       }}
     >
-      <AnimatedTitle
-        classNames={"position-absolute"}
-        AnimatedTag={a.h1}
-        title={`THESIS\nARCHIVE`}
-      />
+      <h1 className="position-absolute">
+        <AnimatedTitle title={`THESIS\nARCHIVE`} />
+      </h1>
       <Rolling20 {...Rolling20Props} />
-    </a.div>
+    </div>
   );
 };
 
