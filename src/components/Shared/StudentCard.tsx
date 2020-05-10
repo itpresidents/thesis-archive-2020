@@ -84,40 +84,42 @@ interface IStudentCardProps {
   cardSize: ICardSize;
 }
 
-const StudentCard = React.memo(({ student, cardSize }: IStudentCardProps) => {
-  const linkRef = useRef<null | HTMLAnchorElement | any>(null);
-  const [isDragging, setDragging] = useState<boolean>(false);
-  const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
-    if (isDragging) e.preventDefault();
-  };
-  let clickStartXy = [0, 0];
-  const onMouseDown = (e: React.MouseEvent) => {
-    if (!linkRef.current) return;
-    clickStartXy = [e.clientX, e.clientY];
-  };
-  const onMouseUp = (e: React.MouseEvent) => {
-    if (!linkRef.current) return;
-    const dist = Math.hypot(
-      e.clientX - clickStartXy[0],
-      e.clientY - clickStartXy[1]
+export const StudentCard = React.memo(
+  ({ student, cardSize }: IStudentCardProps) => {
+    const linkRef = useRef<null | HTMLAnchorElement | any>(null);
+    const [isDragging, setDragging] = useState<boolean>(false);
+    const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
+      if (isDragging) e.preventDefault();
+    };
+    let clickStartXy = [0, 0];
+    const onMouseDown = (e: React.MouseEvent) => {
+      if (!linkRef.current) return;
+      clickStartXy = [e.clientX, e.clientY];
+    };
+    const onMouseUp = (e: React.MouseEvent) => {
+      if (!linkRef.current) return;
+      const dist = Math.hypot(
+        e.clientX - clickStartXy[0],
+        e.clientY - clickStartXy[1]
+      );
+      if (dist > 10) setDragging(true);
+      else setDragging(false);
+    };
+    return (
+      <CardOuter width={cardSize.width} height={cardSize.height}>
+        <Link
+          to={`/students/${student.student_id}`}
+          ref={linkRef}
+          onMouseDown={onMouseDown}
+          onMouseUp={onMouseUp}
+          onClick={onClick}
+        >
+          <CardContent {...{ student, cardSize }} />
+        </Link>
+      </CardOuter>
     );
-    if (dist > 10) setDragging(true);
-    else setDragging(false);
-  };
-  return (
-    <CardOuter width={cardSize.width} height={cardSize.height}>
-      <Link
-        to={`/students/${student.student_id}`}
-        ref={linkRef}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-        onClick={onClick}
-      >
-        <CardContent {...{ student, cardSize }} />
-      </Link>
-    </CardOuter>
-  );
-});
+  }
+);
 
 const formatTag = (tagName: string) => he.decode(tagName.toUpperCase());
 
