@@ -88,9 +88,10 @@ export interface VideoScheduleRowContents {
 }
 
 export interface CardToShow {
-  student: IStudentSummary;
   matrixX: number;
   matrixY: number;
+  student: IStudentSummary;
+  offset: [number, number];
 }
 
 export declare type IStudentFilter = (student: IStudentSummary) => boolean;
