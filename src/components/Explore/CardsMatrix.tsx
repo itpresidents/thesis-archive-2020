@@ -61,31 +61,26 @@ const CardsMatrix = React.memo(
   ({ studentsToShow, matrixEdges, cardSize }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
 
-    const [cardsToShow, setCardsToShow] = useState<CardToShow[] | null>(null);
+    const [{ cards, cardStudents }, setCardsAndStudents] = useState<{
+      cards: CardToShow[];
+      cardStudents: IStudentSummary[];
+    }>({ cards: [], cardStudents: [] });
 
     useEffect(() => {
       DEBUG && console.log("calling getCardsInMatrixToShow");
-      setCardsToShow(repeatCards(matrixEdges, cardSize));
+      const cards = repeatCards(matrixEdges, cardSize);
+
+      setCardsAndStudents({
+        cards,
+        cardStudents: studentsToShow
+          ? getStudentsForCards(cards, matrixEdges, studentsToShow)
+          : [],
+      });
     }, [matrixEdges, studentsToShow, cardSize]);
-
-    const [cardStudents, setCardStudents] = useState<IStudentSummary[]>([]);
-
-    useEffect(() => {
-      if (!studentsToShow || !cardsToShow) {
-        setCardStudents([]);
-        return;
-      }
-
-      setCardStudents(
-        getStudentsForCards(cardsToShow, matrixEdges, studentsToShow)
-      );
-    }, [matrixEdges, cardsToShow, studentsToShow]);
-
-    if (!cardsToShow) return null;
 
     return (
       <>
-        {cardsToShow.map(({ matrixX, matrixY, offset }, i) => (
+        {cards.map(({ matrixX, matrixY, offset }, i) => (
           <div
             key={`${matrixX}_${matrixY}`}
             style={{
