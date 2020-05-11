@@ -1,4 +1,10 @@
-import React, { useRef, useState, useContext, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import { IStudentSummary, ICardSize } from "types";
 import { Link } from "react-router-dom";
 import {
@@ -126,30 +132,41 @@ export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
 
 const formatTag = (tagName: string) => he.decode(tagName.toUpperCase());
 
-export const CardContent = ({ student, cardSize }: IStudentCardProps) => (
-  <>
-    <div className="card-bg-frame">
-      <div
-        className="card-bg"
-        style={{
-          backgroundImage: `url(${
-            student.portfolio_thumbnail && student.portfolio_thumbnail.src
-          })`,
-          width: cardSize.width,
-        }}
-      />
-    </div>
-    <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
-      <h3>{he.decode(student.project_title)}</h3>
-      <h4>{student.student_name}</h4>
-      <p>
-        {student.topics.map((tag, index) =>
-          index === student.topics.length - 1
-            ? formatTag(tag.name)
-            : formatTag(tag.name) + ", "
-        )}
-      </p>
-    </div>
-  </>
-);
+export const CardContent = ({ student, cardSize }: IStudentCardProps) => {
+  const tags = useMemo(
+    () =>
+      student.topics.map(({ name }, index) =>
+        index === student.topics.length - 1
+          ? formatTag(name)
+          : formatTag(name) + ", "
+      ),
+    [student.topics]
+  );
+
+  return (
+    <>
+      {" "}
+      <div className="card-bg-frame">
+        <div
+          className="card-bg"
+          style={{
+            backgroundImage: `url(${
+              student.portfolio_thumbnail && student.portfolio_thumbnail.src
+            })`,
+            width: cardSize.width,
+          }}
+        />
+      </div>
+      <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
+        <h3>
+          {useMemo(() => he.decode(student.project_title), [
+            student.project_title,
+          ])}
+        </h3>
+        <h4>{student.student_name}</h4>
+        <p>{tags}</p>
+      </div>
+    </>
+  );
+};
 export default StudentCard;
