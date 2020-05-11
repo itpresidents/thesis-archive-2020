@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, useCallback } from "react";
 import { IStudentSummary, ICardSize } from "types";
 import { Link } from "react-router-dom";
 import {
@@ -88,23 +88,35 @@ export const StudentCard = React.memo(
   ({ student, cardSize }: IStudentCardProps) => {
     const linkRef = useRef<null | HTMLAnchorElement | any>(null);
     const [isDragging, setDragging] = useState<boolean>(false);
-    const onClick = (e: React.FormEvent<HTMLAnchorElement>): void => {
-      if (isDragging) e.preventDefault();
-    };
-    let clickStartXy = [0, 0];
-    const onMouseDown = (e: React.MouseEvent) => {
-      if (!linkRef.current) return;
-      clickStartXy = [e.clientX, e.clientY];
-    };
-    const onMouseUp = (e: React.MouseEvent) => {
-      if (!linkRef.current) return;
-      const dist = Math.hypot(
-        e.clientX - clickStartXy[0],
-        e.clientY - clickStartXy[1]
-      );
-      if (dist > 10) setDragging(true);
-      else setDragging(false);
-    };
+    const onClick = useCallback(
+      () => (e: React.FormEvent<HTMLAnchorElement>): void => {
+        if (isDragging) e.preventDefault();
+      },
+      [isDragging]
+    );
+
+    const [clickStartXy, setClickStartXy] = useState([0, 0]);
+    const onMouseDown = useCallback(
+      () => (e: React.MouseEvent) => {
+        if (!linkRef.current) return;
+        setClickStartXy([e.clientX, e.clientY]);
+      },
+      []
+    );
+
+    const onMouseUp = useCallback(
+      () => (e: React.MouseEvent) => {
+        if (!linkRef.current) return;
+        const dist = Math.hypot(
+          e.clientX - clickStartXy[0],
+          e.clientY - clickStartXy[1]
+        );
+        if (dist > 10) setDragging(true);
+        else setDragging(false);
+      },
+      [clickStartXy]
+    );
+
     return (
       <CardOuter width={cardSize.width} height={cardSize.height}>
         <Link
