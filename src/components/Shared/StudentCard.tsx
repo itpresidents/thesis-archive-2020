@@ -84,76 +84,72 @@ interface IStudentCardProps {
   cardSize: ICardSize;
 }
 
-export const StudentCard = React.memo(
-  ({ student, cardSize }: IStudentCardProps) => {
-    const [isDragging, setDragging] = useState<boolean>(false);
-    const onClick = useCallback(
-      (e: React.FormEvent<HTMLAnchorElement>): void => {
-        if (isDragging) e.preventDefault();
-      },
-      [isDragging]
-    );
+export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
+  const [isDragging, setDragging] = useState<boolean>(false);
+  const onClick = useCallback(
+    (e: React.FormEvent<HTMLAnchorElement>): void => {
+      if (isDragging) e.preventDefault();
+    },
+    [isDragging]
+  );
 
-    const [clickStartXy, setClickStartXy] = useState([0, 0]);
-    const onMouseDown = useCallback((e: React.MouseEvent) => {
-      setClickStartXy([e.clientX, e.clientY]);
-    }, []);
+  const [clickStartXy, setClickStartXy] = useState([0, 0]);
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    setClickStartXy([e.clientX, e.clientY]);
+  }, []);
 
-    const onMouseUp = useCallback(
-      (e: React.MouseEvent) => {
-        const dist = Math.hypot(
-          e.clientX - clickStartXy[0],
-          e.clientY - clickStartXy[1]
-        );
-        if (dist > 10) setDragging(true);
-        else setDragging(false);
-      },
-      [clickStartXy]
-    );
+  const onMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      const dist = Math.hypot(
+        e.clientX - clickStartXy[0],
+        e.clientY - clickStartXy[1]
+      );
+      if (dist > 10) setDragging(true);
+      else setDragging(false);
+    },
+    [clickStartXy]
+  );
 
-    return (
-      <CardOuter width={cardSize.width} height={cardSize.height}>
-        <Link
-          to={`/students/${student.student_id}`}
-          onMouseDown={onMouseDown}
-          onMouseUp={onMouseUp}
-          onClick={onClick}
-        >
-          <CardContent {...{ student, cardSize }} />
-        </Link>
-      </CardOuter>
-    );
-  }
-);
+  return (
+    <CardOuter width={cardSize.width} height={cardSize.height}>
+      <Link
+        to={`/students/${student.student_id}`}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onClick={onClick}
+      >
+        <CardContent {...{ student, cardSize }} />
+      </Link>
+    </CardOuter>
+  );
+};
 
 const formatTag = (tagName: string) => he.decode(tagName.toUpperCase());
 
-export const CardContent = React.memo(
-  ({ student, cardSize }: IStudentCardProps) => (
-    <>
-      <div className="card-bg-frame">
-        <div
-          className="card-bg"
-          style={{
-            backgroundImage: `url(${
-              student.portfolio_thumbnail && student.portfolio_thumbnail.src
-            })`,
-            width: cardSize.width,
-          }}
-        />
-      </div>
-      <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
-        <h3>{he.decode(student.project_title)}</h3>
-        <h4>{student.student_name}</h4>
-        <p>
-          {student.topics.map((tag, index) =>
-            index === student.topics.length - 1
-              ? formatTag(tag.name)
-              : formatTag(tag.name) + ", "
-          )}
-        </p>
-      </div>
-    </>
-  )
+export const CardContent = ({ student, cardSize }: IStudentCardProps) => (
+  <>
+    <div className="card-bg-frame">
+      <div
+        className="card-bg"
+        style={{
+          backgroundImage: `url(${
+            student.portfolio_thumbnail && student.portfolio_thumbnail.src
+          })`,
+          width: cardSize.width,
+        }}
+      />
+    </div>
+    <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
+      <h3>{he.decode(student.project_title)}</h3>
+      <h4>{student.student_name}</h4>
+      <p>
+        {student.topics.map((tag, index) =>
+          index === student.topics.length - 1
+            ? formatTag(tag.name)
+            : formatTag(tag.name) + ", "
+        )}
+      </p>
+    </div>
+  </>
 );
 export default StudentCard;
