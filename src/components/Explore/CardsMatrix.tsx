@@ -70,11 +70,13 @@ const CardsMatrix = React.memo(
       DEBUG && console.log("calling getCardsInMatrixToShow");
       const cards = repeatCards(matrixEdges, cardSize);
 
+      const studentsForCards = studentsToShow
+        ? getStudentsForCards(cards, matrixEdges, studentsToShow)
+        : [];
+
       setCardsAndStudents({
         cards,
-        cardStudents: studentsToShow
-          ? getStudentsForCards(cards, matrixEdges, studentsToShow)
-          : [],
+        cardStudents: studentsForCards,
       });
     }, [matrixEdges, studentsToShow, cardSize]);
 
