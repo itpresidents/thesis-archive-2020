@@ -155,7 +155,9 @@ const RandomAnimation: FC<IRandomAnimationProps> = ({
         top: curtainDown,
       }}
     >
-      <AnimatedTitle {...{ spring: animatedName, title, AnimatedTag: a.h2 }} />
+      <h2>
+        <AnimatedTitle title={title} />
+      </h2>
       <a.h3 style={{ opacity: titleOpacity }}>{student_name}</a.h3>
       <div className="position-absolute">
         <Rolling20 {...Rolling20Props} />

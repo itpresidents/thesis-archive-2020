@@ -1,5 +1,11 @@
-import React, { FC } from "react";
-import { AnimatedComponent, SpringValue } from "react-spring";
+import React, { FC, useMemo } from "react";
+import {
+  AnimatedComponent,
+  SpringValue,
+  useSpring,
+  config as springConfig,
+  animated,
+} from "react-spring";
 import he from "he";
 
 const ANIMATE_RANGE = 70;
@@ -29,21 +35,21 @@ export const mapSpringToString = (x: number, text: string): any => {
 };
 
 interface IAnimateTitleProps {
-  spring: SpringValue<number>;
   title: string;
-  classNames?: string;
-  AnimatedTag: AnimatedComponent<"h1"> | AnimatedComponent<"h2">;
 }
-export const AnimatedTitle: FC<IAnimateTitleProps> = ({
-  title,
-  spring,
-  AnimatedTag,
-  classNames = "",
-}) => {
+export const AnimatedTitle: FC<IAnimateTitleProps> = ({ title }) => {
+  const spring = useSpring({
+    config: { mass: 1, tension: 200, friction: 60 },
+    from: { completion: 0 },
+    to: { completion: 1 },
+  });
+
+  const decodedText = useMemo(() => he.decode(title).toUpperCase(), [title]);
+
   return (
-    <AnimatedTag className={classNames}>
-      {spring.to((x) => mapSpringToString(x, he.decode(title).toUpperCase()))}
-    </AnimatedTag>
+    <animated.div>
+      {spring.completion.to((x) => mapSpringToString(x, decodedText))}
+    </animated.div>
   );
 };
 

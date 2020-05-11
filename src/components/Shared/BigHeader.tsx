@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useContext } from "react";
-import { useSpring, animated as a, config as springConfig } from "react-spring";
+import React, { useCallback, useEffect, useContext, useState } from "react";
+import { animated as a } from "react-spring";
 import { Context } from "../../util/contexts";
 import { connect } from "util/homemadeRedux/connect";
 import { addMessageAction } from "util/homemadeRedux/actions";
@@ -35,6 +35,13 @@ interface IHeaderSpringProps {
   addMessage: (text: string, autoDisappear: boolean) => void;
 }
 
+interface AnimationState {
+  height: number;
+  titleAnimation: number;
+}
+
+const animationDuration = 1.5;
+
 const HeaderSpring = ({
   collapse,
   isAtHomePage,
@@ -42,36 +49,39 @@ const HeaderSpring = ({
 }: IHeaderSpringProps) => {
   const { windowSize, navigatorPlatform } = useContext(Context);
   const windowHeight = windowSize[1];
-  const [spring, setSpring] = useSpring(() => ({
-    from: {
-      height: 0,
-      titleAnimation: 0,
-    },
-    to: async (next: any) => {
-      next({ height: HEADER_HEIGHT_IN_VH, config: springConfig.default });
-      next({
-        titleAnimation: 1,
-        config: { mass: 1, tension: 200, friction: 60 },
-      });
-    },
-  }));
+  const [animation, setAnimation] = useState<AnimationState>({
+    height: 0,
+    titleAnimation: 0,
+  });
+
+  const [animationComplete, setAnimationComplete] = useState<boolean>(false);
+
+  useEffect(() => {
+    setAnimation((prevState) => ({
+      ...prevState,
+      height: HEADER_HEIGHT_IN_VH,
+    }));
+
+    setTimeout(() => {
+      setAnimationComplete(true);
+    }, animationDuration * 1000);
+  }, []);
+
   const collapseHeaderAndShowMessage = useCallback(() => {
     //@ts-ignore
-    setSpring({
+    setAnimation({
       height: 0,
       titleAnimation: 1,
-      config: { mass: 1, tension: 200, friction: 60 },
     });
-    collapse &&
-      isAtHomePage &&
-      !navigatorPlatform?.isMobile &&
+
+    if (collapse && isAtHomePage && !navigatorPlatform?.isMobile)
       addMessage(
         `Drag ${
           navigatorPlatform?.isMac ? "or scroll " : ""
         }to explore, click to Read More.`,
         true
       );
-  }, [setSpring, collapse, addMessage, isAtHomePage, navigatorPlatform]);
+  }, [collapse, addMessage, isAtHomePage, navigatorPlatform]);
 
   useEffect(collapseHeaderAndShowMessage, [collapse]);
 
@@ -80,37 +90,33 @@ const HeaderSpring = ({
   }, [isAtHomePage]);
 
   useEffect(() => {
-    //@ts-ignore
-    setSpring({
+    setAnimation({
       height: collapse
         ? 0
         : HEADER_HEIGHT_IN_VH - pxToVh(document.body.scrollTop, windowHeight),
       titleAnimation: 1,
     });
-  }, [windowHeight, setSpring, collapse]);
+  }, [windowHeight, collapse]);
 
   const Rolling20Props: IRolling20Props = {
-    heightInVh: spring!.height,
+    heightInVh: animation.height,
     rows: BG_ROWS,
     speed: BG_SCROLL_SPEED,
     targetVH: HEADER_HEIGHT_IN_VH,
   };
 
   return !isAtHomePage ? null : (
-    <a.div
+    <div
       id="header2020-container"
       style={{
-        height: spring.height.to((height) => `${height}vh`),
+        height: `${animation.height}vh`,
       }}
     >
-      <AnimatedTitle
-        classNames={"position-absolute"}
-        AnimatedTag={a.h1}
-        title={`THESIS\nARCHIVE`}
-        spring={spring.titleAnimation}
-      />
+      <h1 className="position-absolute">
+        <AnimatedTitle title={`THESIS\nARCHIVE`} />
+      </h1>
       <Rolling20 {...Rolling20Props} />
-    </a.div>
+    </div>
   );
 };
 
