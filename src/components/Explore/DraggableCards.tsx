@@ -24,7 +24,7 @@ import { clearAllMessagesAction } from "util/homemadeRedux/actions";
 const DEBUG = false;
 
 interface IDraggableCardsProps {
-  studentsToShow: IStudentSummary[];
+  studentsToShow: IStudentSummary[] | undefined;
 }
 
 const smoother = new SmoothVector();
@@ -161,8 +161,6 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
     DEBUG && console.log("updating");
     setMatrixEdges(getMatrixEdges(windowSizeInCards, matrixCenterXy));
   }, [...matrixCenterXy, windowSizeInCards]);
-
-  if (!studentsToShow) return null;
 
   return (
     <>

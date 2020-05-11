@@ -8,7 +8,7 @@ import { CloseBlack } from "images/Svg";
 interface SearchProps {
   text: string;
   textChanged: (search: string) => void;
-  searchResults: IStudentSummary[];
+  searchResults: IStudentSummary[] | undefined;
 }
 
 const SearchMain = ({ text, textChanged, searchResults }: SearchProps) => {
@@ -38,18 +38,19 @@ const SearchMain = ({ text, textChanged, searchResults }: SearchProps) => {
         </Nav.Item>
       </FooterLeft>
       <ScrollableFooterRight>
-        {searchResults.map((student) => (
-          <Nav.Item key={student.student_id}>
-            <Link
-              to={`/students/${student.student_id}`}
-              onDragStart={(e) => {
-                e.preventDefault();
-              }}
-            >
-              {student.student_name}
-            </Link>
-          </Nav.Item>
-        ))}
+        {searchResults &&
+          searchResults.map((student) => (
+            <Nav.Item key={student.student_id}>
+              <Link
+                to={`/students/${student.student_id}`}
+                onDragStart={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                {student.student_name}
+              </Link>
+            </Nav.Item>
+          ))}
       </ScrollableFooterRight>
     </>
   );

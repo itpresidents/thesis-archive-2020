@@ -32,7 +32,7 @@ interface FooterProps {
   advisors?: StringDict;
   searchText: string;
   searchTextChanged: (searchText: string) => void;
-  filteredStudents: IStudentSummary[];
+  filteredStudents: IStudentSummary[] | undefined;
   show: boolean;
 }
 

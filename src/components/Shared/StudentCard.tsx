@@ -86,7 +86,7 @@ export const CardOuter = ({
 );
 
 interface IStudentCardProps {
-  student: IStudentSummary;
+  student: IStudentSummary | undefined;
   cardSize: ICardSize;
 }
 
@@ -116,6 +116,8 @@ export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
     [clickStartXy]
   );
 
+  if (!student) return null;
+
   return (
     <CardOuter width={cardSize.width} height={cardSize.height}>
       <Link
@@ -132,7 +134,13 @@ export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
 
 const formatTag = (tagName: string) => he.decode(tagName.toUpperCase());
 
-export const CardContent = ({ student, cardSize }: IStudentCardProps) => {
+export const CardContent = ({
+  student,
+  cardSize,
+}: {
+  student: IStudentSummary;
+  cardSize: ICardSize;
+}) => {
   const tags = useMemo(
     () =>
       student.topics.map(({ name }, index) =>

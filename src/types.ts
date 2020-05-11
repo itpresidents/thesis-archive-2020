@@ -90,7 +90,6 @@ export interface VideoScheduleRowContents {
 export interface CardToShow {
   matrixX: number;
   matrixY: number;
-  student: IStudentSummary;
   offset: [number, number];
 }
 
