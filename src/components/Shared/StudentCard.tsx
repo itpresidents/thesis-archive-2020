@@ -86,27 +86,21 @@ interface IStudentCardProps {
 
 export const StudentCard = React.memo(
   ({ student, cardSize }: IStudentCardProps) => {
-    const linkRef = useRef<null | HTMLAnchorElement | any>(null);
     const [isDragging, setDragging] = useState<boolean>(false);
     const onClick = useCallback(
-      () => (e: React.FormEvent<HTMLAnchorElement>): void => {
+      (e: React.FormEvent<HTMLAnchorElement>): void => {
         if (isDragging) e.preventDefault();
       },
       [isDragging]
     );
 
     const [clickStartXy, setClickStartXy] = useState([0, 0]);
-    const onMouseDown = useCallback(
-      () => (e: React.MouseEvent) => {
-        if (!linkRef.current) return;
-        setClickStartXy([e.clientX, e.clientY]);
-      },
-      []
-    );
+    const onMouseDown = useCallback((e: React.MouseEvent) => {
+      setClickStartXy([e.clientX, e.clientY]);
+    }, []);
 
     const onMouseUp = useCallback(
-      () => (e: React.MouseEvent) => {
-        if (!linkRef.current) return;
+      (e: React.MouseEvent) => {
         const dist = Math.hypot(
           e.clientX - clickStartXy[0],
           e.clientY - clickStartXy[1]
@@ -121,7 +115,6 @@ export const StudentCard = React.memo(
       <CardOuter width={cardSize.width} height={cardSize.height}>
         <Link
           to={`/students/${student.student_id}`}
-          ref={linkRef}
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
           onClick={onClick}
