@@ -82,12 +82,12 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
   const prevHeight = usePrevious(windowHeight);
 
   const [clearedDraggingTip, setClearedDraggingTip] = useState<number>(0);
-  const clearDraggineTipTwice = () => {
+  const clearDraggineTipTwice = useCallback(() => {
     if (clearedDraggingTip <= 2) {
       dispatch!(clearAllMessagesAction());
       setClearedDraggingTip((prev) => (prev += 1));
     }
-  };
+  }, [clearedDraggingTip]);
 
   const setSpringAndMatrixCenterXY = useCallback(
     (xy?: number[], immediate: boolean = false) => {
@@ -119,15 +119,17 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
 
   useEffect(setSpringAndMatrixCenterXY, [windowSize]);
 
-  const scrollDivRef = useRef<HTMLDivElement>(null);
-  const onWheelHandler = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (navigatorPlatform?.isMac) {
-      setSpringAndMatrixCenterXY(
-        [position.x.get() - e.deltaX, position.y.get() - e.deltaY],
-        true
-      );
-    }
-  };
+  const onWheelHandler = useCallback(
+    (e: React.WheelEvent<HTMLDivElement>) => {
+      if (navigatorPlatform?.isMac) {
+        setSpringAndMatrixCenterXY(
+          [position.x.get() - e.deltaX, position.y.get() - e.deltaY],
+          true
+        );
+      }
+    },
+    [navigatorPlatform]
+  );
 
   const bindDrag = useDrag(
     ({ down, movement: xy, velocity, direction }) => {
@@ -164,12 +166,7 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
 
   return (
     <>
-      <div
-        {...bindDrag()}
-        ref={scrollDivRef}
-        onWheel={onWheelHandler}
-        id="projects-canvas"
-      >
+      <div {...bindDrag()} onWheel={onWheelHandler} id="projects-canvas">
         <animated.div style={{ ...position }}>
           <CardsMatrix
             {...{
