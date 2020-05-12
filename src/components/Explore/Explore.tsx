@@ -114,8 +114,6 @@ const Explore = (props: IHomeProps) => {
     }
   }, [students]);
 
-  if (!filteredStudents) return <h2>loading...</h2>;
-
   return (
     <Container fluid>
       <div className="row">

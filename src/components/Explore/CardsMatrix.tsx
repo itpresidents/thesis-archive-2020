@@ -6,30 +6,20 @@ import { StudentCard } from "../Shared/StudentCard";
 
 const DEBUG = false;
 
-const repeatCards = (
-  { start, end }: IMatrixEdges,
-  studentsToShow: IStudentSummary[]
-) => {
-  const [columns] = end.add(start.scale(-1));
-
-  const numberToShow = studentsToShow.length;
-
-  if (numberToShow === 0) return [];
-
+const repeatCards = ({ start, end }: IMatrixEdges, cardSize: ICardSize) => {
   const cardsToShow: CardToShow[] = [];
-
-  const startPosition = start.x + start.y * columns;
 
   for (let matrixY = start.y; matrixY < end.y; matrixY++) {
     for (let matrixX = start.x; matrixX < end.x; matrixX++) {
-      const positionInGrid = matrixX - start.x + (matrixY - start.y) * columns;
-
-      const toShow = Math.abs((startPosition + positionInGrid) % numberToShow);
+      const offset = getOffset(
+        [matrixX, matrixY],
+        [cardSize.widthWithMargin, cardSize.heightWithMargin]
+      );
 
       cardsToShow.push({
         matrixX,
         matrixY,
-        student: studentsToShow[toShow],
+        offset,
       });
     }
   }
@@ -37,24 +27,32 @@ const repeatCards = (
   return cardsToShow;
 };
 
-const getOffset = (xy: number[], cardSize: number[]): number[] =>
-  scaleVector(multiplyElementWise(xy, cardSize), -1);
+const getStudentsForCards = (
+  cards: CardToShow[],
+  { start, end }: IMatrixEdges,
+  studentsToShow: IStudentSummary[]
+): IStudentSummary[] => {
+  if (!studentsToShow || studentsToShow.length === 0) return [];
 
-interface PrevValues {
-  matrixEdges: IMatrixEdges;
-  studentsToShow: IStudentSummary[];
-  matrixEdgesChanged: boolean;
-  studentsToShowChanged: boolean;
-}
+  const [columns] = end.add(start.scale(-1));
+  const startPosition = start.x + start.y * columns;
 
-const matrixChanged = (a: IMatrixEdges, b: IMatrixEdges): boolean => {
-  const isSame = a.start.isEqual(b.start) && a.end.isEqual(b.end);
+  return cards.map(({ matrixX, matrixY }) => {
+    const positionInGrid = matrixX - start.x + (matrixY - start.y) * columns;
 
-  return !isSame;
+    const toShow = Math.abs(
+      (startPosition + positionInGrid) % studentsToShow.length
+    );
+
+    return studentsToShow[toShow];
+  });
 };
 
+const getOffset = (xy: number[], cardSize: number[]): [number, number] =>
+  scaleVector(multiplyElementWise(xy, cardSize), -1);
+
 interface ICardsProps {
-  studentsToShow: IStudentSummary[];
+  studentsToShow: IStudentSummary[] | undefined;
   matrixEdges: IMatrixEdges;
   cardSize: ICardSize;
 }
@@ -63,56 +61,41 @@ const CardsMatrix = React.memo(
   ({ studentsToShow, matrixEdges, cardSize }: ICardsProps) => {
     DEBUG && console.log("re-render CardsMatrix");
 
-    const [prevValues, setPrevValues] = useState<PrevValues>({
-      matrixEdges,
-      studentsToShow,
-      matrixEdgesChanged: false,
-      studentsToShowChanged: false,
-    });
-
-    useEffect(() => {
-      setPrevValues({
-        studentsToShow,
-        matrixEdges,
-        matrixEdgesChanged: matrixChanged(matrixEdges, prevValues.matrixEdges),
-        studentsToShowChanged: prevValues.studentsToShow !== studentsToShow,
-      });
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [studentsToShow, matrixEdges]);
-
-    const [inViewPortList, setInViewportList] = useState<CardToShow[]>([]);
+    const [{ cards, cardStudents }, setCardsAndStudents] = useState<{
+      cards: CardToShow[];
+      cardStudents: IStudentSummary[];
+    }>({ cards: [], cardStudents: [] });
 
     useEffect(() => {
       DEBUG && console.log("calling getCardsInMatrixToShow");
-      setInViewportList(repeatCards(matrixEdges, studentsToShow));
-    }, [matrixEdges, studentsToShow]);
+      const cards = repeatCards(matrixEdges, cardSize);
 
-    const skipAnimation = prevValues.matrixEdgesChanged;
+      const studentsForCards = studentsToShow
+        ? getStudentsForCards(cards, matrixEdges, studentsToShow)
+        : [];
+
+      setCardsAndStudents({
+        cards,
+        cardStudents: studentsForCards,
+      });
+    }, [matrixEdges, studentsToShow, cardSize]);
 
     return (
       <>
-        {inViewPortList.map((item) => {
-          if (item.student === undefined) return null;
-          const offsets = getOffset(
-            [item.matrixX, item.matrixY],
-            [cardSize.widthWithMargin, cardSize.heightWithMargin]
-          );
-          return (
-            <div
-              key={`${item.matrixX}_${item.matrixY}`}
-              style={{
-                position: "absolute",
-                width: cardSize.width,
-                height: cardSize.height,
-                left: `${offsets[0]}px`,
-                top: `${offsets[1]}px`,
-              }}
-            >
-              <StudentCard student={item.student} cardSize={cardSize} />
-            </div>
-          );
-        })}
+        {cards.map(({ matrixX, matrixY, offset }, i) => (
+          <div
+            key={`${matrixX}_${matrixY}`}
+            style={{
+              position: "absolute",
+              width: cardSize.width,
+              height: cardSize.height,
+              left: offset[0],
+              top: offset[1],
+            }}
+          >
+            <StudentCard student={cardStudents[i]} cardSize={cardSize} />
+          </div>
+        ))}
       </>
     );
   }
