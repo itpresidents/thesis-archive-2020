@@ -34,7 +34,8 @@ const getStudentsForCards = (
 ): IStudentSummary[] => {
   if (!studentsToShow || studentsToShow.length === 0) return [];
 
-  const [columns] = end.add(start.scale(-1));
+  const columns = Math.floor(Math.sqrt(studentsToShow.length));
+
   const startPosition = start.x + start.y * columns;
 
   return cards.map(({ matrixX, matrixY }) => {
