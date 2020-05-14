@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useMemo } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { IStudentSummary, ICardSize } from "types";
 import { Link } from "react-router-dom";
 import {

@@ -21,8 +21,6 @@ import { Context } from "../../util/contexts";
 import CardsMatrix from "./CardsMatrix";
 import { clearAllMessagesAction } from "util/homemadeRedux/actions";
 
-const DEBUG = false;
-
 interface IDraggableCardsProps {
   studentsToShow: IStudentSummary[] | undefined;
 }
