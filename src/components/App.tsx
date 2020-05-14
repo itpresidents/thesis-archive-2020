@@ -14,7 +14,6 @@ import { rootReducer } from "util/homemadeRedux/reducers";
 import RandomMain from "./Explore/Random";
 import { getCardSizeByWindowSize } from "util/cardSizeBreakpoints";
 import About from "./About";
-import Videos from "./Videos/Videos";
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -63,9 +62,6 @@ const App = ({ students }: IAppProps) => {
           </Route>
           <Route path="/random/:studentIdOrSlug?">
             <RandomMain students={students} />
-          </Route>
-          <Route path="/videos/:studentSlug?">
-            <Videos students={students} />
           </Route>
           <Route path="/about">
             <About />

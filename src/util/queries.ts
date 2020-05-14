@@ -73,19 +73,27 @@ export const filterByTag = (
 };
 
 export const getStudentIdFromSlug = (
-  students: IStudentSummary[],
+  studentSlugs: { slug: string; id: string }[],
   studentSlug: string
-): string => {
-  const studentWithSlug = students.filter(
-    ({ student_slug }) => student_slug === studentSlug
+): string | null => {
+  const studentWithSlug = studentSlugs.filter(
+    ({ slug }) => slug === studentSlug
   );
 
-  if (studentWithSlug.length === 0)
-    throw new Error(`invalid student slug of ${studentSlug}`);
+  if (studentWithSlug.length === 0) return null;
 
-  return studentWithSlug[0].student_id;
+  return studentWithSlug[0].id;
 };
+export const getStudentSlugFromId = (
+  studentSlugs: { slug: string; id: string }[],
+  studentId: string
+): string | null => {
+  const studentWithSlug = studentSlugs.filter(({ id }) => id === studentId);
 
+  if (studentWithSlug.length === 0) return null;
+
+  return studentWithSlug[0].slug;
+};
 export const getVideoIdFromUrl = (url: string) => {
   const urlParts = url.split("/");
 

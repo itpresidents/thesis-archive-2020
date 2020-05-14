@@ -1,0 +1,420 @@
+{
+  "idsAndSlugs": [
+    {
+      "id": "64",
+      "slug": "aaron-ilai-sebastian-moreno-ayala"
+    },
+    {
+      "id": "27",
+      "slug": "abigail-d-munoz"
+    },
+    {
+      "id": "53",
+      "slug": "ada-jiang"
+    },
+    {
+      "id": "43",
+      "slug": "adi-dahiya"
+    },
+    {
+      "id": "28",
+      "slug": "adrian-bautista"
+    },
+    {
+      "id": "87",
+      "slug": "alizarin-waissberg"
+    },
+    {
+      "id": "44",
+      "slug": "andrew-lee"
+    },
+    {
+      "id": "91",
+      "slug": "anna-gudnason"
+    },
+    {
+      "id": "110",
+      "slug": "anna-oh"
+    },
+    {
+      "id": "12",
+      "slug": "antonio-m-guimaraes-jr"
+    },
+    {
+      "id": "13",
+      "slug": "arnab-chakravarty"
+    },
+    {
+      "id": "45",
+      "slug": "ashley-jane-lewis"
+    },
+    {
+      "id": "99",
+      "slug": "atharva-patil"
+    },
+    {
+      "id": "34",
+      "slug": "august-luhrs"
+    },
+    {
+      "id": "76",
+      "slug": "billy-bennett"
+    },
+    {
+      "id": "75",
+      "slug": "bora-aydintug"
+    },
+    {
+      "id": "14",
+      "slug": "brent-bailey"
+    },
+    {
+      "id": "65",
+      "slug": "cameron-partee"
+    },
+    {
+      "id": "60",
+      "slug": "carol-chen"
+    },
+    {
+      "id": "98",
+      "slug": "caroline-peralta-neel"
+    },
+    {
+      "id": "29",
+      "slug": "casey-m-conchinha"
+    },
+    {
+      "id": "102",
+      "slug": "chenhe-zhang"
+    },
+    {
+      "id": "61",
+      "slug": "chenshan-gao"
+    },
+    {
+      "id": "115",
+      "slug": "chenyu-sun"
+    },
+    {
+      "id": "30",
+      "slug": "ching-hsi-chou"
+    },
+    {
+      "id": "31",
+      "slug": "christopher-b-blair"
+    },
+    {
+      "id": "3",
+      "slug": "chunhan-chen"
+    },
+    {
+      "id": "93",
+      "slug": "clareese-g-hill"
+    },
+    {
+      "id": "78",
+      "slug": "dana-elkis"
+    },
+    {
+      "id": "15",
+      "slug": "david-azar-serur"
+    },
+    {
+      "id": "111",
+      "slug": "defne-onen"
+    },
+    {
+      "id": "21",
+      "slug": "ellie-kexin-lin"
+    },
+    {
+      "id": "112",
+      "slug": "elvin-ou"
+    },
+    {
+      "id": "46",
+      "slug": "emily-lin"
+    },
+    {
+      "id": "47",
+      "slug": "emma-rae-norton"
+    },
+    {
+      "id": "16",
+      "slug": "eva-p-philips"
+    },
+    {
+      "id": "104",
+      "slug": "fenfen-chen"
+    },
+    {
+      "id": "17",
+      "slug": "gabriella-m-garcia"
+    },
+    {
+      "id": "77",
+      "slug": "gilad-dor"
+    },
+    {
+      "id": "83",
+      "slug": "guillermo-montecinos"
+    },
+    {
+      "id": "86",
+      "slug": "hannah-n-tardie"
+    },
+    {
+      "id": "63",
+      "slug": "hayk-mikayelyan"
+    },
+    {
+      "id": "42",
+      "slug": "helen-tang"
+    },
+    {
+      "id": "48",
+      "slug": "hye-ryeong-(maria)-shin"
+    },
+    {
+      "id": "32",
+      "slug": "idith-barak"
+    },
+    {
+      "id": "49",
+      "slug": "jackie-liu"
+    },
+    {
+      "id": "23",
+      "slug": "jacky-chen"
+    },
+    {
+      "id": "50",
+      "slug": "jaekook-han"
+    },
+    {
+      "id": "33",
+      "slug": "james-hosken"
+    },
+    {
+      "id": "57",
+      "slug": "jenny-lin"
+    },
+    {
+      "id": "88",
+      "slug": "jingyi-wen"
+    },
+    {
+      "id": "18",
+      "slug": "jiwon-shin"
+    },
+    {
+      "id": "114",
+      "slug": "jordan-p-rickman"
+    },
+    {
+      "id": "19",
+      "slug": "joseph-w-baker"
+    },
+    {
+      "id": "20",
+      "slug": "joy-a-antwi"
+    },
+    {
+      "id": "80",
+      "slug": "karina-hyland-hernandez"
+    },
+    {
+      "id": "35",
+      "slug": "khensu-ra"
+    },
+    {
+      "id": "36",
+      "slug": "lillian-ritchie"
+    },
+    {
+      "id": "81",
+      "slug": "louise-skjoldborg-lessel"
+    },
+    {
+      "id": "79",
+      "slug": "luming-hao"
+    },
+    {
+      "id": "51",
+      "slug": "lydia-powell-jessup"
+    },
+    {
+      "id": "68",
+      "slug": "madison-rose-rosner"
+    },
+    {
+      "id": "94",
+      "slug": "manu-jain"
+    },
+    {
+      "id": "22",
+      "slug": "marcela-mancino-von-der-osten"
+    },
+    {
+      "id": "96",
+      "slug": "mark-lam"
+    },
+    {
+      "id": "85",
+      "slug": "matthew-ross"
+    },
+    {
+      "id": "52",
+      "slug": "maya-ling-pruitt"
+    },
+    {
+      "id": "82",
+      "slug": "mingna-li"
+    },
+    {
+      "id": "84",
+      "slug": "morgan-b-mueller"
+    },
+    {
+      "id": "103",
+      "slug": "nianqi-zhang"
+    },
+    {
+      "id": "62",
+      "slug": "nick-gregg"
+    },
+    {
+      "id": "70",
+      "slug": "nuntinee-tansrisakul"
+    },
+    {
+      "id": "38",
+      "slug": "olivia-kung"
+    },
+    {
+      "id": "116",
+      "slug": "qice-sun"
+    },
+    {
+      "id": "59",
+      "slug": "raaziq-m-brown"
+    },
+    {
+      "id": "106",
+      "slug": "rachel-a-lim"
+    },
+    {
+      "id": "95",
+      "slug": "rashida-s-kamal"
+    },
+    {
+      "id": "74",
+      "slug": "rui-an"
+    },
+    {
+      "id": "71",
+      "slug": "rui-wang"
+    },
+    {
+      "id": "24",
+      "slug": "sj-zhang"
+    },
+    {
+      "id": "109",
+      "slug": "sachiko-nakajima"
+    },
+    {
+      "id": "67",
+      "slug": "shivani-prasad"
+    },
+    {
+      "id": "105",
+      "slug": "shiyu-chen"
+    },
+    {
+      "id": "39",
+      "slug": "shu-ju-lin"
+    },
+    {
+      "id": "97",
+      "slug": "son-luu"
+    },
+    {
+      "id": "69",
+      "slug": "stefan-a-skripak"
+    },
+    {
+      "id": "92",
+      "slug": "su-he"
+    },
+    {
+      "id": "25",
+      "slug": "sukanya-aneja"
+    },
+    {
+      "id": "58",
+      "slug": "suzanne-li"
+    },
+    {
+      "id": "55",
+      "slug": "tanic-nakpresha"
+    },
+    {
+      "id": "113",
+      "slug": "tawania-renee-reggler"
+    },
+    {
+      "id": "73",
+      "slug": "tianyi-xie"
+    },
+    {
+      "id": "107",
+      "slug": "tsimafei-lobiak"
+    },
+    {
+      "id": "90",
+      "slug": "tushar-goyal"
+    },
+    {
+      "id": "40",
+      "slug": "veronica-alfaro"
+    },
+    {
+      "id": "37",
+      "slug": "vince-mingpu-shao"
+    },
+    {
+      "id": "56",
+      "slug": "wenjing-liu"
+    },
+    {
+      "id": "101",
+      "slug": "winnie-yoe"
+    },
+    {
+      "id": "108",
+      "slug": "xiaotong-ma"
+    },
+    {
+      "id": "41",
+      "slug": "xinyue-li"
+    },
+    {
+      "id": "72",
+      "slug": "yuanyuan-wang"
+    },
+    {
+      "id": "26",
+      "slug": "yuguang-zhang"
+    },
+    {
+      "id": "100",
+      "slug": "yunze-shi"
+    },
+    {
+      "id": "117",
+      "slug": "zhe-wang"
+    }
+  ]
+}

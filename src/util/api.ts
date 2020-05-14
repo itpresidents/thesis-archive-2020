@@ -1,4 +1,5 @@
 import axios from "axios";
+import slug from "scrapedSchedules/slugs.json";
 import * as config from "config";
 import {
   IStudentApi,
@@ -27,6 +28,10 @@ const realApi: IStudentApi = {
   getStudent: async (studentId: string) =>
     (await axios.get(`${baseApiUrl}?student_id=${studentId}`))
       .data as IStudentDetails,
+};
+
+export const getSlugs = () => {
+  return slug.idsAndSlugs;
 };
 
 const toCurrentStudentSummary = ({

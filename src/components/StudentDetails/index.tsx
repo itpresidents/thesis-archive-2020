@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 
 import * as api from "util/api";
 import { IStudentDetails, IStudentSummary } from "types";
-import { useParams } from "react-router-dom";
-import { getStudentIdFromSlug, isNumber } from "util/queries";
+import { useParams, Redirect } from "react-router-dom";
+import {
+  getStudentIdFromSlug,
+  getStudentSlugFromId,
+  isNumber,
+} from "util/queries";
 
 import DetailsBody from "./DetailsBody";
 import DetailsFooter from "./DetailsFooter";
@@ -84,15 +88,18 @@ interface IStudentByIdOrSlugProps {
 const StudentByIdOrSlug = ({ students }: IStudentByIdOrSlugProps) => {
   const { studentIdOrSlug } = useParams<{ studentIdOrSlug?: string }>();
 
-  if (!studentIdOrSlug) return null;
+  if (!studentIdOrSlug) return <Redirect to="/" />;
 
   if (isNumber(studentIdOrSlug)) {
-    return <Student studentId={studentIdOrSlug} students={students} />;
+    const studentSlug = getStudentSlugFromId(api.getSlugs(), studentIdOrSlug);
+    return <Redirect to={`/students/${studentSlug}`} />;
   }
 
   if (!students) return null;
 
-  const studentId = getStudentIdFromSlug(students, studentIdOrSlug);
+  const studentId = getStudentIdFromSlug(api.getSlugs(), studentIdOrSlug);
+
+  if (!studentId) return <Redirect to="/" />;
 
   return <Student studentId={studentId} students={students} />;
 };
