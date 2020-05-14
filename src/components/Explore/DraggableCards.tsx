@@ -1,22 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useState, useContext, useCallback, useMemo } from "react";
 import { IStudentSummary, ICardSize } from "../../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
-import {
-  addVector,
-  SmoothVector,
-  scaleVector,
-  Vector,
-  IMatrixEdges,
-} from "util/vector";
-import { usePrevious } from "util/usePrevious";
+import { SmoothVector, Vector, IMatrixEdges } from "util/vector";
 import { Context } from "../../util/contexts";
 import CardsMatrix from "./CardsMatrix";
 import { clearAllMessagesAction } from "util/homemadeRedux/actions";
@@ -31,16 +18,6 @@ interface Position {
   x: number;
   y: number;
 }
-
-const toPositionInMatrix = (
-  [centerX, centerY]: [number, number],
-  cardSize: ICardSize
-): Vector => {
-  return new Vector([
-    Math.ceil(centerX / cardSize.widthWithMargin),
-    Math.ceil(centerY / cardSize.heightWithMargin),
-  ]);
-};
 
 const getMatrixEdges = (
   windowSizeInCards: Vector,
