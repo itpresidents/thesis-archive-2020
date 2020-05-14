@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { AnimatedComponent, SpringValue } from "react-spring";
 import he from "he";
 
@@ -13,7 +13,7 @@ const mapCharcdoeAndSpring = (spring: number, charCode: number): number => {
   return clampNameCode(charCode + mod);
 };
 
-export const mapSpringToString = (x: number, text: string): any => {
+export const mapSpringToString = (x: number, text: string): string => {
   let r: string = "";
   for (let i = 0; i < text.length; i++) {
     if (text.charCodeAt(i) === 10) {
@@ -40,9 +40,10 @@ export const AnimatedTitle: FC<IAnimateTitleProps> = ({
   AnimatedTag,
   classNames = "",
 }) => {
+  const decodedTitle = useMemo(() => he.decode(title).toUpperCase(), [title]);
   return (
     <AnimatedTag className={classNames}>
-      {spring.to((x) => mapSpringToString(x, he.decode(title).toUpperCase()))}
+      {spring.to((x) => mapSpringToString(x, decodedTitle))}
     </AnimatedTag>
   );
 };
