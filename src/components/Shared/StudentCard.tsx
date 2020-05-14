@@ -62,14 +62,16 @@ export const CardOuter = ({
   height,
   children,
   className,
+  visible = true,
 }: {
   width: number;
   height: number;
   children: React.ReactNode;
   className?: string;
+  visible?: boolean;
 }) => (
   <div
-    className={cx("student-card", className)}
+    className={cx("student-card", className, { "d-none": !visible })}
     style={{
       width: width,
       height: height,
@@ -110,12 +112,16 @@ export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
     [clickStartXy]
   );
 
-  if (!student) return null;
+  // if (!student) return null;
 
   return (
-    <CardOuter width={cardSize.width} height={cardSize.height}>
+    <CardOuter
+      width={cardSize.width}
+      height={cardSize.height}
+      visible={!!student}
+    >
       <Link
-        to={`/students/${student.student_id}`}
+        to={`/students/`}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onClick={onClick}
@@ -128,47 +134,49 @@ export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
 
 const formatTag = (tagName: string) => he.decode(tagName.toUpperCase());
 
-export const CardContent = ({
-  student,
-  cardSize,
-}: {
-  student: IStudentSummary;
-  cardSize: ICardSize;
-}) => {
-  const tags = useMemo(
-    () =>
-      student.topics.map(({ name }, index) =>
-        index === student.topics.length - 1
-          ? formatTag(name)
-          : formatTag(name) + ", "
-      ),
-    [student.topics]
-  );
+export const CardContent = React.memo(
+  ({
+    student,
+    cardSize,
+  }: {
+    student: IStudentSummary | undefined;
+    cardSize: ICardSize;
+  }) => {
+    const tags = student
+      ? student.topics.map(({ name }, index) =>
+          index === student.topics.length - 1
+            ? formatTag(name)
+            : formatTag(name) + ", "
+        )
+      : [];
 
-  return (
-    <>
-      {" "}
-      <div className="card-bg-frame">
-        <div
-          className="card-bg"
-          style={{
-            backgroundImage: `url(${
-              student.portfolio_thumbnail && student.portfolio_thumbnail.src
-            })`,
-            width: cardSize.width,
-          }}
-        />
-      </div>
-      <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
-        <h3>
-          {useMemo(() => he.decode(student.project_title), [
-            student.project_title,
-          ])}
-        </h3>
-        <h4>{student.student_name}</h4>
-        <p>{tags}</p>
-      </div>
-    </>
-  );
-};
+    return (
+      <>
+        {" "}
+        <div className="card-bg-frame">
+          {student && (
+            <div
+              className="card-bg"
+              style={{
+                backgroundImage: `url(${
+                  student.portfolio_thumbnail && student.portfolio_thumbnail.src
+                })`,
+                width: cardSize.width,
+              }}
+            />
+          )}
+        </div>
+        <div className="card-info mt-2" style={{ height: cardSize.infoHeight }}>
+          {student && (
+            <>
+              <h3>{he.decode(student.project_title)}</h3>
+              <h4>{student.student_name}</h4>
+              <p>{tags}</p>
+            </>
+          )}
+        </div>
+      </>
+    );
+  }
+);
 export default StudentCard;
