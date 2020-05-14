@@ -114,6 +114,8 @@ export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
 
   // if (!student) return null;
 
+  const studentLink = student ? `/students/${student.student_id}` : "/";
+
   return (
     <CardOuter
       width={cardSize.width}
@@ -121,7 +123,7 @@ export const StudentCard = ({ student, cardSize }: IStudentCardProps) => {
       visible={!!student}
     >
       <Link
-        to={`/students/`}
+        to={studentLink}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
         onClick={onClick}
