@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import { IStudentSummary, ICardSize } from "../../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
@@ -136,25 +142,15 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
     { initial: () => [position.x.get(), position.y.get()] }
   );
 
-  const [windowSizeInCards, setWindowSizeInCards] = useState<Vector>(
-    getWindowSizeInCards([windowWidth, windowHeight], cardSize)
+  const windowSizeInCards = useMemo(
+    () => getWindowSizeInCards([windowWidth, windowHeight], cardSize),
+    [windowWidth, windowHeight]
   );
 
-  useEffect(() => {
-    DEBUG && console.log("getting window size");
-    setWindowSizeInCards(
-      getWindowSizeInCards([windowWidth, windowHeight], cardSize)
-    );
-  }, [windowWidth, windowHeight]);
-
-  const [matrixEdges, setMatrixEdges] = useState<IMatrixEdges>(
-    getMatrixEdges(windowSizeInCards, matrixCenterXy)
+  const matrixEdges = useMemo(
+    () => getMatrixEdges(windowSizeInCards, matrixCenterXy),
+    [...matrixCenterXy, windowSizeInCards]
   );
-
-  useEffect(() => {
-    DEBUG && console.log("updating");
-    setMatrixEdges(getMatrixEdges(windowSizeInCards, matrixCenterXy));
-  }, [...matrixCenterXy, windowSizeInCards]);
 
   return (
     <>
