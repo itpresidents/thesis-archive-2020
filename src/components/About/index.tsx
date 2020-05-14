@@ -92,9 +92,9 @@ const About = () => (
             <Header>About the Thesis Archive</Header>
             <TextBlock>
               The Thesis Archive is a place for graduate students of ITP to
-              showcase their projects. This years site was created designed and
-              built by <a href="http://www.ilanabonder.com/">Ilana Bonder</a>,{" "}
-              <a href="https://www.danioved.com/">Dan Oved </a>
+              showcase their projects. This years site was designed by{" "}
+              <a href="http://www.ilanabonder.com/">Ilana Bonder</a>, and built
+              by <a href="https://www.danioved.com/">Dan Oved </a> and
               <a href="http://yangyang.blog/portfolio/"> Yang Yang,</a> with
               production support by{" "}
               <a href="https://www.erikvanzummeren.com/">Erik Van Zummeren.</a>
