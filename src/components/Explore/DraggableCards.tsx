@@ -67,17 +67,29 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
     Context
   );
   const [windowWidth, windowHeight] = windowSize;
-  const [position, setSpring] = useSpring<Position>(() => ({
+  const [position, setPosition] = useSpring<Position>(() => ({
     x: 0,
     y: 0,
   }));
 
   const [matrixCenterXy, setMatrixCenterXy] = useState<Vector>(
-    toPositionInMatrix([0, 0], cardSize)
+    new Vector([0, 0])
   );
 
-  const prevWidth = usePrevious(windowWidth);
-  const prevHeight = usePrevious(windowHeight);
+  const updateCenterXyIfChanged = useCallback(
+    (x: number, y: number) => {
+      const matrixCenterX = Math.ceil(x / cardSize.widthWithMargin);
+      const matrixCenterY = Math.ceil(y / cardSize.heightWithMargin);
+
+      if (
+        matrixCenterX !== matrixCenterXy[0] ||
+        matrixCenterY !== matrixCenterXy[1]
+      ) {
+        setMatrixCenterXy(new Vector([matrixCenterX, matrixCenterY]));
+      }
+    },
+    [cardSize]
+  );
 
   const [clearedDraggingTip, setClearedDraggingTip] = useState<number>(0);
   const clearDraggineTipTwice = useCallback(() => {
@@ -87,43 +99,15 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
     }
   }, [clearedDraggingTip]);
 
-  const setSpringAndMatrixCenterXY = useCallback(
-    (xy?: number[], immediate: boolean = false) => {
-      if (xy === undefined)
-        xy = [
-          position.x.get() + (windowWidth - prevWidth!) / 2,
-          position.y.get() + (windowHeight - prevHeight!) / 2,
-        ];
-      setSpring({
-        x: xy[0],
-        y: xy[1],
-        immediate,
-        onChange: (xy) => {
-          const matrixCenterXy = toPositionInMatrix([xy.x!, xy.y!], cardSize);
-          setMatrixCenterXy(matrixCenterXy);
-        },
-      });
-    },
-    [
-      windowWidth,
-      windowHeight,
-      position,
-      setSpring,
-      setMatrixCenterXy,
-      prevWidth,
-      prevHeight,
-    ]
-  );
-
-  useEffect(setSpringAndMatrixCenterXY, [windowSize]);
-
   const onWheelHandler = useCallback(
     (e: React.WheelEvent<HTMLDivElement>) => {
       if (navigatorPlatform?.isMac) {
-        setSpringAndMatrixCenterXY(
-          [position.x.get() - e.deltaX, position.y.get() - e.deltaY],
-          true
-        );
+        const x = position.x.get() - e.deltaX;
+        const y = position.y.get() - e.deltaY;
+
+        setPosition({ x, y, immediate: true });
+
+        updateCenterXyIfChanged(x, y);
       }
     },
     [navigatorPlatform]
@@ -133,9 +117,8 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
     ({ down, movement: xy, velocity, direction }) => {
       if (!down) clearDraggineTipTwice();
       direction = smoother.smooth(direction, 8) as typeof direction;
-      // if mouse is up, use the momentum and direction of last several frame to send the destination further away.
-      xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
-      setSpringAndMatrixCenterXY(xy, down);
+      setPosition({ x: xy[0], y: xy[1] });
+      updateCenterXyIfChanged(xy[0], xy[1]);
     },
     { initial: () => [position.x.get(), position.y.get()] }
   );
