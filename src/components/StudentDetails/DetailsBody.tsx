@@ -9,7 +9,6 @@ import {
   // VideoSign
 } from "images/Svg";
 import { Link } from "react-router-dom";
-import { toLowerSnakeCase } from "util/queries";
 import parseHtml from "html-react-parser";
 import he from "he";
 
