@@ -92,6 +92,9 @@ const StudentByIdOrSlug = ({ students }: IStudentByIdOrSlugProps) => {
 
   if (isNumber(studentIdOrSlug)) {
     const studentSlug = getStudentSlugFromId(api.getSlugs(), studentIdOrSlug);
+    if (!studentSlug)
+      return <Student studentId={studentIdOrSlug} students={students} />;
+
     return <Redirect to={`/students/${studentSlug}`} />;
   }
 
