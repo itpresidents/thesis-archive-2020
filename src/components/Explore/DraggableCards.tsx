@@ -91,9 +91,9 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
   );
 
   const bindDrag = useDrag(
-    ({ down, movement: xy, velocity, direction }) => {
+    ({ down, movement: xy, direction }) => {
       if (!down) clearDraggineTipTwice();
-      direction = smoother.smooth(direction, 8) as typeof direction;
+      direction = smoother.smooth(direction, 16) as typeof direction;
       setPosition({ x: xy[0], y: xy[1] });
       updateCenterXyIfChanged(xy[0], xy[1]);
     },

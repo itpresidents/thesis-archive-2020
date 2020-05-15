@@ -64,11 +64,10 @@ const About = () => (
               </p>
 
               <p>
-                The ITP Thesis is just one semester long and is taught as a
-                class within the two-year period. It is the one class in which
-                students work individually (i.e. not part of a team) and develop
-                a project or their own choosing from concept to a
-                proof-of-concept prototype.
+                The ITP Thesis is taught as a class during the second year of
+                the two-year period. It is the one class in which students work
+                individually (i.e. not part of a team) and develop a project or
+                their own choosing from concept to a proof-of-concept prototype.
               </p>
 
               <p>
