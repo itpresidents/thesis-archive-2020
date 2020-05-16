@@ -94,8 +94,8 @@ const DetailsFooter = ({ student, students }: IDetailsFooterProps) => {
   return (
     <Container fluid className="details-footer">
       <Row>
-        <Col lg={6} sm={12} className="section">
-          <h3 className="header">Randomize Next</h3>
+        <Col lg={6} sm={12} className="section d-none d-lg-block">
+          <h3 className="header">Random Project</h3>
           <RandomCard
             width={cardSize.width}
             height={cardSize.height}
