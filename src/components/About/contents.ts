@@ -4,8 +4,7 @@ export const residents: { [name: string]: string } = {
   "Anthony Bui":
     "https://tisch.nyu.edu/itp/itp-people/alumni/Residents/2019-2020/anthony-bui.html",
   "Carrie Wang": "https://carriesijiawang.com/",
-  "Chelsea Chen Chen":
-    "https://tisch.nyu.edu/itp/itp-people/alumni/Residents/2019-2020/chelsea-chen.html",
+  "Chelsea Chen Chen": "http://www.chenchenchelsea.com/",
   "Dan Oved": "https://www.danioved.com/",
   "Ellen Nickles":
     "https://tisch.nyu.edu/itp/itp-people/alumni/Residents/2019-2020/ellen-nickles.html",
