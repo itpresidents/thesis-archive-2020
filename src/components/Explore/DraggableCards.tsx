@@ -3,7 +3,13 @@ import React, { useState, useContext, useCallback, useMemo } from "react";
 import { IStudentSummary, ICardSize } from "../../types";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "react-use-gesture";
-import { SmoothVector, Vector, IMatrixEdges } from "util/vector";
+import {
+  SmoothVector,
+  Vector,
+  IMatrixEdges,
+  addVector,
+  scaleVector,
+} from "util/vector";
 import { Context } from "../../util/contexts";
 import CardsMatrix from "./CardsMatrix";
 import { clearAllMessagesAction } from "util/homemadeRedux/actions";
@@ -91,9 +97,11 @@ const DraggableCards = ({ studentsToShow }: IDraggableCardsProps) => {
   );
 
   const bindDrag = useDrag(
-    ({ down, movement: xy, direction }) => {
+    ({ down, movement: xy, velocity, direction }) => {
       if (!down) clearDraggineTipTwice();
       direction = smoother.smooth(direction, 16) as typeof direction;
+      // if mouse is up, use the momentum and direction of last several frame to send the destination further away.	      setPosition({ x: xy[0], y: xy[1] });
+      xy = down ? xy : addVector(xy, scaleVector(direction, velocity * 200));
       setPosition({ x: xy[0], y: xy[1] });
       updateCenterXyIfChanged(xy[0], xy[1]);
     },
