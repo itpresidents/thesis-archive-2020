@@ -34,7 +34,6 @@
   width: 200px;
   height: 300px;
   // https://github.com/oveddan/thesis-archive-2020/issues/31
-  outline: 0.25px solid black;
 
   a {
     text-decoration: none;
@@ -44,6 +43,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
+    outline: 0.25px solid black;
 
     .card-bg {
       width: 100%;
