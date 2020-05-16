@@ -41,7 +41,7 @@ interface IStudentProps {
 const studentToTitle = (student: IStudentDetails) =>
   `${student.project_title} by ${student.student_name} | ITP Thesis Archive 2020`;
 
-const Student = ({ studentId, students }: IStudentProps) => {
+export const Student = ({ studentId, students }: IStudentProps) => {
   const [student, setProject] = useState<IStudentDetails>();
 
   useEffect(() => {

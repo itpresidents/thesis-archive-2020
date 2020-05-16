@@ -1,13 +1,15 @@
-import React, { useState, FC, useCallback, useEffect } from "react";
+import React, { useState, FC, useCallback, useEffect, useMemo } from "react";
 import { IStudentSummary } from "types";
 import { useSpring, animated as a, SpringValue, config } from "react-spring";
 import { useHistory } from "react-router-dom";
 import Rolling20, { IRolling20Props } from "../Shared/Rolling20";
-import StudentDetails from "../StudentDetails";
+import { Student } from "../StudentDetails";
 import { Random } from "images/Svg";
 import { Navbar, Nav } from "react-bootstrap";
 import { AnimatedTitle } from "components/Shared/AnimatedTitle";
 import { FiX } from "react-icons/fi";
+import { getSlugs } from "util/api";
+import { getStudentSlugFromId } from "util/queries";
 
 interface IRandomSpringProps {
   student: IStudentSummary;
@@ -22,6 +24,10 @@ const RandomSpring: FC<IRandomSpringProps> = ({
 }) => {
   const [redirect, setRedirect] = useState(false);
   const { student_id, student_name, project_title: title } = student;
+  const studentSlug = useMemo(
+    () => getStudentSlugFromId(getSlugs(), student_id),
+    [student_id]
+  );
   const history = useHistory();
 
   const initialSpring = {
@@ -41,7 +47,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
       await next({ curtainDown: "0vh" });
       await next(
         (() => {
-          history.replace(`/random/${student_id}`);
+          history.push(`/students/${studentSlug}`);
           return { titleOpacity: 1, config: config.slow };
         })()
       );
@@ -82,8 +88,7 @@ const RandomSpring: FC<IRandomSpringProps> = ({
       {(() =>
         redirect && (
           <a.div style={{ opacity: spring.detailsOpacity }}>
-            <StudentDetails students={students} />
-            <ReRollButton {...{ resetHandeler: reRoll }} />
+            <Student studentId={student.student_id} students={students} />
           </a.div>
         ))()}
       }
