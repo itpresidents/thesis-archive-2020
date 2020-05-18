@@ -126,7 +126,6 @@ const Explore = (props: IHomeProps) => {
         searchTextChanged={setSearchText}
         filteredStudents={filteredStudents}
       />
-      )}
     </Container>
   );
 };
