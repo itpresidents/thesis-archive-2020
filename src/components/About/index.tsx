@@ -1,10 +1,9 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { residents, ITPPerson, fullTimeFaculty, staff } from "./contents";
+import Poem from "./poem";
 
 const Hero = () => <></>;
-
-const Poem = () => <></>;
 
 const Section = ({ children }: { children: React.ReactNode }) => (
   <section className="row">
@@ -49,8 +48,13 @@ const About = () => (
     <Hero />
     <Container className="body1">
       <Row>
-        <Col lg={2} sm={0} />
-        <Col lg={10}>
+        <Col lg={6} className="order-2 order-lg-1">
+          <Header>To the Class of 2020</Header>
+          <TextBlock>
+            <Poem />
+          </TextBlock>
+        </Col>
+        <Col lg={6} className="order-1 order-lg-2">
           <Section>
             <Header>About ITP & Thesis</Header>
             <TextBlock>

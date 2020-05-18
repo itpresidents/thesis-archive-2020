@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, Suspense, lazy } from "react";
 import * as api from "util/api";
 import "scss/styles.scss";
 import Explore from "./Explore/Explore";
@@ -13,7 +13,7 @@ import { FirstClicked } from "./Shared/FirstClicked";
 import { rootReducer } from "util/homemadeRedux/reducers";
 import RandomMain from "./Explore/Random";
 import { getCardSizeByWindowSize } from "util/cardSizeBreakpoints";
-import About from "./About";
+const About = lazy(() => import("./About"));
 
 interface IAppProps {
   students: IStudentSummary[] | undefined;
@@ -56,23 +56,30 @@ const App = ({ students }: IAppProps) => {
         }}
       >
         <Header hasStartedExploring={hasStartedExploring} />
-        <Switch>
-          <Route path="/students/:studentIdOrSlug">
-            <StudentDetails students={students} />
-          </Route>
-          <Route path="/random/:studentIdOrSlug?">
-            <RandomMain students={students} />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/">
-            <>
-              <FirstClicked firstClicked={() => setHasStartedExploring(true)} />
-              <Explore students={students} isExploring={hasStartedExploring} />
-            </>
-          </Route>
-        </Switch>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            <Route path="/students/:studentIdOrSlug">
+              <StudentDetails students={students} />
+            </Route>
+            <Route path="/random/:studentIdOrSlug?">
+              <RandomMain students={students} />
+            </Route>
+            <Route path="/about">
+              <About />
+            </Route>
+            <Route path="/">
+              <>
+                <FirstClicked
+                  firstClicked={() => setHasStartedExploring(true)}
+                />
+                <Explore
+                  students={students}
+                  isExploring={hasStartedExploring}
+                />
+              </>
+            </Route>
+          </Switch>
+        </Suspense>
       </Context.Provider>
     </>
   );
