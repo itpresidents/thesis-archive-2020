@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useContext, useEffect, useMemo } from "react";
+import { Context } from "util/contexts";
 // import StudentCards from "./StudentCards";
 import { IStudentSummary, StringDict, ISearch } from "types";
 import DraggableCards from "./DraggableCards";
@@ -17,6 +18,19 @@ const generateTitle = (tag: string | null, advisor: string | null): string => {
   }
 
   return opener;
+};
+
+const setHtmlOverscrollBehaviorX = (value: string): void => {
+  document
+    .getElementsByTagName("html")[0]
+    .setAttribute("style", `overscroll-behavior-x:${value}`);
+};
+
+const setBodyOverfolowOnMobile = (value: string, isMobile: boolean): void => {
+  isMobile &&
+    document
+      .getElementsByTagName("body")[0]
+      .setAttribute("style", `overflow:${value}`);
 };
 
 interface IHomeProps {
@@ -39,6 +53,7 @@ const noFilter = (student: IStudentSummary) => true;
 
 const Explore = (props: IHomeProps) => {
   const { isExploring } = props;
+  const { navigatorPlatform } = useContext(Context);
 
   const students = useMemo(() => {
     if (!props.students) {
@@ -113,6 +128,17 @@ const Explore = (props: IHomeProps) => {
       setFilterOptions(queries.getTagsAndAdvisors(students));
     }
   }, [students]);
+
+  //remove HtmlOverscrollBehaviorX and elastic scrolling
+  useEffect(() => {
+    const { isMobile } = navigatorPlatform!;
+    setHtmlOverscrollBehaviorX("none");
+    setBodyOverfolowOnMobile("hidden", isMobile);
+    return () => {
+      setHtmlOverscrollBehaviorX("auto");
+      setBodyOverfolowOnMobile("auto", isMobile);
+    };
+  }, [navigatorPlatform]);
 
   return (
     <Container fluid>

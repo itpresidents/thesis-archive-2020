@@ -16,19 +16,6 @@ export const getHeaderHeight = (windowWidth: number): number => {
   }
 };
 
-const setHtmlOverscrollBehaviorX = (value: string): void => {
-  document
-    .getElementsByTagName("html")[0]
-    .setAttribute("style", `overscroll-behavior-x:${value}`);
-};
-
-const setBodyOverfolowOnMobile = (value: string, isMobile: boolean): void => {
-  isMobile &&
-    document
-      .getElementsByTagName("body")[0]
-      .setAttribute("style", `overflow:${value}`);
-};
-
 export const HEADER_HEIGHT_IN_VH = getHeaderHeight(window.innerWidth);
 const BG_SCROLL_SPEED = 0.066;
 const BG_ROWS = 2;
@@ -73,14 +60,6 @@ const HeaderSpring = ({
   }, [setSpring, collapse, addMessage, isAtHomePage, navigatorPlatform]);
 
   useEffect(collapseHeaderAndShowMessage, [collapse]);
-
-  useEffect(() => {
-    setHtmlOverscrollBehaviorX(isAtHomePage ? "none" : "auto");
-    setBodyOverfolowOnMobile(
-      isAtHomePage ? "hidden" : "auto",
-      navigatorPlatform!.isMobile
-    );
-  }, [isAtHomePage, navigatorPlatform]);
 
   useEffect(() => {
     //@ts-ignore
