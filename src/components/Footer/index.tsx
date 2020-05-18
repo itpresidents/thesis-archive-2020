@@ -20,7 +20,7 @@ const FooterMain = () => (
       </Link>
     </Nav.Item>
     <Nav.Item className="randon">
-      <Link to={`/random`} replace>
+      <Link to={`/random`}>
         <Random /> Random
       </Link>
     </Nav.Item>
