@@ -499,6 +499,7 @@ $desktop-footer-left-size: 400px;
         float: left;
         display: flex;
         flex-direction: row;
+        overflow-x: auto;
       }
 
       @include media-breakpoint-up(lg) {
