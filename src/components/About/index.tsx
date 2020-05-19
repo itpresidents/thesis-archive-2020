@@ -100,7 +100,7 @@ const About = () => (
               by <a href="https://www.danioved.com/">Dan Oved </a> and
               <a href="http://yangyang.blog/portfolio/"> Yang Yang,</a> with
               production support by{" "}
-              <a href="https://www.erikvanzummeren.com/">Erik Van Zummeren.</a> and backend support by Yen-An Chen.
+              <a href="https://www.erikvanzummeren.com/">Erik Van Zummeren,</a> and backend support by Yen-An Chen.
             </TextBlock>
           </Section>
           <Section>
