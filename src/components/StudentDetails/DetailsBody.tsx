@@ -1,13 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { IFeaturedImage, IStudentDetails, IImage, ITag } from "types";
 import { Figure, Container } from "react-bootstrap";
 import { Row, Col } from "react-bootstrap";
 import cx from "classnames";
 import { useSpring, animated as a } from "react-spring";
-import {
-  Chevron,
-  // VideoSign
-} from "images/Svg";
+import { Chevron, VideoSign } from "images/Svg";
+import VideoEmbed from "components/Videos/VimeoEmbed";
 import { Link } from "react-router-dom";
 import parseHtml from "html-react-parser";
 import he from "he";
@@ -62,12 +60,18 @@ const TextSection = ({ children }: { children: React.ReactNode }) => (
   </Row>
 );
 
-const SlideShowImage = ({ image }: { image: IImage | undefined }) => (
+const SlideShowImageRow = ({ children }: { children: React.ReactNode }) => (
   <Row className={cx(justify, "slide-show-image")}>
     <Col lg={IMAGE_COLS_LG} className="col">
-      <ImageWithCaption image={image} />
+      {children}
     </Col>
   </Row>
+);
+
+const SlideShowImage = ({ image }: { image: IImage | undefined }) => (
+  <SlideShowImageRow>
+    <ImageWithCaption image={image} />
+  </SlideShowImageRow>
 );
 
 const isEmpty = (text: string | undefined) => !text || text.trim() === "";
@@ -84,6 +88,11 @@ const HideIfEmpty = ({
   }
 
   return <>{children}</>;
+};
+
+const videoEmbedIdFromurl = (url: string) => {
+  const parts = url.split("/");
+  return parts[parts.length - 1];
 };
 
 const ProjectWebsiteButton: React.FC<{ to: string }> = ({ to }) => {
@@ -117,6 +126,11 @@ const Topic = React.memo(
 
 const DetailsBody = ({ student }: { student: IStudentDetails }) => {
   // const counter = incrementer();
+
+  const videoEmbedId = useMemo(() => {
+    if (!student.video_presentation_url) return null;
+    return videoEmbedIdFromurl(student.video_presentation_url);
+  }, [student.video_presentation_url]);
 
   return (
     <>
@@ -152,11 +166,11 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => {
               <Col sm={12}>
                 <hr />
               </Col>
-              <Col sm={12} md={4} className="linkHolder first">
+              <Col sm={12} md={3} className="linkHolder first">
                 <h4>Student</h4>
                 <span>{student.student_name}</span>
               </Col>
-              <Col sm={12} md={4} className="linkHolder">
+              <Col sm={12} md={3} className="linkHolder">
                 {student.portfolio_url && (
                   <>
                     <h4>Portfolio</h4>
@@ -164,18 +178,18 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => {
                   </>
                 )}
               </Col>
-              <Col sm={12} md={4} className="linkHolder">
+              <Col sm={12} md={3} className="linkHolder">
                 <h4>Advisor</h4>
                 <Link to={`/filter/advisor/${student.advisor_id}`}>
                   {student.advisor_name}
                 </Link>
               </Col>
-              {/* <Col sm={12} md={3} className="linkHolder">
-              <h4>Watch</h4>
-              <Link to={`/videos/${student.student_slug}`}>
-                <VideoSign />
-              </Link>
-            </Col> */}
+              <Col sm={12} md={3} className="linkHolder">
+                <h4>Watch</h4>
+                <a href="#watch">
+                  <VideoSign />
+                </a>
+              </Col>
             </Row>
           </Col>
         </Row>
@@ -188,12 +202,24 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => {
             <ProjectWebsiteButton to={student.project_url} />
           </HideIfEmpty>
         </TextSection>
+
         <SlideShowImage image={student.slide_show[0]} />
         <TextSection>
           <HideIfEmpty text={student.context_research}>
             <h3>Research</h3>
             <TextBlock text={student.context_research} />
           </HideIfEmpty>
+        </TextSection>
+        {videoEmbedId && (
+          <SlideShowImageRow>
+            <span
+              id="watch"
+              style={{ position: "relative", top: "-600px" }}
+            ></span>
+            <VideoEmbed vimeoVideoId={videoEmbedId} />
+          </SlideShowImageRow>
+        )}
+        <TextSection>
           <HideIfEmpty text={student.technical_details}>
             <h3>Technical Details</h3>
             <TextBlock text={student.technical_details} />
