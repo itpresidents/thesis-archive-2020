@@ -184,12 +184,14 @@ const DetailsBody = ({ student }: { student: IStudentDetails }) => {
                   {student.advisor_name}
                 </Link>
               </Col>
-              <Col sm={12} md={3} className="linkHolder">
-                <h4>Watch</h4>
-                <a href="#watch">
-                  <VideoSign />
-                </a>
-              </Col>
+              {videoEmbedId && (
+                <Col sm={12} md={3} className="linkHolder">
+                  <h4>Watch</h4>
+                  <a href="#watch">
+                    <VideoSign />
+                  </a>
+                </Col>
+              )}
             </Row>
           </Col>
         </Row>
